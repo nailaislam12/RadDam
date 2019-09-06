@@ -1,11 +1,10 @@
 Step1: nTuplizer
 - Get CMSSW_9_2_X and copy both directories in nTuplizer directory in CMSSW/src
 - Do a 'scram b clean' followed by 'scram b -j10'
-- Code is ready to use: see run macros in nTuplizer/ggAnalysis/ggNtuplizer/test
+- Code is ready to use: macros are in nTuplizer/ggAnalysis/ggNtuplizer/test
 
 Step2: Untuplizer
-- Needs no CMSSW scram arch.
-- Add nTuple paths in run macros and run it in ROOT
+- Add nTuple paths in run macros and run these with ROOT
 
 Step3: Plotting
 - Add analysisTree to Analysis17.h
