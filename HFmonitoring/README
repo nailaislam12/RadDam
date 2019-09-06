@@ -4,8 +4,8 @@ Step1: nTuplizer
 - Code is ready to use: macros are in nTuplizer/ggAnalysis/ggNtuplizer/test
 
 Step2: Untuplizer
-- Add nTuple paths in run macros and run these with ROOT
+- Add nTuple paths in run macros and execute these with ROOT
 
 Step3: Plotting
-- Add analysisTree to Analysis17.h
-- Run via ROOT
+- Add analysisTree to Analysis17.h, open ROOT, create the Analysis17 class and execute the loop-function
+- Add the ROOT file with the histograms in the MakePlots macro and execute this with ROOT
