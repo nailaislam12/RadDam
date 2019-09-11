@@ -1,7 +1,7 @@
 Step0: clone code via 'git clone git@github.com:CMSHCALCalib/RadDam'
 
 Step1: nTuplizer
-- Get CMSSW_10_3_X and copy ggAnalysis directory in CMSSW/src
+- Setup CMSSW_10_3_X and copy ggAnalysis directory in CMSSW/src
 - Do a 'scram b clean' followed by 'scram b -j10'
 - Code is ready to use (macros are in nTuplizer/ggAnalysis/ggNtuplizer/test): 
   # Submit CRAB jobs via crabConfig (NOTE: you can submit multiple samples at once using multiprocessing)
