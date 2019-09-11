@@ -1,7 +1,7 @@
 Step0: clone code via 'git clone git@github.com:CMSHCALCalib/RadDam'
 
 Step1: nTuplizer
-- Setup CMSSW_10_3_X and copy ggAnalysis directory in CMSSW/src
+- Setup CMSSW_10_2_9 and copy ggAnalysis directory in CMSSW/src
 - Do a 'scram b clean' followed by 'scram b -j10'
 - Code is ready to use (macros are in nTuplizer/ggAnalysis/ggNtuplizer/test): 
   # Submit CRAB jobs via crabConfig (NOTE: you can submit multiple samples at once using multiprocessing)
@@ -9,14 +9,13 @@ Step1: nTuplizer
   # Check the latest GlobalTag in the cmsRun macros (different for data & MC - see https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable)
 
 Step2: Untuplizer
-- Setup ROOT (via CMSSW or locally) and hadd nTuple trees (recommend to have one final MC file and one final data file for each run range)
-- Copy untuplizing code
-- Check the EGamma cut-based ID for ECAL electrons in xAna macros (~L220) with latest recommendations (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2)
+- Use hadd to combine the nTuple trees (recommended to have one final MC file and one final data file for each run range)
+- Compare the EGamma cut-based ID for ECAL electrons in xAna macros (~L220) with latest recommendations (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2)
   # NOTE: usually we have to use the ID from the year before or very preliminary IDs
 - Add hadded nTuple paths in run macros and execute these with ROOT
 
 Step3: Plotting
-- Add Data/MC analysisTree to L90/92 in Analysis18.h and set isData bool in L45 in Analysis18.C accordingly
-- Open ROOT, compile the Analysis18 class (.L Analysis18.h), create a Analysis18 object (Analysis18 t) and execute the loop-function (t.Loop())
-- Create Figures18 directory with the following subdirectories: Eta, Phi, PU, EtaPhiFit, EtaBin, Run
+- Add Data/MC analysisTree path to L90/92 in Analysis18.h and set isData bool in L45 in Analysis18.C accordingly
+- Open ROOT, compile the Analysis18 class ('.L Analysis18.h'), create a Analysis18 object ('Analysis18 t') and execute the loop-function ('t.Loop()')
+- Create a 'Figures18' directory with the following subdirectories: Eta, Phi, PU, EtaPhiFit, EtaBin (and Run)
 - Add the ROOT file with the histograms in the MakePlots macro and execute this with ROOT
