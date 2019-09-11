@@ -3,6 +3,7 @@
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 #include <algorithm>
+#include "TLorentzVector.h"
 
 using namespace std;
 using namespace reco;
