@@ -15,7 +15,7 @@ Step2: Untuplizer
 - Add hadded nTuple paths in run macros and execute these with ROOT
 
 Step3: Plotting
-- Add Data/MC analysisTree path to L90/92 in Analysis18.h and set isData bool in L45 in Analysis18.C accordingly
+- Add Data/MC analysisTree path to L90/92 in Analysis18.h, change the output file name in L49 accordingly and set isData bool in L45 in Analysis18.C accordingly
 - Open ROOT, compile the Analysis18 class ('.L Analysis18.C+'), create a Analysis18 object ('Analysis18 t') and execute the loop-function ('t.Loop()')
 - Create a 'Figures18' directory with the following subdirectories: Eta, Phi, PU, EtaPhiFit, EtaBin (and Run)
 - Add the ROOT file with the histograms in the MakePlots macro and execute this with ROOT
