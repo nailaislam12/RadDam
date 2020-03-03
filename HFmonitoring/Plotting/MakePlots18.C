@@ -370,6 +370,7 @@ void MakePlots18() {
 	THStack *EtaStack = new THStack();
 	EtaStack->Add(hEtaPlusDataAll);
 	EtaStack->Add(hEtaMinusDataAll);
+	gStyle->SetErrorX(0.0001);
 	EtaStack->Draw("nostackP9E1");
 	EtaStack->GetXaxis()->SetTitle("i#eta");
 	EtaStack->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
@@ -1003,6 +1004,7 @@ void MakePlots18() {
 		TString Eta_lsRatioFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%ilsRatio.pdf", e);
 		canvas->Print(Eta_lsRatioFitName);
 		canvas->Clear();
+		gStyle->SetErrorX(0.0001);
 		hEtalsRatioDataAll->SetBinContent(e-29, hEta_lsRatioData->GetMean());
 		hEtalsRatioMCAll->SetBinContent(e-29, hEta_lsRatioMC->GetMean());
 		hEtalsRatioDataAll->SetBinError(e-29, hEta_lsRatioData->GetRMS());
@@ -1038,13 +1040,17 @@ void MakePlots18() {
 		TH1F *hRun = (TH1F*)fData->Get(RunName[i-1]);
 		funcGaus->SetRange(hRun->GetMaximumBin()+5,hRun->GetMaximumBin()+35);
 		TFitResultPtr FitResultRunData = hRun->Fit("fitGaus","RS");
+		gStyle->SetErrorX(0.0001); 
 		hRunData->SetBinContent(i, funcGaus->GetParameter(1));
-		hRunData->SetBinError(i, funcGaus->GetParError(1));
+		hRunData->SetBinError(i, funcGaus->GetParameter(2));
 		hRunData->GetXaxis()->SetBinLabel(i,RunLabel[i-1]);	
 		//hRunData->Draw();
 		}
-		hRunData->GetYaxis()->SetRangeUser(76,78);
+		hRunData->GetYaxis()->SetRangeUser(65,90);
 		hRunData->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
+		hRunData->SetMarkerStyle(20);
+	    hRunData->SetMarkerSize(1);
+		hRunData->Print("range");
 		hRunData->Draw();	
 	
 	    // TString EntriesRunData = TString::Format("Entries: %.0f", hRun->GetEntries());
@@ -1075,11 +1081,13 @@ void MakePlots18() {
 		TH1F *hRun_ls = (TH1F*)fData->Get(Run_lsRatioName[i-1]);
 		//funcGaus->SetRange(hRun->GetMaximumBin()+5,hRun->GetMaximumBin()+35);
 		//TFitResultPtr FitResultRunData = hRun->Fit("fitGaus","RS");
+		gStyle->SetErrorX(0.0001); //don't draw the "arms" on x that cover the whole bin, idea of how to do this from Maxi and https://root-forum.cern.ch/t/remove-x-error-bar/11935/2
 		hRun_lsData->SetBinContent(i, hRun_ls->GetMean());
 		hRun_lsData->SetBinError(i, hRun_ls->GetRMS());
 		hRun_lsData->GetXaxis()->SetBinLabel(i,RunLabel[i-1]);
 		//hRun_lsData->Draw();
 			}	
+			
 	hRun_lsData->Draw();
 	hRun_lsData->SetTitle("Mean Long Short Fiber Energy Ratio vs. Delivered Lumi");
 	hRun_lsData->GetYaxis()->SetTitle("Mean Long Short Fiber Energy Ratio");
@@ -1102,7 +1110,10 @@ void MakePlots18() {
 //	hRunData->GetXaxis()->SetTitle("Mean M_{e, hf} (GeV)");
 //	hRunData->GetYaxis()->SetTitle("Mean M_{e, hf} (GeV)"");
 	CMSlabel.DrawLatex(0.1,0.1,"#bf{CMS} #it{Preliminary}");
+	hRun_lsData->SetMarkerStyle(20);
+	hRun_lsData->SetMarkerSize(1);
 	TString Run_lsFile = "Figures17UL_29Feb2020/Run/Run_lsData.pdf";
+	
 	canvas->Print(Run_lsFile);
 	canvas->Clear();
 	}
