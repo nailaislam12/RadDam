@@ -8,7 +8,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "CMSStyle.C"
+//#include "CMSStyle.C"
 
 using namespace std;
 void beautify(TH1F* plot, TString xTitle, TString yTitle, int color) {
@@ -26,27 +26,27 @@ void beautify(TH2F* plot, TString xTitle, TString yTitle, int color) {
   return;
 }
 
-int getRunIndex(int run) {
-  return -1;
-}
+// int getRunIndex(int run) {
+//   return -1;
+// }
 int getEtaIndex(float eta) {
   return -1;
 }
 
-float getRaddamCorrection(int run, float eta) {
-  return 0;
-}
+// float getRaddamCorrection(int run, float eta) {
+//   return 0;
+// }
 
 void Analysis18::Loop()
 {
-   CMSStyle();
+//   CMSStyle();
    if (fChain == 0) return;
    
-   bool isData = true;
-   bool usePU = false;
+   bool isData = false;
+   bool usePU = true;
    bool useRaddam = false;
 
-   TFile* out = TFile::Open("outplots_data_noPU.root", "RECREATE");
+   TFile* out = TFile::Open("outplots_mc_29Feb2020.root", "RECREATE");
 
    TH1F* h_mass = new TH1F("h_mass", "", 140, 20, 160);
    beautify(h_mass, "M_{e, hf} (GeV)", "Events / 1 GeV", 2);
@@ -729,6 +729,18 @@ void Analysis18::Loop()
    beautify(eta40enEE, "E_{T}^{ECAL} [GeV]", "Events", 2);
    TH1F* eta41enEE = new TH1F("eta41enEE", "eta41", 60, 0, 150);
    beautify(eta41enEE, "E_{T}^{ECAL} [GeV]", "Events", 2);   
+   
+   TH1F* runB = new TH1F("runB", "", 140, 20, 160);
+   TH1F* runC = new TH1F("runC", "", 140, 20, 160);
+   TH1F* runD = new TH1F("runD", "", 140, 20, 160);
+   TH1F* runE = new TH1F("runE", "", 140, 20, 160);
+   TH1F* runF = new TH1F("runF", "", 140, 20, 160);
+   
+   TH1F *runB_lsRatio = new TH1F("runB_lsRatio", "", 80, 0, 20);
+   TH1F *runC_lsRatio = new TH1F("runC_lsRatio", "", 80, 0, 20);
+   TH1F *runD_lsRatio = new TH1F("runD_lsRatio", "", 80, 0, 20);
+   TH1F *runE_lsRatio = new TH1F("runE_lsRatio", "", 80, 0, 20);
+   TH1F *runF_lsRatio = new TH1F("runF_lsRatio", "", 80, 0, 20);
      
    double alpha = 1;
    double beta = 1;
@@ -754,10 +766,27 @@ void Analysis18::Loop()
       bool PU8 = (nvtx > 42 && nvtx <= 48);
       bool PU9 = (nvtx > 48);
       
+      //Lumi bins UL17
+      
+      bool lumiB = false;
+      bool lumiC = false;
+      bool lumiD = false;
+      bool lumiE = false;
+      bool lumiF = false;
+      
+      if (isData) {
+      lumiB = (run >= 297020 && run <= 299329);
+      lumiC = (run >= 299337 && run <= 302029);
+      lumiD = (run >= 302030 && run <= 303434);
+      lumiE = (run >= 303435 && run <= 304826);
+      lumiF = (run >= 304911 && run <= 306462);
+      } //info from https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis
+      
+      
       bool iEta33_after = false;
-       if (isData == 1) {
-           iEta33_after = (run >= 319819);
-      }
+//        if (isData == 1) {
+//            iEta33_after = (run >= 319819);
+//       }
       
       vector<TLorentzVector> electrons;
       for(int i = 0; i != nele; ++i ) {
@@ -786,10 +815,10 @@ void Analysis18::Loop()
 	// Raddam correction - only data
 	double corrL = L;
 	double corrS = S;
-	if (isData == 1) {
-                       if (useRaddam == 1) { corrL = L/getRaddamCorrection(run, fabs(hf_eta->at(i))); }
-                       if (useRaddam == 1) { corrS = S/getRaddamCorrection(run, fabs(hf_eta->at(i))); }
-	}
+	// if (isData == 1) {
+//                        if (useRaddam == 1) { corrL = L/getRaddamCorrection(run, fabs(hf_eta->at(i))); }
+//                        if (useRaddam == 1) { corrS = S/getRaddamCorrection(run, fabs(hf_eta->at(i))); }
+// 	}
 	double corrpT = hf_pt->at(i)*(corrL + corrS)/(L + S);
 	
 	// Use only long fiber energy
@@ -820,8 +849,8 @@ void Analysis18::Loop()
       TLorentzVector e1pu;
       TLorentzVector e2pu;
       double puCorrection = 1;
-      if (usePU == 1) { puCorrection = 1./(1.0 + 0.080/74.390*(nvtx-26)); } // MC (peak @ 26) 
-      if (usePU == 1 && isData == 1 ) { puCorrection = 1./(1.0 + 0.088/73.909*(nvtx-26)); } // Data (peak @ 26)
+      if (usePU == 1) { puCorrection = 1./(1.0 + 0.074/74.483*(nvtx-25)); } // MC (peak @ 25) 
+      if (usePU == 1 && isData == 1 ) { puCorrection = 1./(1.0 + 0.107/73.895*(nvtx-26)); } // Data (peak @ 26)
       e1pu.SetPtEtaPhiM(e1.Pt()*puCorrection, e1.Eta(), e1.Phi(), 0);
       e2pu.SetPtEtaPhiM(e2.Pt()*puCorrection, e2.Eta(), e2.Phi(), 0);
       double MassPUCorrected = (e1pu + e2pu).M();
@@ -843,6 +872,33 @@ void Analysis18::Loop()
       if ( PU7 ) nVtx7->Fill(Mass);
       if ( PU8 ) nVtx8->Fill(Mass);
       if ( PU9 ) nVtx9->Fill(Mass);
+      
+      //fill lumi dependency plots
+      
+      if (lumiB) {
+      runB->Fill(Mass);
+      if ( shortFiberEn>0.0 ) runB_lsRatio->Fill(longFiberEn/shortFiberEn);
+      }
+      
+      if (lumiC) {
+      runC->Fill(Mass);
+      if ( shortFiberEn>0.0 ) runC_lsRatio->Fill(longFiberEn/shortFiberEn);
+      }
+      
+      if (lumiD){
+      runD->Fill(Mass);
+      if ( shortFiberEn>0.0 ) runD_lsRatio->Fill(longFiberEn/shortFiberEn);
+      }
+      
+      if (lumiE) { 
+      runE->Fill(Mass);
+      if ( shortFiberEn>0.0 ) runE_lsRatio->Fill(longFiberEn/shortFiberEn);
+      }
+       
+      if (lumiF) {
+       runF->Fill(Mass);
+       if ( shortFiberEn>0.0 ) runF_lsRatio->Fill(longFiberEn/shortFiberEn);
+       }
              
       float phi = e2pu.Phi();
       
@@ -1628,6 +1684,10 @@ void Analysis18::Loop()
       
    }
 
+  // std::cout << eta30lsRatio->Integral();
+   //could also get entries
+   //could divide one by the other to get average
+   //could then write the histo
    h_mass->Write();
    h_nvtx->Write();
    h_lsRatio->Write();
@@ -2105,6 +2165,7 @@ void Analysis18::Loop()
    eta41phi71->Write();
     
    eta30lsRatio->Write();
+   std::cout << eta30lsRatio->Integral();
    eta31lsRatio->Write();
    eta32lsRatio->Write();
    eta33lsRatio->Write();
@@ -2207,6 +2268,18 @@ void Analysis18::Loop()
    eta39enEE->Write();
    eta40enEE->Write();
    eta41enEE->Write();
+   
+   runB->Write();
+   runC->Write();
+   runD->Write();
+   runE->Write();
+   runF->Write();
+   
+   runB_lsRatio->Write();
+   runC_lsRatio->Write();
+   runD_lsRatio->Write();
+   runE_lsRatio->Write();
+   runF_lsRatio->Write();
      
 }
 

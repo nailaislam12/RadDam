@@ -17,7 +17,8 @@
 
 class Analysis18 {
 public :
-   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+//   TTree          *fChain;   //!pointer to the analyzed TTree or TChain //use this one if you are going to use a TTree
+   TChain           *fChain; //use this one if you are going to use a TChain
    Int_t           fCurrent; //!current Tree number in a TChain
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
@@ -68,12 +69,12 @@ public :
    // TBranch        *b_mc_eta;   //!
    // TBranch        *b_mc_phi;   //!
 
-   Analysis18(TTree *tree=0);
+   Analysis18(TChain *tree=0); //change this to TTree if you are doing the TTree
    virtual ~Analysis18();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree);
+   virtual void     Init(TChain *tree);
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -82,19 +83,48 @@ public :
 #endif
 
 #ifdef Analysis18_cxx
-Analysis18::Analysis18(TTree *tree) : fChain(0) 
+Analysis18::Analysis18(TChain *tree) : fChain(0) //change this to TTree if you are using the TTree
 {
-// if parameter tree is not specified (or zero), connect the file
-// used to generate this class and read the Tree.
-   if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/cms/heindl/2018/HF_calibration/output_data.root");
-      if (!f || !f->IsOpen()) {
-         f = new TFile("/cms/heindl/2018/HF_calibration/output_data.root");
-      }
-      f->GetObject("miniTree",tree);
 
-   }
-   Init(tree);
+    TChain *myChain = new TChain("miniTree"); //must initialize this before doing the if tree == 0 stuff, need to make it a pointer so that it can deal with trees //comment this out if doing a TTree
+// if parameter tree is not specified (or zero), connect the file 
+// used to generate this class and read the Tree.
+   if (tree == 0) // {
+//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/user/m/mhadley/output_from_HCAL_HF_RadDam_Initial_Tests/output_mc.root");
+// //      std::cout << f;
+//       if (!f || !f->IsOpen()) {
+//          f = new TFile("/eos/user/m/mhadley/output_from_HCAL_HF_RadDam_Initial_Tests/output_mc.root");
+//       }
+//       f->GetObject("miniTree",tree);
+// 
+//    } //comment this in if doing a TTree, out if doing a TChain
+
+                { 
+                   
+                    
+           //         myChain->Add("output_data_UL17B_0000.root/miniTree");
+//                    myChain->Add("output_data_UL17B_0001.root/miniTree");
+//                    
+//                    myChain->Add("output_data_UL17C_0000.root/miniTree");
+//                    myChain->Add("output_data_UL17C_0001.root/miniTree");
+//                    myChain->Add("output_data_UL17C_0002.root/miniTree");
+//                     
+//                    myChain->Add("output_data_UL17D_0000.root/miniTree");
+//                    myChain->Add("output_data_UL17D_0001.root/miniTree");
+//                     
+//                    myChain->Add("output_data_UL17E_0000.root/miniTree");
+//                    myChain->Add("output_data_UL17E_0001.root/miniTree");
+//                    myChain->Add("output_data_UL17E_0002.root/miniTree");
+//                     
+//                    myChain->Add("output_data_UL17F_0000.root/miniTree");
+//                    myChain->Add("output_data_UL17F_0001.root/miniTree");
+//                    myChain->Add("output_data_UL17F_0002.root/miniTree");
+//                     
+                 myChain->Add("output_mc.root/miniTree");
+
+}
+   //Init(tree); //use this if doing a TTree
+   Init(myChain); //use this if doing a TChain
 }
 
 Analysis18::~Analysis18()
@@ -122,7 +152,7 @@ Long64_t Analysis18::LoadTree(Long64_t entry)
    return centry;
 }
 
-void Analysis18::Init(TTree *tree)
+void Analysis18::Init(TChain *tree) //change this to TTree *tree if you are using a TTree
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch

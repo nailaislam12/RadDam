@@ -4,10 +4,12 @@
 #include "setTDRStyle.C"
 
 void MakePlots18() {
-	setTDRStyle();
+//	setTDRStyle();
 	TCanvas* canvas = new TCanvas("canvas");
-	TFile *fMC = new TFile("outplots_mc_noPU.root");
-	TFile *fData = new TFile("outplots_data_noPU.root");
+	gROOT->ForceStyle();
+	gStyle->SetOptStat(0);
+	TFile *fMC = new TFile("outplots_mc_29Feb2020.root");
+	TFile *fData = new TFile("outplots_data_29Feb2020.root");
 	TF1 *funcGaus = new TF1("fitGaus","gaus",0,100);
 	funcGaus->SetLineWidth(2);
 	canvas->SetLogy(0);
@@ -33,9 +35,12 @@ void MakePlots18() {
 	hMassMC->GetYaxis()->SetLabelSize(0.03);
 	hMassMC->SetLineColor(kBlack);
 	hMassMC->Fit("fitGaus","RS");
+	TFitResultPtr FitResultMassMC = hMassMC->Fit("fitGaus","RS");
 	TString EntriesMassMC = TString::Format("Entries: %.0f", hMassMC->GetEntries());
 	TString MeanMassMC = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
 	TString SigmaMassMC = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
+	TString Chi2MassMC = TString::Format("#chi^{2} = %.2f", FitResultMassMC->Chi2());
+	TString NDOFMassMC = TString::Format("ndf = %.0u",FitResultMassMC->Ndf());
 	TLatex TextMassMC = TLatex(); 
 	TextMassMC.SetTextFont(42);     
 	TextMassMC.SetNDC();     
@@ -44,8 +49,9 @@ void MakePlots18() {
 	TextMassMC.DrawLatex(0.6,0.81,EntriesMassMC);
 	TextMassMC.DrawLatex(0.6,0.77,MeanMassMC);
 	TextMassMC.DrawLatex(0.6,0.73,SigmaMassMC);
-	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_mc.pdf");
+//	TextMassMC.DrawLatex(0.6,0.69, Chi2MassMC);
+//	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
+	canvas->Print("Figures17UL_29Feb2020/InvMass_mc.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
 	
@@ -68,16 +74,21 @@ void MakePlots18() {
 	TString EntriesMassData = TString::Format("Entries: %.0f", hMassData->GetEntries());
 	TString MeanMassData = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
 	TString SigmaMassData = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
+	TFitResultPtr FitResultMassData = hMassData->Fit("fitGaus","RS");
+	TString Chi2MassData = TString::Format("#chi^{2} = %.2f", FitResultMassData->Chi2());
+	TString NDOFMassData = TString::Format("ndf = %.0u",FitResultMassData->Ndf());
 	TLatex TextMassData = TLatex(); 
 	TextMassData.SetTextFont(42);     
 	TextMassData.SetNDC();     
 	TextMassData.SetTextSize(0.03);
-	TextMassData.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2018)}}");
+	TextMassData.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2017UL Data)}}");
 	TextMassData.DrawLatex(0.6,0.81,EntriesMassData);
 	TextMassData.DrawLatex(0.6,0.77,MeanMassData);
 	TextMassData.DrawLatex(0.6,0.73,SigmaMassData);
+//	TextMassData.DrawLatex(0.6,0.69, Chi2MassData);
+//	TextMassData.DrawLatex(0.6,0.65, NDOFMassData);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_data.pdf");
+	canvas->Print("Figures17UL_29Feb2020/InvMass_data.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
     
@@ -104,12 +115,12 @@ void MakePlots18() {
 	TextMassData_iEta33_before.SetTextFont(42);     
 	TextMassData_iEta33_before.SetNDC();     
 	TextMassData_iEta33_before.SetTextSize(0.03);
-	TextMassData_iEta33_before.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2018)}}");
+	TextMassData_iEta33_before.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2017UL Data)}}");
 	TextMassData_iEta33_before.DrawLatex(0.6,0.81,EntriesMassData_iEta33_before);
 	TextMassData_iEta33_before.DrawLatex(0.6,0.77,MeanMassData_iEta33_before);
 	TextMassData_iEta33_before.DrawLatex(0.6,0.73,SigmaMassData_iEta33_before);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_data_iEta33_before.pdf");
+	canvas->Print("Figures17UL_29Feb2020/InvMass_data_iEta33_before.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
     
@@ -136,12 +147,12 @@ void MakePlots18() {
 	TextMassData_iEta33_after.SetTextFont(42);     
 	TextMassData_iEta33_after.SetNDC();     
 	TextMassData_iEta33_after.SetTextSize(0.03);
-	TextMassData_iEta33_after.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2018)}}");
+	TextMassData_iEta33_after.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2017UL Data)}}");
 	TextMassData_iEta33_after.DrawLatex(0.6,0.81,EntriesMassData_iEta33_after);
 	TextMassData_iEta33_after.DrawLatex(0.6,0.77,MeanMassData_iEta33_after);
 	TextMassData_iEta33_after.DrawLatex(0.6,0.73,SigmaMassData_iEta33_after);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_data_iEta33_after.pdf");
+	canvas->Print("Figures17UL_29Feb2020/InvMass_data_iEta33_after.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
     
@@ -170,12 +181,12 @@ void MakePlots18() {
     if (MC_maxDPhi > Data_maxDPhi) LSRAtioStack->SetMaximum(MC_maxDPhi);
     if (MC_maxDPhi < Data_maxDPhi) LSRAtioStack->SetMaximum(Data_maxDPhi);
     TLegend* legendLSRAtio = new TLegend(0.475,0.775,0.625,0.875,"","NDC");
-    legendLSRAtio->AddEntry(hLSRAtioData, "2018", "p");
+    legendLSRAtio->AddEntry(hLSRAtioData, "2017UL Data", "p");
     legendLSRAtio->AddEntry(hLSRAtioMC, "MC LO", "p");
     legendLSRAtio->SetBorderSize(0);
     legendLSRAtio->Draw();
     CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-    TString LSRAtioFitName = TString::Format("Figures18_noPU/lsRatio.pdf");
+    TString LSRAtioFitName = TString::Format("Figures17UL_29Feb2020/lsRatio.pdf");
     canvas->Print(LSRAtioFitName);
     canvas->Clear();
 	
@@ -187,6 +198,7 @@ void MakePlots18() {
 	TH1F *hEtaMinusDataAll = new TH1F("hEtaMinusDataAll", "", 10, 29.5, 39.5);
     TH1F *hEtaWidthMCAll = new TH1F("hEtaWidthMCAll", "", 10, 29.5, 39.5);
 	TH1F *hEtaWidthDataAll = new TH1F("hEtaWidthDataAll", "", 10, 29.5, 39.5);
+	
 	for(int i = 30; i <= 39; ++i) {
 		TString EtaPlusNum = TString::Format("etaPlus%i", i);
 		TString EtaPlusBin = TString::Format("#eta%i (HF+)", i);
@@ -218,7 +230,7 @@ void MakePlots18() {
 		hEtaPlusMC->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaPlusMC->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPlusNameMC = TString::Format("Figures18_noPU/Eta/EtaPlus%i_mc.pdf", i);
+		TString EtaPlusNameMC = TString::Format("Figures17UL_29Feb2020/Eta/EtaPlus%i_mc.pdf", i);
 		canvas->Print(EtaPlusNameMC);
 		canvas->Clear();
 		
@@ -239,7 +251,7 @@ void MakePlots18() {
 		TextEtaPlusData.SetTextFont(42);     
 		TextEtaPlusData.SetNDC();     
 		TextEtaPlusData.SetTextSize(0.02);
-		TextEtaPlusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaPlusBin+" (2018)}");
+		TextEtaPlusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaPlusBin+" (2017UL Data)}");
 		TextEtaPlusData.DrawLatex(0.7,0.82,EntriesEtaPlusData);
 		TextEtaPlusData.DrawLatex(0.7,0.79,MeanEtaPlusData);
 		TextEtaPlusData.DrawLatex(0.7,0.76,SigmaEtaPlusData);
@@ -248,7 +260,7 @@ void MakePlots18() {
 		hEtaPlusData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaPlusData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPlusNameData = TString::Format("Figures18_noPU/Eta/EtaPlus%i_data.pdf", i);
+		TString EtaPlusNameData = TString::Format("Figures17UL_29Feb2020/Eta/EtaPlus%i_data.pdf", i);
 		canvas->Print(EtaPlusNameData);
 		canvas->Clear();
 		
@@ -281,7 +293,7 @@ void MakePlots18() {
 		hEtaMinusMC->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaMinusMC->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaMinusNameMC = TString::Format("Figures18_noPU/Eta/EtaMinus%i_mc.pdf", i);
+		TString EtaMinusNameMC = TString::Format("Figures17UL_29Feb2020/Eta/EtaMinus%i_mc.pdf", i);
 		canvas->Print(EtaMinusNameMC);
 		canvas->Clear();
 		
@@ -302,7 +314,7 @@ void MakePlots18() {
 		TextEtaMinusData.SetTextFont(42);     
 		TextEtaMinusData.SetNDC();     
 		TextEtaMinusData.SetTextSize(0.02);
-		TextEtaMinusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaMinusBin+" (2018)}");
+		TextEtaMinusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaMinusBin+" (2017UL Data)}");
 		TextEtaMinusData.DrawLatex(0.7,0.82,EntriesEtaMinusData);
 		TextEtaMinusData.DrawLatex(0.7,0.79,MeanEtaMinusData);
 		TextEtaMinusData.DrawLatex(0.7,0.76,SigmaEtaMinusData);
@@ -311,7 +323,7 @@ void MakePlots18() {
 		hEtaMinusData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaMinusData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaMinusNameData = TString::Format("Figures18_noPU/Eta/EtaMinus%i_data.pdf", i);
+		TString EtaMinusNameData = TString::Format("Figures17UL_29Feb2020/Eta/EtaMinus%i_data.pdf", i);
 		canvas->Print(EtaMinusNameData);
 		canvas->Clear();
 		
@@ -374,14 +386,14 @@ void MakePlots18() {
 	hEtaMCAll->Draw("LSAME");
 	hEtaMCAll->GetYaxis()->SetRangeUser(50,100);
 	//TLegend* legendEta = new TLegend(0.63,0.65,0.83,0.85,"","NDC");
-    TLegend* legendEta = new TLegend(0.63,0.25,0.83,0.45,"","NDC");
+    TLegend* legendEta = new TLegend(0.63,0.1,0.83,0.3,"","NDC");
 	legendEta->AddEntry(hEtaMCAll, "MC LO", "l");
-	legendEta->AddEntry(hEtaPlusDataAll, "2018 HF+", "ep");
-	legendEta->AddEntry(hEtaMinusDataAll, "2018 HF-", "ep");
+	legendEta->AddEntry(hEtaPlusDataAll, "2017UL Data HF+", "ep");
+	legendEta->AddEntry(hEtaMinusDataAll, "2017UL Data HF-", "ep");
 	legendEta->SetBorderSize(0);
 	legendEta->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/EtaFit.pdf");
+	canvas->Print("Figures17UL_29Feb2020/EtaFit.pdf");
 	canvas->Clear();
     
     hEtaWidthMCAll->SetLineWidth(2);
@@ -415,11 +427,11 @@ void MakePlots18() {
 	//TLegend* legendEtaWidth = new TLegend(0.63,0.65,0.83,0.85,"","NDC");
     TLegend* legendEtaWidth = new TLegend(0.23,0.65,0.43,0.85,"","NDC");
 	legendEtaWidth->AddEntry(hEtaWidthMCAll, "MC LO", "l");
-	legendEtaWidth->AddEntry(hEtaWidthDataAll, "2018 HF", "ep");
+	legendEtaWidth->AddEntry(hEtaWidthDataAll, "2017UL Data HF", "ep");
 	legendEtaWidth->SetBorderSize(0);
 	legendEtaWidth->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/EtaWidthFit.pdf");
+	canvas->Print("Figures17UL_29Feb2020/EtaWidthFit.pdf");
 	canvas->Clear();
 	
 	//Phi 
@@ -454,7 +466,7 @@ void MakePlots18() {
 		hPhiMC->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPhiMC->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PhiNameMC = TString::Format("Figures18_noPU/Phi/Phi%i_mc.pdf", i);
+		TString PhiNameMC = TString::Format("Figures17UL_29Feb2020/Phi/Phi%i_mc.pdf", i);
 		canvas->Print(PhiNameMC);
 		canvas->Clear();
 		
@@ -473,7 +485,7 @@ void MakePlots18() {
 		TextPhiData.SetTextFont(42);     
 		TextPhiData.SetNDC();     
 		TextPhiData.SetTextSize(0.02);
-		TextPhiData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+PhiBin+" (2018)}");
+		TextPhiData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+PhiBin+" (2017UL Data)}");
 		TextPhiData.DrawLatex(0.7,0.82,EntriesPhiData);
 		TextPhiData.DrawLatex(0.7,0.79,MeanPhiData);
 		TextPhiData.DrawLatex(0.7,0.76,SigmaPhiData);
@@ -482,7 +494,7 @@ void MakePlots18() {
 		hPhiData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPhiData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PhiNameData = TString::Format("Figures18_noPU/Phi/Phi%i_data.pdf", i);
+		TString PhiNameData = TString::Format("Figures17UL_29Feb2020/Phi/Phi%i_data.pdf", i);
 		canvas->Print(PhiNameData);
 		canvas->Clear();
 		
@@ -513,25 +525,25 @@ void MakePlots18() {
 	PhiStack->SetMaximum(90);
 	TLegend* legendPhi = new TLegend(0.25,0.3,0.4,0.4,"","NDC");
 	legendPhi->AddEntry(hPhiMCAll, "MC LO", "ep");
-	legendPhi->AddEntry(hPhiDataAll, "2018", "ep");
+	legendPhi->AddEntry(hPhiDataAll, "2017UL Data", "ep");
 	legendPhi->SetLineColor(kWhite);
 	legendPhi->SetBorderSize(0);
 	legendPhi->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/PhiFit.pdf");
+	canvas->Print("Figures17UL_29Feb2020/PhiFit.pdf");
 	canvas->Clear();
 	
 	//PU
 	TH1F *hnVtxMC = (TH1F*)fMC->Get("h_nvtx");
 	hnVtxMC->Draw();
 	hnVtxMC->GetYaxis()->SetRangeUser(0,1.1*hnVtxMC->GetBinContent(hnVtxMC->GetMaximumBin()));
-	canvas->Print("Figures18_noPU/nvtx_mc.pdf");
+	canvas->Print("Figures17UL_29Feb2020/nvtx_mc.pdf");
 	canvas->Clear();
 	
 	TH1F *hnVtxData = (TH1F*)fData->Get("h_nvtx");
 	hnVtxData->Draw();
 	hnVtxData->GetYaxis()->SetRangeUser(0,1.1*hnVtxData->GetBinContent(hnVtxData->GetMaximumBin()));
-	canvas->Print("Figures18_noPU/nvtx_data.pdf");
+	canvas->Print("Figures17UL_29Feb2020/nvtx_data.pdf");
 	canvas->Clear();
 	
 	TF1 *funcLinData = new TF1("fitLinData","pol1",0,54);
@@ -570,7 +582,7 @@ void MakePlots18() {
 		hPUmc->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPUmc->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PUmcName = TString::Format("Figures18_noPU/PU/PU%i_mc.pdf", i);
+		TString PUmcName = TString::Format("Figures17UL_29Feb2020/PU/PU%i_mc.pdf", i);
 		canvas->Print(PUmcName);
 		canvas->Clear();}
 		
@@ -589,7 +601,7 @@ void MakePlots18() {
 		TextPUdata.SetTextFont(42);     
 		TextPUdata.SetNDC();     
 		TextPUdata.SetTextSize(0.02);
-		TextPUdata.DrawLatex(0.7,0.86,"#scale[1.4]{"+PUbin[i-1]+" (2018)}");
+		TextPUdata.DrawLatex(0.7,0.86,"#scale[1.4]{"+PUbin[i-1]+" (2017UL Data)}");
 		TextPUdata.DrawLatex(0.7,0.82,EntriesPUdata);
 		TextPUdata.DrawLatex(0.7,0.79,MeanPUdata);
 		TextPUdata.DrawLatex(0.7,0.76,SigmaPUdata);
@@ -598,7 +610,7 @@ void MakePlots18() {
 		hPUdata->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPUdata->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PUdataName = TString::Format("Figures18_noPU/PU/PU%i_data.pdf", i);
+		TString PUdataName = TString::Format("Figures17UL_29Feb2020/PU/PU%i_data.pdf", i);
 		canvas->Print(PUdataName);
 		canvas->Clear();}
 		
@@ -626,8 +638,8 @@ void MakePlots18() {
 	hPUdataFit->GetXaxis()->SetTitle("nVtx");
 	hPUdataFit->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
 	hPUdataFit->Fit("fitLinData","R");
-	TString LinFitData = TString::Format("2018: %.3f + %.3f #times nVtx", funcLinData->GetParameter(0), funcLinData->GetParameter(1));
-	if (funcLinData->GetParameter(1) < 0) LinFitData = TString::Format("2018: %.3f - %.3f #times nVtx", funcLinData->GetParameter(0), (-1)*funcLinData->GetParameter(1));
+	TString LinFitData = TString::Format("2017UL Data: %.3f + %.3f #times nVtx", funcLinData->GetParameter(0), funcLinData->GetParameter(1));
+	if (funcLinData->GetParameter(1) < 0) LinFitData = TString::Format("2017UL Data: %.3f - %.3f #times nVtx", funcLinData->GetParameter(0), (-1)*funcLinData->GetParameter(1));
 	
 	THStack *PUStack = new THStack();
 	PUStack->Add(hPUmcFit);
@@ -643,9 +655,21 @@ void MakePlots18() {
 	legendPU->SetBorderSize(0);
 	legendPU->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/PUFit.pdf");
+	canvas->Print("Figures17UL_29Feb2020/PUFit.pdf");
 	canvas->Clear();
 	
+	
+	
+	TH1F *hEtalsRatioDataAll = new TH1F("hEtalsRatioDataAll","", 10, 29.5, 39.5);
+	TH1F *hEtalsRatioMCAll = new TH1F("hEtalsRatioMCAll","", 10, 29.5, 39.5);
+	hEtalsRatioDataAll->SetMarkerStyle(21);
+	hEtalsRatioDataAll->SetMarkerSize(0.5);
+	hEtalsRatioDataAll->SetMarkerColor(kRed);
+	hEtalsRatioDataAll->SetLineColor(kRed);
+	hEtalsRatioMCAll->SetMarkerStyle(21);
+	hEtalsRatioMCAll->SetMarkerSize(0.5);
+	hEtalsRatioMCAll->SetMarkerColor(kBlue);
+	hEtalsRatioMCAll->SetLineColor(kBlue);
 	TString EtaRange[12] = {"i#eta30","i#eta31","i#eta32","i#eta33","i#eta34","i#eta35","i#eta36","i#eta37","i#eta38","i#eta39","i#eta40","i#eta41"};
 	for (int e = 30; e <= 41; ++e) {	
         
@@ -698,12 +722,12 @@ void MakePlots18() {
 		EtaPhiFitStack->SetMinimum(50);
 		EtaPhiFitStack->SetMaximum(100);
 		TLegend* legendEtaPhiFit = new TLegend(0.25,0.75,0.4,0.85,EtaRange[e-30],"NDC");
-		legendEtaPhiFit->AddEntry(hEtaPhiFitDataAll, "2018", "ep");
+		legendEtaPhiFit->AddEntry(hEtaPhiFitDataAll, "2017UL Data", "ep");
 		legendEtaPhiFit->AddEntry(hEtaPhiFitMCAll, "MC LO", "ep");
         legendEtaPhiFit->SetBorderSize(0);
 		legendEtaPhiFit->Draw();
         CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPhiFitName = TString::Format("Figures18_noPU/EtaPhiFit/Eta%iPhiFit.pdf", e);
+		TString EtaPhiFitName = TString::Format("Figures17UL_29Feb2020/EtaPhiFit/Eta%iPhiFit.pdf", e);
 		canvas->Print(EtaPhiFitName);
 		canvas->Clear();
         
@@ -732,12 +756,12 @@ void MakePlots18() {
 		if (MC_maxPU > Data_maxPU) EtaPUStack->SetMaximum(MC_maxPU);
 		if (MC_maxPU < Data_maxPU) EtaPUStack->SetMaximum(Data_maxPU);
 		TLegend* legendEtaPU = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaPU->AddEntry(hEtaPUData, "2018", "p");
+		legendEtaPU->AddEntry(hEtaPUData, "2017UL Data", "p");
 		legendEtaPU->AddEntry(hEtaPUMC, "MC LO", "p");
 		legendEtaPU->SetBorderSize(0);
 		legendEtaPU->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPUFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iPU.pdf", e);
+		TString EtaPUFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iPU.pdf", e);
 		canvas->Print(EtaPUFitName);
 		canvas->Clear();
 		
@@ -766,12 +790,12 @@ void MakePlots18() {
 		if (MC_maxPhi > Data_maxPhi) EtaPhiStack->SetMaximum(MC_maxPhi);
 		if (MC_maxPhi < Data_maxPhi) EtaPhiStack->SetMaximum(Data_maxPhi);
 		TLegend* legendEtaPhi = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaPhi->AddEntry(hEtaPhiData, "2018", "p");
+		legendEtaPhi->AddEntry(hEtaPhiData, "2017UL Data", "p");
 		legendEtaPhi->AddEntry(hEtaPhiMC, "MC LO", "p");
 		legendEtaPhi->SetBorderSize(0);
 		legendEtaPhi->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPhiName = TString::Format("Figures18_noPU/EtaBin/Eta%iPhi.pdf", e);
+		TString EtaPhiName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iPhi.pdf", e);
 		canvas->Print(EtaPhiName);
 		canvas->Clear();
 		
@@ -800,12 +824,12 @@ void MakePlots18() {
 		if (MC_maxPhiEE > Data_maxPhiEE) EtaPhiEEStack->SetMaximum(MC_maxPhiEE);
 		if (MC_maxPhiEE < Data_maxPhiEE) EtaPhiEEStack->SetMaximum(Data_maxPhiEE);
 		TLegend* legendEtaPhiEE = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaPhiEE->AddEntry(hEtaPhiEEData, "2018", "p");
+		legendEtaPhiEE->AddEntry(hEtaPhiEEData, "2017UL Data", "p");
 		legendEtaPhiEE->AddEntry(hEtaPhiEEMC, "MC LO", "p");
 		legendEtaPhiEE->SetBorderSize(0);
 		legendEtaPhiEE->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPhiEEFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iPhiEE.pdf", e);
+		TString EtaPhiEEFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iPhiEE.pdf", e);
 		canvas->Print(EtaPhiEEFitName);
 		canvas->Clear();
 		
@@ -834,12 +858,12 @@ void MakePlots18() {
 		if (MC_maxEtaEE > Data_maxEtaEE) EtaEtaEEStack->SetMaximum(MC_maxEtaEE);
 		if (MC_maxEtaEE < Data_maxEtaEE) EtaEtaEEStack->SetMaximum(Data_maxEtaEE);
 		TLegend* legendEtaEtaEE = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaEtaEE->AddEntry(hEtaEtaEEData, "2018", "p");
+		legendEtaEtaEE->AddEntry(hEtaEtaEEData, "2017UL Data", "p");
 		legendEtaEtaEE->AddEntry(hEtaEtaEEMC, "MC LO", "p");
 		legendEtaEtaEE->SetBorderSize(0);
 		legendEtaEtaEE->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaEtaEEFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iEtaEE.pdf", e);
+		TString EtaEtaEEFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iEtaEE.pdf", e);
 		canvas->Print(EtaEtaEEFitName);
 		canvas->Clear();
 		
@@ -868,12 +892,12 @@ void MakePlots18() {
 		if (MC_maxDPhi > Data_maxDPhi) EtaDPhiStack->SetMaximum(MC_maxDPhi);
 		if (MC_maxDPhi < Data_maxDPhi) EtaDPhiStack->SetMaximum(Data_maxDPhi);
 		TLegend* legendEtaDPhi = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaDPhi->AddEntry(hEtaDPhiData, "2018", "p");
+		legendEtaDPhi->AddEntry(hEtaDPhiData, "2017UL Data", "p");
 		legendEtaDPhi->AddEntry(hEtaDPhiMC, "MC LO", "p");
 		legendEtaDPhi->SetBorderSize(0);
 		legendEtaDPhi->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaDPhiFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iDPhi.pdf", e);
+		TString EtaDPhiFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iDPhi.pdf", e);
 		canvas->Print(EtaDPhiFitName);
 		canvas->Clear();
 		
@@ -902,12 +926,12 @@ void MakePlots18() {
 		if (MC_maxEn > Data_maxEn) EtaEnStack->SetMaximum(MC_maxEn);
 		if (MC_maxEn < Data_maxEn) EtaEnStack->SetMaximum(Data_maxEn);
 		TLegend* legendEtaEn = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaEn->AddEntry(hEtaEnData, "2018", "p");
+		legendEtaEn->AddEntry(hEtaEnData, "2017UL Data", "p");
 		legendEtaEn->AddEntry(hEtaEnMC, "MC LO", "p");
 		legendEtaEn->SetBorderSize(0);
 		legendEtaEn->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaEnFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iEn.pdf", e);
+		TString EtaEnFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iEn.pdf", e);
 		canvas->Print(EtaEnFitName);
 		canvas->Clear();
 		
@@ -936,18 +960,19 @@ void MakePlots18() {
 		if (MC_maxEnEE > Data_maxEnEE) EtaEnEEStack->SetMaximum(MC_maxEnEE);
 		if (MC_maxEnEE < Data_maxEnEE) EtaEnEEStack->SetMaximum(Data_maxEnEE);
 		TLegend* legendEtaEnEE = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEtaEnEE->AddEntry(hEtaEnEEData, "2018", "p");
+		legendEtaEnEE->AddEntry(hEtaEnEEData, "2017UL Data", "p");
 		legendEtaEnEE->AddEntry(hEtaEnEEMC, "MC LO", "p");
 		legendEtaEnEE->SetBorderSize(0);
 		legendEtaEnEE->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaEnEEFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iEnEE.pdf", e);
+		TString EtaEnEEFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%iEnEE.pdf", e);
 		canvas->Print(EtaEnEEFitName);
 		canvas->Clear();
         
         TString Eta_lsRatioNum = TString::Format("eta%ilsRatio", e);
 		TH1F *hEta_lsRatioData = (TH1F*)fData->Get(Eta_lsRatioNum);
 		TH1F *hEta_lsRatioMC = (TH1F*)fMC->Get(Eta_lsRatioNum);
+//		std::cout << hEta_lsRatioData->Integral();
 		hEta_lsRatioData->SetMarkerStyle(21);
 		hEta_lsRatioData->SetMarkerSize(0.5);
 		hEta_lsRatioData->SetMarkerColor(kRed);
@@ -970,66 +995,134 @@ void MakePlots18() {
 		if (MC_max_lsRatio > Data_max_lsRatio) Eta_lsRatioStack->SetMaximum(MC_max_lsRatio);
 		if (MC_max_lsRatio < Data_max_lsRatio) Eta_lsRatioStack->SetMaximum(Data_max_lsRatio);
 		TLegend* legendEta_lsRatio = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-		legendEta_lsRatio->AddEntry(hEta_lsRatioData, "2018", "p");
+		legendEta_lsRatio->AddEntry(hEta_lsRatioData, "2017UL Data", "p");
 		legendEta_lsRatio->AddEntry(hEta_lsRatioMC, "MC LO", "p");
 		legendEta_lsRatio->SetBorderSize(0);
 		legendEta_lsRatio->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString Eta_lsRatioFitName = TString::Format("Figures18_noPU/EtaBin/Eta%ilsRatio.pdf", e);
+		TString Eta_lsRatioFitName = TString::Format("Figures17UL_29Feb2020/EtaBin/Eta%ilsRatio.pdf", e);
 		canvas->Print(Eta_lsRatioFitName);
 		canvas->Clear();
+		hEtalsRatioDataAll->SetBinContent(e-29, hEta_lsRatioData->GetMean());
+		hEtalsRatioMCAll->SetBinContent(e-29, hEta_lsRatioMC->GetMean());
+		hEtalsRatioDataAll->SetBinError(e-29, hEta_lsRatioData->GetRMS());
+		hEtalsRatioMCAll->SetBinError(e-29, hEta_lsRatioMC->GetRMS());
 	}
 	
+	THStack *EtalsStack = new THStack();
+	EtalsStack->Add(hEtalsRatioDataAll);
+	EtalsStack->Add(hEtalsRatioMCAll);
+	EtalsStack->Draw("nostackP9E1");
+	EtalsStack->GetXaxis()->SetTitle("i#eta");
+	EtalsStack->GetYaxis()->SetTitle("Long/Short Fiber Energy Ratio");
+	EtalsStack->GetYaxis()->SetTitleOffset(1.54);
+	
+	axisEta->Draw();
+	
+	
+	//TLegend* legendEta = new TLegend(0.63,0.65,0.83,0.85,"","NDC");
+    TLegend* legendlsEta = new TLegend(0.63,0.85,0.83,0.45,"","NDC");
+//	legendlsEta->AddEntry(hEtaMCAll, "MC LO", "l");
+	legendlsEta->AddEntry(hEtalsRatioDataAll, "2017UL Data", "ep");
+	legendlsEta->AddEntry(hEtalsRatioMCAll, "2017 UL MC", "ep");
+	legendlsEta->SetBorderSize(0);
+	legendlsEta->Draw();
+	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
+	canvas->Print("Figures17UL_29Feb2020/EtalsRatio.pdf");
+	canvas->Clear();
 	//Run Data
-	/*TH1F *hRunData = new TH1F("hRunData", "", 5, 0, 5);
+	TH1F *hRunData = new TH1F("hRunData", "", 5, 0, 5);
 	TString RunName[5] = {"runB","runC","runD","runE","runF"};
-	TString RunLabel[5] = {"4.8 fb^{-1}","14.6 fb^{-1}","18.9 fb^{-1}","28.3 fb^{-1}","42.0 fb^{-1}"};
+	TString RunLabel[5] = {"4.8 fb^{-1} (end RunB)","14.6 fb^{-1} (end RunC)","18.9 fb^{-1} (end RunD)" ,"28.3 fb^{-1} (end RunE)","41.8 fb^{-1} (end RunF)"}; //https://twiki.cern.ch/twiki/bin/view/CMS/PdmV2017Analysis
 	for(int i = 1; i <= 5; ++i) {
 		TH1F *hRun = (TH1F*)fData->Get(RunName[i-1]);
 		funcGaus->SetRange(hRun->GetMaximumBin()+5,hRun->GetMaximumBin()+35);
 		TFitResultPtr FitResultRunData = hRun->Fit("fitGaus","RS");
 		hRunData->SetBinContent(i, funcGaus->GetParameter(1));
 		hRunData->SetBinError(i, funcGaus->GetParError(1));
-		hRunData->GetXaxis()->SetBinLabel(i,RunLabel[i-1]);		
-		TString EntriesRunData = TString::Format("Entries: %.0f", hRun->GetEntries());
-		TString MeanRunData = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
-		TString SigmaRunData = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
-		TString Chi2RunData = TString::Format("#chi^{2} = %.2f", FitResultRunData->Chi2());
-		TString NDOFRunData = TString::Format("ndf = %.0u",FitResultRunData->Ndf());
-		TLatex TextRunData = TLatex(); 
-		TextRunData.SetTextFont(42);     
-		TextRunData.SetNDC();     
-		TextRunData.SetTextSize(0.02);
-		TextRunData.DrawLatex(0.7,0.86,"#scale[1.4]{"+RunName[i-1]+"}");
-		TextRunData.DrawLatex(0.7,0.82,EntriesRunData);
-		TextRunData.DrawLatex(0.7,0.79,MeanRunData);
-		TextRunData.DrawLatex(0.7,0.76,SigmaRunData);
-		TextRunData.DrawLatex(0.7,0.73,Chi2RunData);
-		TextRunData.DrawLatex(0.7,0.70,NDOFRunData);
-		hRunData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
-		hRunData->GetYaxis()->SetTitle("Events");
-		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString RunFile = "Figures18_noPU/Run/" + RunName[i-1] + ".pdf";
-		canvas->Print(RunFile);
-		canvas->Clear();
-	}
-	gStyle->SetOptStat(0);
-	hRunData->SetMarkerStyle(21);
-	hRunData->SetMarkerSize(0.75);
-	hRunData->SetMarkerColor(kRed);
-	hRunData->SetLineColor(kRed);
-	hRunData->Draw("PE");
-	hRunData->GetXaxis()->SetTitle("Luminosity");
-	hRunData->GetYaxis()->SetTitleOffset(1.54);
-	hRunData->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
-	hRunData->SetMinimum(65);
-	hRunData->SetMaximum(85);
-	TLegend* legendRun = new TLegend(0.7,0.7,0.85,0.85,"","NDC");
-	legendRun->AddEntry(hRunData, "2018", "ep");
-	legendRun->SetBorderSize(0);
-	legendRun->Draw();
-	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/Run.pdf");
-	canvas->Clear();*/
+		hRunData->GetXaxis()->SetBinLabel(i,RunLabel[i-1]);	
+		//hRunData->Draw();
+		}
+		hRunData->GetYaxis()->SetRangeUser(76,78);
+		hRunData->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
+		hRunData->Draw();	
 	
-}
+	    // TString EntriesRunData = TString::Format("Entries: %.0f", hRun->GetEntries());
+// 		TString MeanRunData = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
+// 		TString SigmaRunData = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
+// 		TString Chi2RunData = TString::Format("#chi^{2} = %.2f", FitResultRunData->Chi2());
+// 		TString NDOFRunData = TString::Format("ndf = %.0u",FitResultRunData->Ndf());
+// 		TLatex TextRunData = TLatex(); 
+// 		TextRunData.SetTextFont(42);     
+// 		TextRunData.SetNDC();     
+// 		TextRunData.SetTextSize(0.02);
+// 		TextRunData.DrawLatex(0.7,0.86,"#scale[1.4]{"+RunName[i-1]+"}");
+// 		TextRunData.DrawLatex(0.7,0.82,EntriesRunData);
+// 		TextRunData.DrawLatex(0.7,0.79,MeanRunData);
+// 		TextRunData.DrawLatex(0.7,0.76,SigmaRunData);
+// 		TextRunData.DrawLatex(0.7,0.73,Chi2RunData);
+// 		TextRunData.DrawLatex(0.7,0.70,NDOFRunData);
+// 		hRunData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
+// 		hRunData->GetYaxis()->SetTitle("Events");
+	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
+	TString RunFile = "Figures17UL_29Feb2020/Run/RunData.pdf";
+	canvas->Print(RunFile);
+	canvas->Clear();
+	
+	TH1F *hRun_lsData = new TH1F("hRun_lsData", "", 5, 0, 5);
+	TString Run_lsRatioName[5] = {"runB_lsRatio", "runC_lsRatio", "runD_lsRatio", "runE_lsRatio", "runF_lsRatio"};
+	for(int i = 1; i <= 5; ++i) {
+		TH1F *hRun_ls = (TH1F*)fData->Get(Run_lsRatioName[i-1]);
+		//funcGaus->SetRange(hRun->GetMaximumBin()+5,hRun->GetMaximumBin()+35);
+		//TFitResultPtr FitResultRunData = hRun->Fit("fitGaus","RS");
+		hRun_lsData->SetBinContent(i, hRun_ls->GetMean());
+		hRun_lsData->SetBinError(i, hRun_ls->GetRMS());
+		hRun_lsData->GetXaxis()->SetBinLabel(i,RunLabel[i-1]);
+		//hRun_lsData->Draw();
+			}	
+	hRun_lsData->Draw();
+	hRun_lsData->SetTitle("Mean Long Short Fiber Energy Ratio vs. Delivered Lumi");
+	hRun_lsData->GetYaxis()->SetTitle("Mean Long Short Fiber Energy Ratio");
+	hRun_lsData->GetYaxis()->SetRangeUser(1,8);
+	hRun_lsData->Print("range");
+//4	TString EntriesRun_lsData = TString::Format("Entries: %.0f", hRun_ls->GetEntries());
+//		TString MeanRunData = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
+//		TString SigmaRunData = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
+//		TString NDOFRunData = TString::Format("ndf = %.0u",FitResultRunData->Ndf());
+//	TLatex TextRun_lsData = TLatex(); 
+//	TextRun_lsData.SetTextFont(42);     
+//	TextRun_lsData.SetNDC();     
+//	TextRun_lsData.SetTextSize(0.02);
+//	TextRun_lsData.DrawLatex(0.7,0.86,"#scale[1.4]{"+Run_lsData+"}");
+//	TextRun_lsData.DrawLatex(0.7,0.82,EntriesRun_lsData);
+//		TextRunData.DrawLatex(0.7,0.79,MeanRunData);
+//		TextRunData.DrawLatex(0.7,0.76,SigmaRunData);
+//		TextRunData.DrawLatex(0.7,0.73,Chi2RunData);
+//		TextRunData.DrawLatex(0.7,0.70,NDOFRunData);
+//	hRunData->GetXaxis()->SetTitle("Mean M_{e, hf} (GeV)");
+//	hRunData->GetYaxis()->SetTitle("Mean M_{e, hf} (GeV)"");
+	CMSlabel.DrawLatex(0.1,0.1,"#bf{CMS} #it{Preliminary}");
+	TString Run_lsFile = "Figures17UL_29Feb2020/Run/Run_lsData.pdf";
+	canvas->Print(Run_lsFile);
+	canvas->Clear();
+	}
+	// gStyle->SetOptStat(0);
+// 	hRunData->SetMarkerStyle(21);
+// 	hRunData->SetMarkerSize(0.75);
+// 	hRunData->SetMarkerColor(kRed);
+// 	hRunData->SetLineColor(kRed);
+// 	hRunData->Draw("PE");
+// 	hRunData->GetXaxis()->SetTitle("Luminosity");
+// 	hRunData->GetYaxis()->SetTitleOffset(1.54);
+// 	hRunData->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
+// 	hRunData->SetMinimum(65);
+// 	hRunData->SetMaximum(85);
+// 	TLegend* legendRun = new TLegend(0.7,0.7,0.85,0.85,"","NDC");
+// 	legendRun->AddEntry(hRunData, "2017UL Data", "ep");
+// 	legendRun->SetBorderSize(0);
+// 	legendRun->Draw();
+// 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
+// 	canvas->Print("Figures17UL_29Feb2020/Run.pdf");
+// 	canvas->Clear();*/
+// 	
+// }
