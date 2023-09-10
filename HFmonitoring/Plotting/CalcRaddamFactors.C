@@ -102,14 +102,16 @@ void CalcRaddamFactors() {
     TString EtaMinusNameData = TString::Format( figdir + "EtaMinus%i_data.png", i);
 
     // Loop over 10 factors
-    for (int f = 10; f <= 20; ++f) {
+    // Make this work for n Factors
+    for (int f = 0; f <= 10; ++f) {
       pcanvas->cd(0);
-      TString EtaPlusNum = TString::Format("h_mass_etaPlus%i_x%i", i, f);
+      TString EtaPlusNum = TString::Format("h_mass_etaPlus%i_Xn%i", i, f);
 
       TH1F *hEtaPlusData = (TH1F*)fData->Get(EtaPlusNum);
       if (!hEtaPlusData) {
 	std::cout << "Histogram: " << EtaPlusNum << " not found :(" << std::endl;
-	continue;
+	// continue;
+	return;
       }
 
       if (f == 10) {
@@ -127,7 +129,7 @@ void CalcRaddamFactors() {
       errorsPlus[f-10] = funcGaus->GetParError(1);
       
       mcanvas->cd(0);
-      EtaMinusNum = TString::Format("h_mass_etaMinus%i_x%i", i, f);
+      EtaMinusNum = TString::Format("h_mass_etaMinus%i_Xn%i", i, f);
       TH1F *hEtaMinusData = (TH1F*)fData->Get(EtaMinusNum);
       if (!hEtaMinusData) {
 	std::cout << "Histogram: " << EtaMinusNum << " not found :(" << std::endl;

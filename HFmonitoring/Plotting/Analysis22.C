@@ -132,7 +132,8 @@ void Analysis22::Loop() {
   std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
    
-  TFile* out = TFile::Open( outname.c_str(), "RECREATE");
+  TFile* out;
+  out = TFile::Open( outname.c_str(), "RECREATE");
   
   TH1F* h_mass = new TH1F("h_mass", "", 140, 20, 160);
   beautify(h_mass, "M_{e, hf} (GeV)", "Events / 1 GeV", 2);
@@ -840,12 +841,12 @@ void Analysis22::Loop() {
   double alpha = 1;
   double beta = 1;
 
-  std::stringstream ratio;
-  Long64_t eventsProcessed = 0;
   Long64_t nentries = fChain->GetEntriesFast();
+  Long64_t eventsProcessed = 0;
   Long64_t nbytes = 0, nb = 0;
+  std::stringstream ratio;
 
-  // nentries = 100000;
+  // nentries = 10000;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     eventsProcessed++;
     Long64_t ientry = LoadTree(jentry);
@@ -920,10 +921,12 @@ void Analysis22::Loop() {
     bool iEta41Minus;
     double eta;
 
+    bool anyHF = true;
     int firstIndex = -1;
-    vector<TLorentzVector> hf;
     // Loop over Factors
+    // std::cout << "*** *** *** " << std::endl;
     for (int f = 0; f < factors.size(); ++f) {
+      vector<TLorentzVector> hf;
       // Loop over all HF electrons
       for(int i = 0; i != nhf; ++i) {
 	if ( hf_pt->at(i) < 15.0 ) continue;
@@ -943,9 +946,9 @@ void Analysis22::Loop() {
 	double corrL = L;
 	double corrS = S;
 	if (isData == 1) { // here we apply corrections to DATA
+	  corrL *= factors[f]; // this will be 1.0 if not rederiving
 	  if (useRaddam == 1) { 
 	    corrL = (L*getRaddamCorrection( hf_eta->at(i))); 
-	    corrL = factors[f] * corrL; // this will be 1.0 if not rederiving
 	  }
 	  // only correct L for now, JME takes care of S
 	  // if (useRaddam == 1) { corrS = S/getRaddamCorrection( fabs(hf_eta->at(i))); }
@@ -959,6 +962,9 @@ void Analysis22::Loop() {
 	TLorentzVector e;
 	double newpT = corrpT*(corrL*alpha + corrS*beta)/(corrL + corrS);
 	newpT *= 1.00; // cross check
+	
+	// std::cout << "factor: " << f << std::endl;
+	// std::cout << "newpT: " << newpT << std::endl;
 	e.SetPtEtaPhiM(newpT, hf_eta->at(i), hf_phi->at(i), 0);
 	hf.push_back(e);
 	
@@ -966,14 +972,18 @@ void Analysis22::Loop() {
       } // END loop over HF electrons
 	
       // Require at least 1 HF electron too
-      if ( hf.size() == 0 ) continue;
-	
+      if ( hf.size() == 0 ) {
+	anyHF = false;
+	continue;
+      }
+
       e1 = electrons[0];
       e2 = hf[0]; // just pick the highest pT?
 	
       longFiberEn = hf_ecal->at(firstIndex) + 0.5*hf_hcal->at(firstIndex);
       shortFiberEn = hf_hcal->at(firstIndex)/2;
 
+      // std::cout << "e2 pT: " << e2.Pt() << std::endl;
       Mass = (e1+e2).M();
 	
       // PU corrected mass
@@ -1032,7 +1042,7 @@ void Analysis22::Loop() {
       // Fill the histograms with the altered masses
       // this caused me significant pain to type, please make this better 
       if (numfactors != 0) {
-	if ( iEta30Plus )  h_masses[30][f]->Fill(Mass);
+	if ( iEta30Plus )  h_masses[30][f]->Fill(Mass); // std::cout << "iEta30Plus(f=" << f <<") Mass: " << Mass << std::endl;
 	if ( iEta31Plus )  h_masses[31][f]->Fill(Mass);
 	if ( iEta32Plus )  h_masses[32][f]->Fill(Mass);
 	if ( iEta33Plus )  h_masses[33][f]->Fill(Mass);
@@ -1060,7 +1070,8 @@ void Analysis22::Loop() {
     } // end loop over factors...
 
     // Require at least 1 HF electron
-    if ( hf.size() == 0 ) continue;
+    // if ( hf.size() == 0 ) continue;
+    if (!anyHF) continue;
 
     if ( shortFiberEn>0.0 ) h_lsRatio->Fill(longFiberEn/shortFiberEn);
 
