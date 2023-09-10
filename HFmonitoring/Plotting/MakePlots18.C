@@ -5,9 +5,10 @@
 
 void MakePlots18() {
 	setTDRStyle();
+	TString figdir = "Figures18_test/";
 	TCanvas* canvas = new TCanvas("canvas");
-	TFile *fMC = new TFile("outplots_mc_noPU.root");
-	TFile *fData = new TFile("outplots_data_noPU.root");
+	TFile *fMC = new TFile("outplots/outplots2018_mc_noPU.root");
+	TFile *fData = new TFile("outplots/outplots2018_data_noPU.root");
 	TF1 *funcGaus = new TF1("fitGaus","gaus",0,100);
 	funcGaus->SetLineWidth(2);
 	canvas->SetLogy(0);
@@ -45,7 +46,7 @@ void MakePlots18() {
 	TextMassMC.DrawLatex(0.6,0.77,MeanMassMC);
 	TextMassMC.DrawLatex(0.6,0.73,SigmaMassMC);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_mc.pdf");
+	canvas->Print(figdir + "InvMass_mc.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
 	
@@ -77,7 +78,7 @@ void MakePlots18() {
 	TextMassData.DrawLatex(0.6,0.77,MeanMassData);
 	TextMassData.DrawLatex(0.6,0.73,SigmaMassData);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_data.pdf");
+	canvas->Print(figdir + "InvMass_data.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
     
@@ -109,7 +110,7 @@ void MakePlots18() {
 	TextMassData_iEta33_before.DrawLatex(0.6,0.77,MeanMassData_iEta33_before);
 	TextMassData_iEta33_before.DrawLatex(0.6,0.73,SigmaMassData_iEta33_before);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_data_iEta33_before.pdf");
+	canvas->Print(figdir + "InvMass_data_iEta33_before.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
     
@@ -141,7 +142,7 @@ void MakePlots18() {
 	TextMassData_iEta33_after.DrawLatex(0.6,0.77,MeanMassData_iEta33_after);
 	TextMassData_iEta33_after.DrawLatex(0.6,0.73,SigmaMassData_iEta33_after);
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/InvMass_data_iEta33_after.pdf");
+	canvas->Print(figdir + "InvMass_data_iEta33_after.pdf");
 	canvas->Clear();
 	gStyle->SetPadLeftMargin(0.13);
     
@@ -175,12 +176,12 @@ void MakePlots18() {
     legendLSRAtio->SetBorderSize(0);
     legendLSRAtio->Draw();
     CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-    TString LSRAtioFitName = TString::Format("Figures18_noPU/lsRatio.pdf");
+    TString LSRAtioFitName = TString::Format( "%slsRatio.png", figdir.Data());
     canvas->Print(LSRAtioFitName);
     canvas->Clear();
 	
 	canvas->SetLogy(0);
-	
+	return;
 	//Eta 
 	TH1F *hEtaMCAll = new TH1F("hEtaMCAll", "", 10, 29.5, 39.5);
 	TH1F *hEtaPlusDataAll = new TH1F("hEtaPlusDataAll", "", 10, 29.5, 39.5);
@@ -218,7 +219,7 @@ void MakePlots18() {
 		hEtaPlusMC->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaPlusMC->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPlusNameMC = TString::Format("Figures18_noPU/Eta/EtaPlus%i_mc.pdf", i);
+		TString EtaPlusNameMC = TString::Format(figdir + "Eta/EtaPlus%i_mc.pdf", i);
 		canvas->Print(EtaPlusNameMC);
 		canvas->Clear();
 		
@@ -248,7 +249,7 @@ void MakePlots18() {
 		hEtaPlusData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaPlusData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPlusNameData = TString::Format("Figures18_noPU/Eta/EtaPlus%i_data.pdf", i);
+		TString EtaPlusNameData = TString::Format(figdir + "Eta/EtaPlus%i_data.pdf", i);
 		canvas->Print(EtaPlusNameData);
 		canvas->Clear();
 		
@@ -281,7 +282,7 @@ void MakePlots18() {
 		hEtaMinusMC->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaMinusMC->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaMinusNameMC = TString::Format("Figures18_noPU/Eta/EtaMinus%i_mc.pdf", i);
+		TString EtaMinusNameMC = TString::Format(figdir + "Eta/EtaMinus%i_mc.pdf", i);
 		canvas->Print(EtaMinusNameMC);
 		canvas->Clear();
 		
@@ -311,7 +312,7 @@ void MakePlots18() {
 		hEtaMinusData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hEtaMinusData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaMinusNameData = TString::Format("Figures18_noPU/Eta/EtaMinus%i_data.pdf", i);
+		TString EtaMinusNameData = TString::Format(figdir + "Eta/EtaMinus%i_data.pdf", i);
 		canvas->Print(EtaMinusNameData);
 		canvas->Clear();
 		
@@ -381,7 +382,7 @@ void MakePlots18() {
 	legendEta->SetBorderSize(0);
 	legendEta->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/EtaFit.pdf");
+	canvas->Print(figdir + "EtaFit.pdf");
 	canvas->Clear();
     
     hEtaWidthMCAll->SetLineWidth(2);
@@ -419,7 +420,7 @@ void MakePlots18() {
 	legendEtaWidth->SetBorderSize(0);
 	legendEtaWidth->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/EtaWidthFit.pdf");
+	canvas->Print(figdir + "EtaWidthFit.pdf");
 	canvas->Clear();
 	
 	//Phi 
@@ -454,7 +455,7 @@ void MakePlots18() {
 		hPhiMC->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPhiMC->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PhiNameMC = TString::Format("Figures18_noPU/Phi/Phi%i_mc.pdf", i);
+		TString PhiNameMC = TString::Format(figdir + "Phi/Phi%i_mc.pdf", i);
 		canvas->Print(PhiNameMC);
 		canvas->Clear();
 		
@@ -482,7 +483,7 @@ void MakePlots18() {
 		hPhiData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPhiData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PhiNameData = TString::Format("Figures18_noPU/Phi/Phi%i_data.pdf", i);
+		TString PhiNameData = TString::Format(figdir + "Phi/Phi%i_data.pdf", i);
 		canvas->Print(PhiNameData);
 		canvas->Clear();
 		
@@ -518,20 +519,20 @@ void MakePlots18() {
 	legendPhi->SetBorderSize(0);
 	legendPhi->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/PhiFit.pdf");
+	canvas->Print(figdir + "PhiFit.pdf");
 	canvas->Clear();
 	
 	//PU
 	TH1F *hnVtxMC = (TH1F*)fMC->Get("h_nvtx");
 	hnVtxMC->Draw();
 	hnVtxMC->GetYaxis()->SetRangeUser(0,1.1*hnVtxMC->GetBinContent(hnVtxMC->GetMaximumBin()));
-	canvas->Print("Figures18_noPU/nvtx_mc.pdf");
+	canvas->Print(figdir + "nvtx_mc.pdf");
 	canvas->Clear();
 	
 	TH1F *hnVtxData = (TH1F*)fData->Get("h_nvtx");
 	hnVtxData->Draw();
 	hnVtxData->GetYaxis()->SetRangeUser(0,1.1*hnVtxData->GetBinContent(hnVtxData->GetMaximumBin()));
-	canvas->Print("Figures18_noPU/nvtx_data.pdf");
+	canvas->Print(figdir + "nvtx_data.pdf");
 	canvas->Clear();
 	
 	TF1 *funcLinData = new TF1("fitLinData","pol1",0,54);
@@ -570,7 +571,7 @@ void MakePlots18() {
 		hPUmc->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPUmc->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PUmcName = TString::Format("Figures18_noPU/PU/PU%i_mc.pdf", i);
+		TString PUmcName = TString::Format(figdir + "PU/PU%i_mc.pdf", i);
 		canvas->Print(PUmcName);
 		canvas->Clear();}
 		
@@ -598,7 +599,7 @@ void MakePlots18() {
 		hPUdata->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hPUdata->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString PUdataName = TString::Format("Figures18_noPU/PU/PU%i_data.pdf", i);
+		TString PUdataName = TString::Format(figdir + "PU/PU%i_data.pdf", i);
 		canvas->Print(PUdataName);
 		canvas->Clear();}
 		
@@ -643,7 +644,7 @@ void MakePlots18() {
 	legendPU->SetBorderSize(0);
 	legendPU->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/PUFit.pdf");
+	canvas->Print(figdir + "PUFit.pdf");
 	canvas->Clear();
 	
 	TString EtaRange[12] = {"i#eta30","i#eta31","i#eta32","i#eta33","i#eta34","i#eta35","i#eta36","i#eta37","i#eta38","i#eta39","i#eta40","i#eta41"};
@@ -703,7 +704,7 @@ void MakePlots18() {
         legendEtaPhiFit->SetBorderSize(0);
 		legendEtaPhiFit->Draw();
         CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPhiFitName = TString::Format("Figures18_noPU/EtaPhiFit/Eta%iPhiFit.pdf", e);
+		TString EtaPhiFitName = TString::Format(figdir + "EtaPhiFit/Eta%iPhiFit.pdf", e);
 		canvas->Print(EtaPhiFitName);
 		canvas->Clear();
         
@@ -737,7 +738,7 @@ void MakePlots18() {
 		legendEtaPU->SetBorderSize(0);
 		legendEtaPU->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPUFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iPU.pdf", e);
+		TString EtaPUFitName = TString::Format(figdir + "EtaBin/Eta%iPU.pdf", e);
 		canvas->Print(EtaPUFitName);
 		canvas->Clear();
 		
@@ -771,7 +772,7 @@ void MakePlots18() {
 		legendEtaPhi->SetBorderSize(0);
 		legendEtaPhi->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPhiName = TString::Format("Figures18_noPU/EtaBin/Eta%iPhi.pdf", e);
+		TString EtaPhiName = TString::Format(figdir + "EtaBin/Eta%iPhi.pdf", e);
 		canvas->Print(EtaPhiName);
 		canvas->Clear();
 		
@@ -805,7 +806,7 @@ void MakePlots18() {
 		legendEtaPhiEE->SetBorderSize(0);
 		legendEtaPhiEE->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaPhiEEFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iPhiEE.pdf", e);
+		TString EtaPhiEEFitName = TString::Format(figdir + "EtaBin/Eta%iPhiEE.pdf", e);
 		canvas->Print(EtaPhiEEFitName);
 		canvas->Clear();
 		
@@ -839,7 +840,7 @@ void MakePlots18() {
 		legendEtaEtaEE->SetBorderSize(0);
 		legendEtaEtaEE->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaEtaEEFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iEtaEE.pdf", e);
+		TString EtaEtaEEFitName = TString::Format(figdir + "EtaBin/Eta%iEtaEE.pdf", e);
 		canvas->Print(EtaEtaEEFitName);
 		canvas->Clear();
 		
@@ -873,7 +874,7 @@ void MakePlots18() {
 		legendEtaDPhi->SetBorderSize(0);
 		legendEtaDPhi->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaDPhiFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iDPhi.pdf", e);
+		TString EtaDPhiFitName = TString::Format(figdir + "EtaBin/Eta%iDPhi.pdf", e);
 		canvas->Print(EtaDPhiFitName);
 		canvas->Clear();
 		
@@ -907,7 +908,7 @@ void MakePlots18() {
 		legendEtaEn->SetBorderSize(0);
 		legendEtaEn->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaEnFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iEn.pdf", e);
+		TString EtaEnFitName = TString::Format(figdir + "EtaBin/Eta%iEn.pdf", e);
 		canvas->Print(EtaEnFitName);
 		canvas->Clear();
 		
@@ -941,7 +942,7 @@ void MakePlots18() {
 		legendEtaEnEE->SetBorderSize(0);
 		legendEtaEnEE->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString EtaEnEEFitName = TString::Format("Figures18_noPU/EtaBin/Eta%iEnEE.pdf", e);
+		TString EtaEnEEFitName = TString::Format(figdir + "EtaBin/Eta%iEnEE.pdf", e);
 		canvas->Print(EtaEnEEFitName);
 		canvas->Clear();
         
@@ -975,7 +976,7 @@ void MakePlots18() {
 		legendEta_lsRatio->SetBorderSize(0);
 		legendEta_lsRatio->Draw();
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString Eta_lsRatioFitName = TString::Format("Figures18_noPU/EtaBin/Eta%ilsRatio.pdf", e);
+		TString Eta_lsRatioFitName = TString::Format(figdir + "EtaBin/Eta%ilsRatio.pdf", e);
 		canvas->Print(Eta_lsRatioFitName);
 		canvas->Clear();
 	}
@@ -1009,7 +1010,7 @@ void MakePlots18() {
 		hRunData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 		hRunData->GetYaxis()->SetTitle("Events");
 		CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-		TString RunFile = "Figures18_noPU/Run/" + RunName[i-1] + ".pdf";
+		TString RunFile = figdir + "Run/" + RunName[i-1] + ".pdf";
 		canvas->Print(RunFile);
 		canvas->Clear();
 	}
@@ -1029,7 +1030,7 @@ void MakePlots18() {
 	legendRun->SetBorderSize(0);
 	legendRun->Draw();
 	CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
-	canvas->Print("Figures18_noPU/Run.pdf");
+	canvas->Print(figdir + "Run.pdf");
 	canvas->Clear();*/
 	
 }

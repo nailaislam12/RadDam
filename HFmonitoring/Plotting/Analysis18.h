@@ -19,6 +19,7 @@ class Analysis18 {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
+   Bool_t          isData; // for naming output
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -69,6 +70,8 @@ public :
    // TBranch        *b_mc_phi;   //!
 
    Analysis18(TTree *tree=0);
+   Analysis18( const char* fname);
+   Analysis18( const char* fname, Bool_t dataFlag);
    virtual ~Analysis18();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
@@ -86,15 +89,58 @@ Analysis18::Analysis18(TTree *tree) : fChain(0)
 {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
-   if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/cms/heindl/2018/HF_calibration/output_data.root");
-      if (!f || !f->IsOpen()) {
-         f = new TFile("/cms/heindl/2018/HF_calibration/output_data.root");
-      }
-      f->GetObject("miniTree",tree);
+  if (tree == 0) {
+    // Look locally at first
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/user/j/jnatoli/HFCalib/2022HF/Untuplizer/output_dataBCD_10Dec2022.root");
+    if (!f || !f->IsOpen()) {
+      f = new TFile("/eos/user/j/jnatoli/HFCalib/2022HF/Untuplizer/output_dataBCD_10Dec2022.root");
+    }
+    f->GetObject("miniTree",tree);
+    
+  }
+  Init(tree);
+  // Make sure to change this, if not passing file as string
+  isData = true;
+}
 
-   }
-   Init(tree);
+// New function to take a string with the filename and figure out if it's data
+Analysis18::Analysis18( const char* fname) : fChain(0) 
+{
+  TTree *tree=0;
+  // used to generate this class and read the Tree.
+  TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject( fname);
+  if (!f || !f->IsOpen())
+    f = new TFile( fname);
+
+  if (!f || !f->IsOpen()) {
+    std::cout << ">>> Failed to open file :(" << std::endl;
+    return 1;
+  }
+  f->GetObject("miniTree",tree);
+  Init(tree);
+
+  // Naming help
+  isData = strstr( fname, "data");
+}
+
+// New function to take a string with the filename and explicit data or not
+Analysis18::Analysis18( const char* fname, Bool_t isData) : fChain(0) 
+{
+  TTree *tree=0;
+  // used to generate this class and read the Tree.
+  TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject( fname);
+  if (!f || !f->IsOpen())
+    f = new TFile( fname);
+
+  if (!f || !f->IsOpen()) {
+    std::cout << ">>> Failed to open file :(" << std::endl;
+    return 1;
+  }
+  f->GetObject("miniTree",tree);
+  Init(tree);
+
+  // Naming help
+  this->isData = isData;
 }
 
 Analysis18::~Analysis18()

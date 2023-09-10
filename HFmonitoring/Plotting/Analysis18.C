@@ -37,16 +37,40 @@ float getRaddamCorrection(int run, float eta) {
   return 0;
 }
 
-void Analysis18::Loop()
+std::string getOutName( bool isData, bool usePU, bool useRaddam, std::string tag="") {
+  std::string outdir  = "outplots/";
+  std::string outname = outdir + "outplots2022";
+  if (isData)
+    outname += "_data";
+  else
+    outname += "_mc";
+  
+  if (usePU)
+    outname += "_PU";
+  else
+    outname += "_noPU";
+
+  if (useRaddam)
+    outname += "_RaddCorr";
+
+  if (tag != "")
+    outname = outname + "_" + tag;
+  
+   outname += ".root";
+   return outname;
+}
+
+void Analysis18::Loop() 
 {
    CMSStyle();
    if (fChain == 0) return;
    
-   bool isData = true;
    bool usePU = false;
    bool useRaddam = false;
-
-   TFile* out = TFile::Open("outplots_data_noPU.root", "RECREATE");
+   std::string outname = getOutName( this->isData, usePU, useRaddam, "oldTest");
+   std::cout << ">>> Creating outfile: " << outname << std::endl;
+    
+   TFile* out = TFile::Open( outname.c_str(), "RECREATE");
 
    TH1F* h_mass = new TH1F("h_mass", "", 140, 20, 160);
    beautify(h_mass, "M_{e, hf} (GeV)", "Events / 1 GeV", 2);
@@ -733,15 +757,22 @@ void Analysis18::Loop()
    double alpha = 1;
    double beta = 1;
 
+   std::stringstream ratio;
+   Long64_t eventsProcessed = 0;
    Long64_t nentries = fChain->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
-
+   
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
 
-      if ( jentry%1000 == 0 ) cout << "Processed " << jentry << " events" << endl;
+      // if ( jentry%1000 == 0 ) cout << "Processed " << jentry << " events" << endl;
+      if ((jentry % (nentries / 50)) == 0) {
+	ratio << std::fixed << std::setprecision(2) << 100.0 * (double)jentry / nentries;
+	std::cout << ratio.str() << "%" << std::endl;
+	ratio.str(std::string());
+      }
       
       // PU bins
       bool PU1 = (nvtx <= 6); 
