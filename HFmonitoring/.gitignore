@@ -1,0 +1,7 @@
+*Jobs*
+*.log
+*.root
+*ACLiC*
+*~
+*__pycache__*
+*__init__*
