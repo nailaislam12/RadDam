@@ -69,9 +69,10 @@ void xAna_data(const char** inpaths, int npaths) {
   tree->Branch("mc_eta",     &mc_eta);
   tree->Branch("mc_phi",     &mc_phi);
 
+  Long64_t nev = data.GetEntriesFast();
   for (Long64_t ev = 0; ev < data.GetEntriesFast(); ++ev) {
   //for (Long64_t ev = 0; ev < 100000; ++ev) {
-    data.GetEntry(ev);
+    data.GetEntry(ev);    
 
     bool isMC = false;
     vector<TLorentzVector> genElectrons;
@@ -123,7 +124,11 @@ void xAna_data(const char** inpaths, int npaths) {
     mc_phi.clear();
 
 
-    if ( ev%10000 == 0 ) cout << "Processed " << ev << endl;
+    if ( ev%100000 == 0 ) cout << "Processed: " << ev
+                               << " / " << nev
+                               << " (" << (100.0 * ev / nev)
+                               << "%)"
+                               << endl;
 
     Int_t nHFEle = 0;
     Float_t* hfeleEn = 0;
@@ -171,9 +176,9 @@ void xAna_data(const char** inpaths, int npaths) {
 	else            hf_match.push_back(-1);
       } else {
 	hf_match.push_back(-2);
-      }
+      } // if ( isMC )
       ++nhf;
-    }
+    } // for( nHFEle)
 
     Int_t nEle = 0;
     Float_t*  elePt = 0;
@@ -217,14 +222,61 @@ void xAna_data(const char** inpaths, int npaths) {
       ele_phi.push_back(elePhi[iele]);
       ++nele;
       
+      // Looks like this is where the Cut-Based Electron ID is implemented...
+      // should these be barrel or endcap? 
+      // https://twiki.cern.ch/twiki/bin/view/CMS/EgammaIDRecipesRun3
       double eleECALpt = elePt[iele];
       if (eleECALpt == 0) eleECALpt = 0.0001;
       float relIsoRhoCor  = (elePFChIso[iele] + std::max((float)0.0, elePFNeuIso[iele] + elePFPhoIso[iele] - rho*eleESEffSigmaRR[iele]))/eleECALpt; 
       int isMediumEle = 0;
-      if (eleConvVeto[iele] == 1 && eleMissHits[iele] < 2 && eleEoverPInv[iele] < 0.134 && eleSigmaIEtaIEtaFull5x5[iele] < 0.00998 && eledEtaAtVtx[iele] < 0.00311 && eledPhiAtVtx[iele] < 0.103 && eleHoverE[iele] < 0.253 && relIsoRhoCor < 0.0695 && fabs(eleSCEta[iele]) < 1.479 ) isMediumEle = 1 ;
-      if (eleConvVeto[iele] == 1 && eleMissHits[iele] < 2 && eleEoverPInv[iele] < 0.13 && eleSigmaIEtaIEtaFull5x5[iele] < 0.0298 && eledEtaAtVtx[iele] < 0.00609 && eledPhiAtVtx[iele] < 0.045 && eleHoverE[iele] < 0.0878 && relIsoRhoCor < 0.0821 && fabs(eleSCEta[iele]) > 1.479 ) isMediumEle = 1 ;
+      
+      /* These are the old Run2 Electron ID things
+      if (eleConvVeto[iele] == 1 && // pass conversion veto
+	  eleMissHits[iele] < 2 && // xpected missing inner hits <= 
+	  eleEoverPInv[iele] < 0.134 && // abs( 1/E - 1/p) < 
+	  eleSigmaIEtaIEtaFull5x5[iele] < 0.00998 &&  // full5x5_sigmaIetaIeta
+	  eledEtaAtVtx[iele] < 0.00311 && 
+	  eledPhiAtVtx[iele] < 0.103 && 
+	  eleHoverE[iele] < 0.253 && // H / E < 0.253
+	  relIsoRhoCor < 0.0695 && // RelIsoWithEA < 
+	  fabs(eleSCEta[iele]) < 1.479 ) // AH! this selects BARRELL ELECTRONS
+	isMediumEle = 1 ;
+      if (eleConvVeto[iele] == 1 && 
+	  eleMissHits[iele] < 2 && 
+	  eleEoverPInv[iele] < 0.13 && 
+	  eleSigmaIEtaIEtaFull5x5[iele] < 0.0298 && 
+	  eledEtaAtVtx[iele] < 0.00609 && 
+	  eledPhiAtVtx[iele] < 0.045 && 
+	  eleHoverE[iele] < 0.0878 && 
+	  relIsoRhoCor < 0.0821 && 
+	  fabs(eleSCEta[iele]) > 1.479 ) // and this selects ENDCAP ELECTRONS
+	isMediumEle = 1 ;
       ele_mediumID.push_back(isMediumEle);
-    }
+      */
+
+      if (eleConvVeto[iele] == 1 && // pass conversion veto
+	  eleMissHits[iele] < 2 && // xpected missing inner hits <= 
+	  eleEoverPInv[iele] < 0.134 && // abs( 1/E - 1/p) < 
+	  eleSigmaIEtaIEtaFull5x5[iele] < 0.00998 &&  // full5x5_sigmaIetaIeta
+	  eledEtaAtVtx[iele] < 0.00311 && 
+	  eledPhiAtVtx[iele] < 0.103 && 
+	  eleHoverE[iele] < 0.253 && // H / E < 0.253
+	  relIsoRhoCor < 0.0695 && // RelIsoWithEA < 
+	  fabs(eleSCEta[iele]) < 1.479 ) // AH! this selects BARRELL ELECTRONS
+	isMediumEle = 1 ;
+      if (eleConvVeto[iele] == 1 && 
+	  eleMissHits[iele] < 2 && 
+	  eleEoverPInv[iele] < 0.13 && 
+	  eleSigmaIEtaIEtaFull5x5[iele] < 0.0298 && 
+	  eledEtaAtVtx[iele] < 0.00609 && 
+	  eledPhiAtVtx[iele] < 0.045 && 
+	  eleHoverE[iele] < 0.0878 && 
+	  relIsoRhoCor < 0.0821 && 
+	  fabs(eleSCEta[iele]) > 1.479 ) // and this selects ENDCAP ELECTRONS
+	isMediumEle = 1 ;
+      ele_mediumID.push_back(isMediumEle);
+
+    } // for (int iele...
 
     
     // Selection criteria, either two electrons with pT 10 GeV in EB/EE
@@ -240,10 +292,11 @@ void xAna_data(const char** inpaths, int npaths) {
     run = data.GetInt("run");
     event = data.GetLong64("event");
     lumis = data.GetInt("lumis");
-    //cout << "topick " << run << ":" << lumis << ":" << event << endl;
+    // std::cout << "topick " << run << ":" << lumis << ":" << event << std::endl;
     
 
     tree->Fill();
-  }
+  } // End Event Loop
   tree->Write();
 }
+

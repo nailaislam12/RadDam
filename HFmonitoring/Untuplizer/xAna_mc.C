@@ -63,6 +63,7 @@ void xAna_mc(const char** inpaths, int npaths) {
   // tree->Branch("mc_eta",     &mc_eta);
   // tree->Branch("mc_phi",     &mc_phi);
 
+  Long64_t nev = data.GetEntriesFast()
   for (Long64_t ev = 0; ev < data.GetEntriesFast(); ++ev) {
   //for (Long64_t ev = 0; ev < 600000; ++ev) {
     data.GetEntry(ev);
@@ -121,7 +122,11 @@ void xAna_mc(const char** inpaths, int npaths) {
     hf_hcal.clear();
     // hf_match.clear();
 
-    if ( ev%1000 == 0 ) cout << "Processed " << ev << endl;
+    if ( ev%100000 == 0 ) cout << "Processed: " << ev
+                               << " / " << nev
+                               << " (" << (100.0 * ev / nev)
+                               << "%)"
+                               << endl;
 
     Int_t nHFEle = 0;
     Float_t* hfeleEn = 0;

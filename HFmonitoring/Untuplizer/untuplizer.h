@@ -46,6 +46,9 @@
 #ifndef UNTUPLIZER_H
 #define UNTUPLIZER_H
 
+// added
+#include <iostream>
+
 #include <map>
 #include <string>
 #include <vector>
@@ -416,7 +419,7 @@ void* TreeReader::GetPtr(const char* branch_name, ETypes cktype, Int_t* nsize)
 
    if (got != fLeafIdx.end())
       i = got->second;
-   else {
+   else { // if we *didn't* find it
       // this code is executed once per branch and per root file
       FindLeaf(branch_name);
       i = fLeafType.size() - 1;
