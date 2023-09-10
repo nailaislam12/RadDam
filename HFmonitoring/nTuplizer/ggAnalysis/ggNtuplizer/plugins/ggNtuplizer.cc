@@ -8,7 +8,7 @@ void setbit(UShort_t& x, UShort_t bit) {
   x |= (a << bit);
 }
 
-ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
+ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : esGetTokens_{consumesCollector()}, noZSesGetTokens_{consumesCollector()} {
 
   vtxLabel_                  = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxLabel"));
   rhoLabel_                  = consumes<double>                        (ps.getParameter<InputTag>("rhoLabel"));

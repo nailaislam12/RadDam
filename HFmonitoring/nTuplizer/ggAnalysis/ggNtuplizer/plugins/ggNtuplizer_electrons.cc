@@ -3,7 +3,8 @@
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+// #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "CommonTools/Egamma/interface/ConversionTools.h"
 //#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
@@ -157,8 +158,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<reco::VertexCollection> recVtxs;
   e.getByToken(vtxLabel_, recVtxs);
 
-  EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
-  noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
+  EcalClusterLazyTools       lazyTool    (e, esGetTokens_.get( es), ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
+  noZS::EcalClusterLazyTools lazyToolnoZS(e, esGetTokens_.get( es), ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
+  // EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
+  // noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
 
   for (edm::View<pat::Electron>::const_iterator iEle = electronHandle->begin(); iEle != electronHandle->end(); ++iEle) {
 

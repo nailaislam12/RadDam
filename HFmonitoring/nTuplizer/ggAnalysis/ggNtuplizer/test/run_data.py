@@ -1,21 +1,28 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process('ggKit')
+# For Run3, need to do this now!
+# https://bytemeta.vip/repo/cms-sw/cmssw/issues/36944
+from Configuration.Eras.Era_Run3_cff import Run3
+process = cms.Process('ggKit', Run3)
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff" )
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
-from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Sep2018Rereco_v1')
-process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Prompt_v11')
+process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, '124X_dataRun3_Prompt_v10')
+
+# process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Sep2018Rereco_v1')
+# process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Prompt_v11')
+# process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Prompt_v14'
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/252/00000/40343760-464B-E811-ACC9-02163E00B0CB.root'))
+process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/Run2022B/EGamma/MINIAOD/10Dec2022-v1/2820000/00ca2351-c1c1-4066-b088-0079e861b29a.root'))
 
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load("PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )

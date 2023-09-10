@@ -16,6 +16,7 @@
 #include "DataFormats/RecoCandidate/interface/RecoEcalCandidate.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 
 using namespace std;
 
@@ -56,6 +57,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<EcalRecHitCollection>           esReducedRecHitCollection_; 
   edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK4Label_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
+
+  EcalClusterLazyTools::ESGetTokens esGetTokens_;
+  noZS::EcalClusterLazyTools::ESGetTokens noZSesGetTokens_;
 
   TTree   *tree_;
   TH1F    *hEvents_;
