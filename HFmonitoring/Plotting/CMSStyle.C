@@ -7,8 +7,9 @@
 //#include <iostream>
 //using namespace std;
 #include "TStyle.h"
-#ifndef def_cmsstyle
-#define def_cmsstyle
+// Be careful if you already have a CMSStyle defined somewhere!!
+#ifndef def_mycmsstyle
+#define def_mycmsstyle
 
 void CMSStyle(){
   // use the 'plain' style for plots (white backgrounds, etc)
