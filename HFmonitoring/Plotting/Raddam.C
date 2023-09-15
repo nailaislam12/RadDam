@@ -1,5 +1,33 @@
+
+// Raddam Corrections for 2022 Data
+// stored as ieta -> (MC/Data Ratio * Factor)
+std::map<Float_t, Float_t> RaddamCorrections = {
+   {-39, 1.14271 * 1.71669}, 
+   {-38, 1.24669 * 1.68432},
+   {-37, 1.27372 * 1.65264},
+   {-36, 1.26973 * 1.63271},
+   {-35, 1.24090 * 1.56379},
+   {-34, 1.21110 * 1.48763},
+   {-33, 1.14734 * 1.33569},
+   {-32, 1.11192 * 1.25007},
+   {-31, 1.12210 * 1.27323},
+   {-30, 1.16172 * 1.35884},
+   { 30, 1.17326 * 1.38482},
+   { 31, 1.12241 * 1.27213},
+   { 32, 1.12604 * 1.28491},
+   { 33, 1.16191 * 1.36895},
+   { 34, 1.20773 * 1.48051},
+   { 35, 1.24580 * 1.57623},
+   { 36, 1.25006 * 1.58999},
+   { 37, 1.26339 * 1.64321},
+   { 38, 1.22343 * 1.51837},
+   { 39, 1.15942 * 1.28301}
+};
+
 // Should I make these arrays instead?
 // that's a little more dangerous, in case we try to access outside the range
+// CORRECTIONS: the floating parameter which brings the data to MC
+// the XINT from the CalcRaddamFactors.C
 std::vector<Float_t> EtaMinus_RaddamCorrections = {
   1.12056,
   1.12285,
@@ -13,6 +41,7 @@ std::vector<Float_t> EtaMinus_RaddamCorrections = {
   1.09554
 };
 
+// FACTORS: the mc/data ratio which is multiplied by the corrections
 std::vector<Float_t> EtaMinus_RaddamFactors = {
   1.44244,
   1.47573,

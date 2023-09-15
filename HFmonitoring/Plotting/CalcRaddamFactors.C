@@ -77,6 +77,17 @@ void CalcRaddamFactors() {
   for (int i = 10; i <= 20; ++i)
     factors[i-10] = i / 10.0;
 
+  // Get the MC / Data ratio
+  std::map< int, double> RaddamRatios;
+  TH1F* pRatio = new TH1F("pRatio", "", 10, 29.5, 39.5);
+  TH1F* mRatio = new TH1F("mRatio", "", 10, 29.5, 39.5);
+  // Double_t ietas[10] = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
+  // Double_t xErrors[10] = {0};
+  // Double_t pRatio[10] = {0};
+  // Double_t mRatio[10] = {0};
+  // Double_t pRatioErrors[10] = {0};
+  // Double_t mRatioErrors[10] = {0};
+
   // canvas->cd();
   // Loop over Etas
   for (int i = 30; i <= 39; ++i) { 
@@ -84,14 +95,12 @@ void CalcRaddamFactors() {
     // First MC PLUS
     TString EtaPlusNum = TString::Format("etaPlus%i", i);
     TH1F *hEtaPlusMC = (TH1F*)fMC->Get(EtaPlusNum);
-
     funcGaus->SetRange(hEtaPlusMC->GetMaximumBin()+5,hEtaPlusMC->GetMaximumBin()+35);
     TFitResultPtr FitResultEtaPlusMC = hEtaPlusMC->Fit("fitGaus","QRS");
     double mcMeanPlus = funcGaus->GetParameter(1);
     
     // Now MC MINUS
     TString EtaMinusNum = TString::Format("etaMinus%i", i);
-
     TH1F *hEtaMinusMC = (TH1F*)fMC->Get(EtaMinusNum);
     funcGaus->SetRange(hEtaMinusMC->GetMaximumBin()+5,hEtaMinusMC->GetMaximumBin()+35);
     TFitResultPtr FitResultEtaMinusMC = hEtaMinusMC->Fit("fitGaus","QRS");
@@ -102,7 +111,6 @@ void CalcRaddamFactors() {
     TString EtaMinusNameData = TString::Format( figdir + "EtaMinus%i_data.png", i);
 
     // Loop over 10 factors
-    // Make this work for n Factors
     for (int f = 0; f <= 10; ++f) {
       pcanvas->cd(0);
       TString EtaPlusNum = TString::Format("h_mass_etaPlus%i_Xn%i", i, f);
@@ -114,7 +122,7 @@ void CalcRaddamFactors() {
 	return;
       }
 
-      if (f == 10) {
+      if (f == 0) {
 	hEtaPlusData->Draw( "PLC");
 	hEtaPlusData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 	hEtaPlusData->GetYaxis()->SetTitle("Events");
@@ -125,8 +133,8 @@ void CalcRaddamFactors() {
       
       funcGaus->SetRange(hEtaPlusData->GetMaximumBin()+5,hEtaPlusData->GetMaximumBin()+35);
       TFitResultPtr FitResultEtaPlusData = hEtaPlusData->Fit("fitGaus","QRS");
-      meansPlus[f-10] = funcGaus->GetParameter(1);
-      errorsPlus[f-10] = funcGaus->GetParError(1);
+      meansPlus[f] = funcGaus->GetParameter(1);
+      errorsPlus[f] = funcGaus->GetParError(1);
       
       mcanvas->cd(0);
       EtaMinusNum = TString::Format("h_mass_etaMinus%i_Xn%i", i, f);
@@ -136,7 +144,7 @@ void CalcRaddamFactors() {
 	continue;
       }
       
-      if (f == 10) {
+      if (f == 0) {
 	hEtaMinusData->Draw( "PLC"); 
 	hEtaMinusData->GetXaxis()->SetTitle("M_{e, hf} (GeV)");
 	hEtaMinusData->GetYaxis()->SetTitle("Events");
@@ -147,8 +155,8 @@ void CalcRaddamFactors() {
 
       funcGaus->SetRange(hEtaMinusData->GetMaximumBin()+5,hEtaMinusData->GetMaximumBin()+35);
       TFitResultPtr FitResultEtaMinusData = hEtaMinusData->Fit("fitGaus","QRS");
-      meansMinus[f-10] = funcGaus->GetParameter(1);
-      errorsMinus[f-10] = funcGaus->GetParError(1);
+      meansMinus[f] = funcGaus->GetParameter(1);
+      errorsMinus[f] = funcGaus->GetParError(1);
 		
     } // end factors loop
 
@@ -159,6 +167,14 @@ void CalcRaddamFactors() {
     mcanvas->cd(0);
     mcanvas->Print(EtaMinusNameData);
     mcanvas->Clear();
+
+    // Get the nominal means
+    RaddamRatios[ i] = mcMeanPlus / meansPlus[0];
+    RaddamRatios[-i] = mcMeanMinus / meansMinus[0];
+    pRatio->SetBinContent( i - 30, RaddamRatios[ i]);
+    mRatio->SetBinContent( i - 30, RaddamRatios[-i]);
+    pRatio->SetBinError( i - 30, errorsPlus[0]);
+    mRatio->SetBinError( i - 30, errorsMinus[0]);
 
     // Plot the factors
     gStyle->SetOptFit(0);
@@ -189,7 +205,7 @@ void CalcRaddamFactors() {
 
     // Now get the point of intersection
     RaddamFactors[i] = FindIntercept( mcMeanPlusLine, factorFitPlus);
-    std::cout << ">>> XINT: " << RaddamFactors[i] << std::endl;
+    std::cout << ">>> XINT (+): " << RaddamFactors[i] << std::endl;
     gcanvas->Print( TString::Format( figdir + "EtaPlus%i_factorgraph.png", i));
     gcanvas->Clear();
 
@@ -214,16 +230,38 @@ void CalcRaddamFactors() {
 
     // Now get the point of intersection
     RaddamFactors[-i] = FindIntercept( mcMeanMinusLine, factorFitMinus);
-    std::cout << ">>> XINT: " << RaddamFactors[-i] << std::endl;
+    std::cout << ">>> XINT (-): " << RaddamFactors[-i] << std::endl;
 
     gcanvas->Print( TString::Format( figdir + "EtaMinus%i_factorgraph.png", i));
     
   } // end Eta loop
 
-  // Now print (or save some fun way) the Raddam Factors
+  // Plot the nominal ratios
+  /*
+  TCanvas* r = new TCanvas("ratio", "", 700, 900);
+  pRatio->SetMarkerColor(kRed);
+  pRatio->Draw();
+  mRatio->SetMarkerColor(kBlue);
+  mRatio->Draw("same");
+  auto legRatio = new TLegend( 0.2, 0.2, 0.5, 0.4);
+  legRatio->AddEntry( pRatio, "HF+ Ratio");
+  legRatio->AddEntry( mRatio, "HF- Ratio");
+  legRatio->Draw();
+  r->Print( TString(figdir + "MCData_ratio.png"));
+  r->SaveAs( TString(figdir + "MCData_ratio.C"));
+  */
+
+  // Now print (or save some fun way) the Raddam Factors (alpha)
   std::cout << "\n" << std::endl;
-  std::cout << "*** Raddam Factors for iEtas *** " << std::endl;
+  std::cout << "*** RADDAM FACTORS for iEtas *** " << std::endl;
   for (auto ele : RaddamFactors) {
+    std::cout << "iEta " << setw(3) << ele.first << ": " << ele.second << std::endl;
+  }
+
+  // Now print (or save some fun way) the Raddam Ratios (mc/data)
+  std::cout << "\n" << std::endl;
+  std::cout << "*** RADDAM RATIOS for iEtas *** " << std::endl;
+  for (auto ele : RaddamRatios) {
     std::cout << "iEta " << setw(3) << ele.first << ": " << ele.second << std::endl;
   }
 

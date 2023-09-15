@@ -35,28 +35,30 @@ int getEtaIndex(float eta) {
   return -1;
 }
 
-// This is so ugly
+// This is now a little less ugly
+// Corrections only derived for iEta 30 to 39
 float getRaddamCorrection( float eta) {
-  // Corrections only derived for iEta 30 to 39
+
+  // Eta Minus
   // if ((eta < -2.964) && (eta > -3.139))
   if ((eta < -2.850) && (eta > -3.139))
-    return EtaMinus_RaddamFactors[8] * EtaMinus_RaddamCorrections[0];
-  else if ((eta < -3.139) && (eta > -3.314)) // 31
-    return EtaMinus_RaddamFactors[7] * EtaMinus_RaddamCorrections[1];
+    return RaddamCorrections[-30];
+  else if ((eta < -3.139) && (eta > -3.314)) 
+    return RaddamCorrections[-31];
   else if ((eta < -3.314) && (eta > -3.489))
-    return EtaMinus_RaddamFactors[6] * EtaMinus_RaddamCorrections[2];
+    return RaddamCorrections[-32];
   else if ((eta < -3.489) && (eta > -3.664))
-    return EtaMinus_RaddamFactors[5] * EtaMinus_RaddamCorrections[3];
+    return RaddamCorrections[-33];
   else if ((eta < -3.664) && (eta > -3.839))
-    return EtaMinus_RaddamFactors[4] * EtaMinus_RaddamCorrections[4];
+    return RaddamCorrections[-34];
   else if ((eta < -3.839) && (eta > -4.013)) // 35
-    return EtaMinus_RaddamFactors[3] * EtaMinus_RaddamCorrections[5];
+    return RaddamCorrections[-35];
   else if ((eta < -4.013) && (eta > -4.191))
-    return EtaMinus_RaddamFactors[2] * EtaMinus_RaddamCorrections[6];
+    return RaddamCorrections[-36];
   else if ((eta < -4.191) && (eta > -4.363))
-    return EtaMinus_RaddamFactors[1] * EtaMinus_RaddamCorrections[7];
+    return RaddamCorrections[-37];
   else if ((eta < -4.363) && (eta > -4.538))
-    return EtaMinus_RaddamFactors[0] * EtaMinus_RaddamCorrections[8];
+    return RaddamCorrections[-38];
   else if ((eta < -4.538) && (eta > -4.716)) // 39
     return 1;
   else if ((eta < -4.716) && (eta > -4.889)) // 40
@@ -64,32 +66,33 @@ float getRaddamCorrection( float eta) {
   else if ((eta < -4.889) && (eta > -5.191)) // 41
     return 1;
 
+  // Eta Plus
   // if ((eta > 2.964) && (eta < 3.139)) 
   if ((eta > 2.850) && (eta < 3.139))
-    return EtaPlus_RaddamFactors[0] * EtaPlus_RaddamCorrections[0];
-  else if ((eta > 3.139) && (eta < 3.314)) // 31
-    return EtaPlus_RaddamFactors[1] * EtaPlus_RaddamCorrections[1];
+    return RaddamCorrections[30];
+  else if ((eta > 3.139) && (eta < 3.314)) 
+    return RaddamCorrections[31];
   else if ((eta > 3.314) && (eta < 3.489))
-    return EtaPlus_RaddamFactors[2] * EtaPlus_RaddamCorrections[2];
+    return RaddamCorrections[32];
   else if ((eta > 3.489) && (eta < 3.664))
-    return EtaPlus_RaddamFactors[3] * EtaPlus_RaddamCorrections[3];
+    return RaddamCorrections[33];
   else if ((eta > 3.664) && (eta < 3.839))
-    return EtaPlus_RaddamFactors[4] * EtaPlus_RaddamCorrections[4];
+    return RaddamCorrections[34];
   else if ((eta > 3.839) && (eta < 4.013)) // 35
-    return EtaPlus_RaddamFactors[5] * EtaPlus_RaddamCorrections[5];
+    return RaddamCorrections[35];
   else if ((eta > 4.013) && (eta < 4.191))
-    return EtaPlus_RaddamFactors[6] * EtaPlus_RaddamCorrections[6];
+    return RaddamCorrections[36];
   else if ((eta > 4.191) && (eta < 4.363))
-    return EtaPlus_RaddamFactors[7] * EtaPlus_RaddamCorrections[7];
+    return RaddamCorrections[37];
   else if ((eta > 4.363) && (eta < 4.538))
-    return EtaPlus_RaddamFactors[8] * EtaPlus_RaddamCorrections[8];
+    return RaddamCorrections[38];
   else if ((eta > 4.538) && (eta < 4.716)) // 39
     return 1;
   else if ((eta > 4.716) && (eta < 4.889)) // 40
     return 1;
   else if ((eta > 4.889) && (eta < 5.191)) // 41
     return 1;
-  
+
   std::cout << "** Danger, Will Robinson" << std::endl;
   return 1;
 }
@@ -126,8 +129,8 @@ void Analysis22::Loop() {
   
   // Always use PU, dummy
   bool usePU = false;
-  bool useRaddam = false;
-  int numfactors = 11; // Number of factors to check, set to zero if NO rederiving factors
+  bool useRaddam = true;
+  int numfactors = 0; // Number of factors to check, set to zero if NO rederiving factors
   float finterval = 0.1; // spacing between factors
   std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
