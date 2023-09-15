@@ -11,7 +11,7 @@ void drawFactors( TH1F* hp, TH1F* hm) {
   hp->Draw("HIST P");
   hp->GetXaxis()->SetTitle("i#eta");
   hp->GetYaxis()->SetTitle("Raddam Correction");
-  hp->GetYaxis()->SetTitleOffset(1.54);
+  hp->GetYaxis()->SetTitleOffset(1.24);
   
   hm->SetMarkerStyle(20);
   hm->SetMarkerSize(1);
@@ -19,6 +19,7 @@ void drawFactors( TH1F* hp, TH1F* hm) {
   hm->SetLineColor(kBlue);
   hm->Draw("SAME HIST P");
 
+  TF1 *fEta = new TF1("fEta","x",2.964,4.714);
   TGaxis *axisEta = new TGaxis(29.5,100,39.5,100,"fEta",510,"-");
   axisEta->SetLabelFont(42);
   axisEta->SetLabelSize(0.035);
