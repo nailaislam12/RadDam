@@ -48,7 +48,7 @@ void CalcRaddamFactors() {
   TCanvas* gcanvas = new TCanvas("canvasGraph");
 
   TFile *fMC = new TFile("outplots/outplots2022_mc_noPU.root");
-  TFile *fData = new TFile("outplots/outplots2022_data_noPU_radFactors.root");
+  TFile *fData = new TFile("outplots/outplots2022_data_noPU_radFactors_test.root");
   TF1 *funcGaus = new TF1("fitGaus","gaus",0,100);
   funcGaus->SetLineWidth(2);
   TLatex CMSlabel = TLatex(); 
@@ -181,6 +181,8 @@ void CalcRaddamFactors() {
     gcanvas->cd();
     auto graphPlus = new TGraphErrors( 11, factors, meansPlus, ferrors, errorsPlus);
     graphPlus->SetTitle(TString::Format("Factor vs Z Peak EtaPlus%i", i));
+    graphPlus->GetXaxis()->SetTitle("#alpha Factor");
+    graphPlus->GetYaxis()->SetTitle("M_{e, hf} (GeV)");
     graphPlus->SetLineColor( kBlue);
     graphPlus->SetLineWidth( 2);
     graphPlus->Draw();
@@ -212,6 +214,8 @@ void CalcRaddamFactors() {
     // Now EtaMinus
     auto graphMinus = new TGraphErrors( 11, factors, meansMinus, ferrors, errorsMinus);
     graphMinus->SetTitle(TString::Format("Factor vs Z Peak EtaMinus%i", i));
+    graphMinus->GetXaxis()->SetTitle("#alpha Factor");
+    graphMinus->GetYaxis()->SetTitle("M_{e, hf} (GeV)");
     graphMinus->SetLineColor( kBlue);
     graphMinus->SetLineWidth( 2);
     graphMinus->Draw();
