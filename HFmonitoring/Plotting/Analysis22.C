@@ -35,6 +35,68 @@ int getEtaIndex(float eta) {
   return -1;
 }
 
+// Now this is so ugly
+float getRaddamRatio( float eta) {
+
+  // Eta Minus
+  // if ((eta < -2.964) && (eta > -3.139))
+  if ((eta < -2.850) && (eta > -3.139))
+    return RaddamRatios[-30];
+  else if ((eta < -3.139) && (eta > -3.314)) 
+    return RaddamRatios[-31];
+  else if ((eta < -3.314) && (eta > -3.489))
+    return RaddamRatios[-32];
+  else if ((eta < -3.489) && (eta > -3.664))
+    return RaddamRatios[-33];
+  else if ((eta < -3.664) && (eta > -3.839))
+    return RaddamRatios[-34];
+  else if ((eta < -3.839) && (eta > -4.013)) // 35
+    return RaddamRatios[-35];
+  else if ((eta < -4.013) && (eta > -4.191))
+    return RaddamRatios[-36];
+  else if ((eta < -4.191) && (eta > -4.363))
+    return RaddamRatios[-37];
+  else if ((eta < -4.363) && (eta > -4.538))
+    return RaddamRatios[-38];
+  else if ((eta < -4.538) && (eta > -4.716)) // 39
+    return RaddamRatios[-39];
+  else if ((eta < -4.716) && (eta > -4.889)) // 40
+    return RaddamRatios[-40];
+  else if ((eta < -4.889) && (eta > -5.191)) // 41
+    return RaddamRatios[-41];
+
+  // Eta Plus
+  // if ((eta > 2.964) && (eta < 3.139)) 
+  if ((eta > 2.850) && (eta < 3.139))
+    return RaddamRatios[30];
+  else if ((eta > 3.139) && (eta < 3.314)) 
+    return RaddamRatios[31];
+  else if ((eta > 3.314) && (eta < 3.489))
+    return RaddamRatios[32];
+  else if ((eta > 3.489) && (eta < 3.664))
+    return RaddamRatios[33];
+  else if ((eta > 3.664) && (eta < 3.839))
+    return RaddamRatios[34];
+  else if ((eta > 3.839) && (eta < 4.013)) // 35
+    return RaddamRatios[35];
+  else if ((eta > 4.013) && (eta < 4.191))
+    return RaddamRatios[36];
+  else if ((eta > 4.191) && (eta < 4.363))
+    return RaddamRatios[37];
+  else if ((eta > 4.363) && (eta < 4.538))
+    return RaddamRatios[38];
+  else if ((eta > 4.538) && (eta < 4.716)) // 39
+    return RaddamRatios[39];
+  else if ((eta > 4.716) && (eta < 4.889)) // 40
+    return RaddamRatios[40];
+  else if ((eta > 4.889) && (eta < 5.191)) // 41
+    return RaddamRatios[41];
+
+  std::cout << "** Danger, Will Robinson" << std::endl;
+  return 1;
+}
+
+
 // This is now a little less ugly
 // Corrections only derived for iEta 30 to 39
 float getRaddamCorrection( float eta) {
@@ -129,10 +191,10 @@ void Analysis22::Loop() {
   
   // Always use PU, dummy
   bool usePU = false;
-  bool useRaddam = true;
-  int numfactors = 0; // Number of factors to check, set to zero if NO rederiving factors
+  bool useRaddam = false;
+  int numfactors = 11; // Number of factors to check, set to zero if NO rederiving factors
   float finterval = 0.1; // spacing between factors
-  std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "");
+  std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "test");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
    
   TFile* out;
@@ -949,7 +1011,7 @@ void Analysis22::Loop() {
 	double corrL = L;
 	double corrS = S;
 	if (isData == 1) { // here we apply corrections to DATA
-	  corrL *= factors[f]; // this will be 1.0 if not rederiving
+	  corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving
 	  if (useRaddam == 1) { 
 	    corrL = (L*getRaddamCorrection( hf_eta->at(i))); 
 	  }
