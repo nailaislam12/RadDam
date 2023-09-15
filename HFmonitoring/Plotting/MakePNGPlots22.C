@@ -1,4 +1,4 @@
-#include <sys/stat.h>
+#include <cmsys/stat.h>
 #include <unistd.h>
 #include <boost/algorithm/string.hpp>
 #include "setTDRStyle.C"
@@ -270,11 +270,11 @@ void MakePNGPlots22() {
     hEtaPlusDataAll->SetBinError(i-29, dataPlusErr);
     hEtaMinusDataAll->SetBinContent(i-29, dataMinus);
     hEtaMinusDataAll->SetBinError(i-29, dataMinusErr);
-        
+    
     hEtaWidthMCAll->SetBinContent(i-29, (mcWidthPlus+mcWidthMinus)*0.5);
     hEtaWidthDataAll->SetBinContent(i-29, (dataWidthPlus+dataWidthMinus)*0.5);
     hEtaWidthDataAll->SetBinError(i-29, (dataWidthPlusErr+dataWidthMinusErr)*0.5);
-		
+    
     canvas->SetLogy(0);
   } // end eta loop
   // std::cout << "EXITING" << std::endl;
@@ -335,8 +335,49 @@ void MakePNGPlots22() {
   canvas->Print( figdir + "EtaFit.png");
   canvas->SaveAs( figdir + "EtaFit.C");
   canvas->Clear();
-  // return;
-    
+
+  // Ratio EtaFit
+  TH1F* hEtaPRatio = (TH1F*)hEtaMCAll->Clone("pratio");
+  hEtaPRatio->SetMarkerStyle(20);
+  hEtaPRatio->SetMarkerSize(1);
+  hEtaPRatio->SetMarkerColor(kRed);
+  hEtaPRatio->SetLineColor(kRed);
+  hEtaPRatio->Divide( hEtaPlusDataAll);
+  hEtaPRatio->SetStats(0);
+  hEtaPRatio->Draw("P9E1");
+  hEtaPRatio->GetXaxis()->SetTitle("i#eta");
+  hEtaPRatio->GetYaxis()->SetTitle("MC / Data");
+  hEtaPRatio->GetYaxis()->SetTitleOffset(1.54);
+  
+  TH1F* hEtaMRatio = (TH1F*)hEtaMCAll->Clone("mratio");
+  hEtaMRatio->SetMarkerStyle(20);
+  hEtaMRatio->SetMarkerSize(1);
+  hEtaMRatio->SetMarkerColor(kBlue);
+  hEtaMRatio->SetLineColor(kBlue);
+  hEtaMRatio->Divide( hEtaMinusDataAll);
+  hEtaMRatio->Draw("SAME P9E1");
+
+  TGaxis *axisEtaRatio = new TGaxis(29.5,100,39.5,100,"fEta",510,"-");
+  axisEtaRatio->SetLabelFont(42);
+  axisEtaRatio->SetLabelSize(0.035);
+  axisEtaRatio->SetTitleSize(0.05);
+  axisEtaRatio->SetLabelOffset(0.0025);
+  axisEtaRatio->SetTitle("|#eta|");
+  axisEtaRatio->Draw();
+  hEtaPRatio->SetMinimum(0);
+  hEtaPRatio->SetMaximum(1.6);
+  TLegend* legendEtaRatio = new TLegend(0.2,0.2,0.5,0.3,"","NDC");
+  legendEtaRatio->AddEntry(hEtaPRatio, "2022 HF+ Ratio", "ep");
+  legendEtaRatio->AddEntry(hEtaMRatio, "2022 HF- Ratio", "ep");
+  legendEtaRatio->SetBorderSize(0);
+  legendEtaRatio->Draw();
+  CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
+  canvas->Print( figdir + "EtaFitRatio.png");
+  canvas->SaveAs( figdir + "EtaFitRatio.C");
+  canvas->Clear();
+  std::cout << "Exiting... " << std::endl;
+  return;
+
   hEtaWidthMCAll->SetLineWidth(2);
   hEtaWidthMCAll->SetLineStyle(1);
   hEtaWidthMCAll->SetLineColor(kBlack);
