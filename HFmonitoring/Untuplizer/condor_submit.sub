@@ -1,0 +1,19 @@
+era        = EGamma_Run2022E
+infileDir  = $(era)/infiles/
+batch_name = Untuplizer_$(era)
+executable = xanadata
+arguments  = $(era)_$(ProcID).txt
+output     = /scratch/jnatoli/Untuplizer/jobs/out/$(batch_name)_output.$(ClusterID).$(ProcID).out
+error      = /scratch/jnatoli/Untuplizer/jobs/err/$(batch_name)_output.$(ClusterID).$(ProcID).err
+log        = /scratch/jnatoli/Untuplizer/jobs/log/$(batch_name)_output.$(ClusterID).$(ProcID).log
+# Got idea for get_env from slide 28 of this tutorial
+# https://osg-htc.org/user-school-2017/materials/day2/files/osgus17-day2-part4-troubleshooting.pdf
+# get_env    = True
++JobFlavour           = "espresso"
+x509userproxy         = /afs/hep.wisc.edu/home/jnatoli/private/x509up_u10171
+should_transfer_files = yes
+# transfer_input_files  = $(era)/infiles/$(era)_$(ProcID).txt
+transfer_input_files  = $(infile)
+transfer_output_files = ""
+WhenToTransferOutput  = on_exit_or_evict
+queue infile matching files $(infileDir)/*.txt
