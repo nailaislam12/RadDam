@@ -200,10 +200,10 @@ TreeReader::TreeReader(TTree* tree) :
 
    // verify sizes of elementary data types
    if (sizeof(int) != 4 || sizeof(long) != 8 || sizeof(float) != 4)
-      FATAL("int/long/float of unsupported size");
-
+     FATAL("int/long/float of unsupported size");
+   
    fTree = tree;
-
+   
    // find out availability of MC truth info (check existence of "nMC" branch)
    fkMC = fTree->GetBranch("nMC") ? kTRUE : kFALSE;
 }

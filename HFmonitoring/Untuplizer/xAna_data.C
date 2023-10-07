@@ -1,7 +1,4 @@
-#include "untuplizer.h"
-#include "Utilities.h"
-#include "PhotonSelections.h"
-
+// ROOT Includes
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TFile.h"
@@ -10,17 +7,23 @@
 #include "TCanvas.h"
 #include "TGraphAsymmErrors.h"
 #include "TLorentzVector.h"
-#include <vector>
-#include <iostream>
 #include "TRandom3.h"
 
-#include "../progressBar.C"
+// C++ Includes
+#include <vector>
+#include <iostream>
 
 using namespace std;
+// Personal Includes
+#include "untuplizer.h"
+#include "Utilities.h"
+#include "PhotonSelections.h"
+#include "../progressBar.C"
 
-void xAna_data(const char** inpaths, int npaths) {
-  
-  TreeReader data(inpaths, npaths);
+// Main work function
+void xAna_data( TreeReader* pdata) {
+  TreeReader data = *pdata;
+
   int nvtx;
   float rho;
   int nele;
@@ -45,7 +48,7 @@ void xAna_data(const char** inpaths, int npaths) {
   vector<float> mc_eta;
   vector<float> mc_phi;
   
-  TFile* file = TFile::Open("output_dataE_10Dec2022.root", "RECREATE");
+  TFile* file = TFile::Open("output_data_test.root", "RECREATE");
   TH1F* hh = new TH1F("hh", "", 100, 50, 150);
   TTree* tree = new TTree("miniTree", "miniTree");
   tree->Branch("run", &run);
@@ -73,11 +76,11 @@ void xAna_data(const char** inpaths, int npaths) {
 
   Long64_t nev = data.GetEntriesFast();
   std::cout << "Processing " << nev << " events..." << std::endl;
-  std::chrono::time_point<std::chrono::high_resolution_clock> start;
-  for (Long64_t ev = 0; ev < data.GetEntriesFast(); ++ev) {
-  //for (Long64_t ev = 0; ev < 100000; ++ev) {
+  std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+  for (Long64_t ev = 0; ev < nev; ++ev) {
+    //for (Long64_t ev = 0; ev < 100000; ++ev) {
     data.GetEntry(ev);    
-
+    
     bool isMC = false;
     vector<TLorentzVector> genElectrons;
 
@@ -126,7 +129,6 @@ void xAna_data(const char** inpaths, int npaths) {
     mc_pt.clear();
     mc_eta.clear();
     mc_phi.clear();
-
 
     progressBar( ev, nev, start);
     // if ( ev%100000 == 0 ) cout << "Processed: " << ev
@@ -302,6 +304,43 @@ void xAna_data(const char** inpaths, int npaths) {
 
     tree->Fill();
   } // End Event Loop
+  std::cout.flush();
+  std::cout << "\n";
   tree->Write();
 }
 
+void xAna_data(std::vector<std::string> inpaths) {
+  TreeReader* data = new TreeReader( inpaths);
+  xAna_data( data);
+}
+
+void xAna_data(const char** inpaths, int npaths) {
+  TreeReader* data = new TreeReader(inpaths, npaths);
+  xAna_data( data);
+}
+
+// for use with HTCondor
+int main( int argc, char** argv) {
+  std::cout << ">>> Starting to Untuple... " << std::endl;
+  std::vector<std::string> inpaths = {};
+  if (argc < 2) {
+    std::cout << "!!! ERROR !!! You must pass at least one file" << std::endl;
+    return 1;
+  } else {
+    if ((argc == 2) && (std::string(argv[1]).find(".txt") != std::string::npos)) { // file as input
+      std::string line;
+      ifstream infile(argv[1]);
+      while ( getline( infile, line))
+	inpaths.push_back( line);
+    } else {
+      for (int i = 1; i < argc; ++i)
+	inpaths.push_back( argv[i]);
+    }
+  }
+
+  for (auto ele : inpaths)
+    std::cout << ele << std::endl;
+
+  xAna_data( inpaths);
+  return 0;
+}
