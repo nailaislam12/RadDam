@@ -14,6 +14,8 @@
 #include <iostream>
 #include "TRandom3.h"
 
+#include "../progressBar.C"
+
 using namespace std;
 
 void xAna_data(const char** inpaths, int npaths) {
@@ -43,7 +45,7 @@ void xAna_data(const char** inpaths, int npaths) {
   vector<float> mc_eta;
   vector<float> mc_phi;
   
-  TFile* file = TFile::Open("output_data.root", "RECREATE");
+  TFile* file = TFile::Open("output_dataE_10Dec2022.root", "RECREATE");
   TH1F* hh = new TH1F("hh", "", 100, 50, 150);
   TTree* tree = new TTree("miniTree", "miniTree");
   tree->Branch("run", &run);
@@ -70,6 +72,8 @@ void xAna_data(const char** inpaths, int npaths) {
   tree->Branch("mc_phi",     &mc_phi);
 
   Long64_t nev = data.GetEntriesFast();
+  std::cout << "Processing " << nev << " events..." << std::endl;
+  std::chrono::time_point<std::chrono::high_resolution_clock> start;
   for (Long64_t ev = 0; ev < data.GetEntriesFast(); ++ev) {
   //for (Long64_t ev = 0; ev < 100000; ++ev) {
     data.GetEntry(ev);    
@@ -124,11 +128,12 @@ void xAna_data(const char** inpaths, int npaths) {
     mc_phi.clear();
 
 
-    if ( ev%100000 == 0 ) cout << "Processed: " << ev
-                               << " / " << nev
-                               << " (" << (100.0 * ev / nev)
-                               << "%)"
-                               << endl;
+    progressBar( ev, nev, start);
+    // if ( ev%100000 == 0 ) cout << "Processed: " << ev
+    //                            << " / " << nev
+    //                            << " (" << (100.0 * ev / nev)
+    //                            << "%)"
+    //                            << endl;
 
     Int_t nHFEle = 0;
     Float_t* hfeleEn = 0;
