@@ -1,4 +1,4 @@
-#include <cmsys/stat.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <boost/algorithm/string.hpp>
 #include "setTDRStyle.C"
@@ -375,8 +375,6 @@ void MakePNGPlots22() {
   canvas->Print( figdir + "EtaFitRatio.png");
   canvas->SaveAs( figdir + "EtaFitRatio.C");
   canvas->Clear();
-  std::cout << "Exiting... " << std::endl;
-  return;
 
   hEtaWidthMCAll->SetLineWidth(2);
   hEtaWidthMCAll->SetLineStyle(1);
@@ -631,7 +629,7 @@ void MakePNGPlots22() {
   PUStack->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
   PUStack->SetMinimum(50);
   PUStack->SetMaximum(100);
-  TLegend* legendPU = new TLegend(0.4,0.8,0.85,0.90,"Pile-Up","NDC");
+  TLegend* legendPU = new TLegend(0.4,0.2,0.85,0.5,"Pile-Up","NDC");
   legendPU->AddEntry(hPUmcFit, LinFitMC, "ep");
   legendPU->AddEntry(hPUdataFit, LinFitData, "ep");
   legendPU->SetBorderSize(0);
@@ -640,17 +638,17 @@ void MakePNGPlots22() {
   canvas->Print( figdir + "PUFit.png");
   canvas->SaveAs( figdir + "PUFit.C");
   canvas->Clear();
-	
+  
   TString EtaRange[12] = {"i#eta30","i#eta31","i#eta32","i#eta33","i#eta34","i#eta35","i#eta36","i#eta37","i#eta38","i#eta39","i#eta40","i#eta41"};
   for (int e = 30; e <= 41; ++e) {	
-        
+    
     TH1F *hEtaPhiFitDataAll = new TH1F("hEtaPhiFitDataAll", "", 71, 0.5, 71.5);
     TH1F *hEtaPhiFitMCAll = new TH1F("hEtaPhiFitMCAll", "", 71, 0.5, 71.5);
     int count = 0;
     for(int i = 1; i <= 71; i+=2) {
-			
+      
       if(e >= 40) i+=2;
-				
+      
       TString EtaPhiFitNum = TString::Format("eta%iphi%i", e, i);
       TH1F *hEtaPhiFitData = (TH1F*)fData->Get(EtaPhiFitNum);
       funcGaus->SetRange(hEtaPhiFitData->GetMaximumBin()+10,hEtaPhiFitData->GetMaximumBin()+30);
