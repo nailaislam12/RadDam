@@ -7,7 +7,7 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -22,7 +22,7 @@ using namespace std;
 
 void setbit(UShort_t& x, UShort_t bit);
 
-class ggNtuplizer : public edm::EDAnalyzer {
+class ggNtuplizer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
  public:
 
   explicit ggNtuplizer(const edm::ParameterSet&);
