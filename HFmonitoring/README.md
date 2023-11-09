@@ -13,9 +13,9 @@ git clone https://github.com/jamesnatoli/RadDam.git
 - Setup CMSSW_10_2_9 and copy ggAnalysis directory in CMSSW/src
 - Do a 'scram b clean' followed by 'scram b -j10'
 - Code is ready to use (macros are in nTuplizer/ggAnalysis/ggNtuplizer/test): 
-  # Submit CRAB jobs via crabConfig (NOTE: you can submit multiple samples at once using multiprocessing)
-  # Samples of interest: (Data) SingleElectron/EGamma dataset, (MC) DYJetsToLL_M-50 MadGraph-MLM sample
-  # Check the latest GlobalTag in the cmsRun macros (different for data & MC - see https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable)
+-- Submit CRAB jobs via crabConfig (NOTE: you can submit multiple samples at once using multiprocessing)
+-- Samples of interest: (Data) SingleElectron/EGamma dataset, (MC) DYJetsToLL_M-50 MadGraph-MLM sample
+-- Check the latest GlobalTag in the cmsRun macros (different for data & MC - see https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable)
 
 # Step 2: Untuplizer
 This step can proceed either interactively or via jobs with Condor. The interactive script can take a long time to run (5-10 hours, or more) and so it can be more convenient to use jobs. Both methods are described below
@@ -23,7 +23,7 @@ This step can proceed either interactively or via jobs with Condor. The interact
 ## Running Interactively
 - Use hadd to combine the nTuple trees (recommended to have one final MC file and one final data file for each run range)
 - Compare the EGamma cut-based ID for ECAL electrons in xAna macros (~L220) with latest recommendations (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2)
-  # NOTE: usually we have to use the ID from the year before or very preliminary IDs
+  **NOTE:** usually we have to use the ID from the year before or very preliminary IDs
 - Add hadded nTuple paths in run macros and execute these with ROOT
 
 ## Using Condor Jobs
