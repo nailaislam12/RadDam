@@ -48,7 +48,7 @@ void xAna_data( TreeReader* pdata) {
   vector<float> mc_eta;
   vector<float> mc_phi;
   
-  TFile* file = TFile::Open("output_data_test.root", "RECREATE");
+  TFile* file = TFile::Open("output_data.root", "RECREATE");
   TH1F* hh = new TH1F("hh", "", 100, 50, 150);
   TTree* tree = new TTree("miniTree", "miniTree");
   tree->Branch("run", &run);
@@ -74,6 +74,7 @@ void xAna_data( TreeReader* pdata) {
   tree->Branch("mc_eta",     &mc_eta);
   tree->Branch("mc_phi",     &mc_phi);
 
+  bool condor = true;
   Long64_t nev = data.GetEntriesFast();
   std::cout << "Processing " << nev << " events..." << std::endl;
   std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
@@ -130,7 +131,8 @@ void xAna_data( TreeReader* pdata) {
     mc_eta.clear();
     mc_phi.clear();
 
-    progressBar( ev, nev, start);
+    if (!condor)
+      progressBar( ev, nev, start);
     // if ( ev%100000 == 0 ) cout << "Processed: " << ev
     //                            << " / " << nev
     //                            << " (" << (100.0 * ev / nev)
@@ -306,6 +308,9 @@ void xAna_data( TreeReader* pdata) {
   } // End Event Loop
   std::cout.flush();
   std::cout << "\n";
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+  std::cout << ">>> Finished in " << duration.count() << " seconds" << std::endl;
   tree->Write();
 }
 
@@ -338,9 +343,10 @@ int main( int argc, char** argv) {
     }
   }
 
-  for (auto ele : inpaths)
-    std::cout << ele << std::endl;
+  // for (auto ele : inpaths)
+  //   std::cout << ele << std::endl;
 
   xAna_data( inpaths);
+  std::cout << "All done!" << std::endl;
   return 0;
 }
