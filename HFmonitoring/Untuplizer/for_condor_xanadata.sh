@@ -8,8 +8,9 @@ ERA=${3}
 CHUNKLIST=$(basename ${4})
 
 OUTFILE=output_data.root
-URL=davs://cmsxrootd.hep.wisc.edu:1094/
-COPYDIR=/store/user/jnatoli/Untuplizer/${ERA}
+COPYDIR=${5}
+# URL=davs://cmsxrootd.hep.wisc.edu:1094/
+# COPYDIR=/store/user/jnatoli/Untuplizer/${ERA}
 
 # Run executable
 echo "Executing xanadata"
