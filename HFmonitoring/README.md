@@ -29,9 +29,33 @@ This step can proceed either interactively or via jobs with Condor. The interact
 ## Using Condor Jobs
 Rather than hadding the all of the ggTree.root output files from the nTuplizer step, we will group them in to more manageable chunks and then run one job per chunk. 
 
-Condor jobs require a submission script, `condor_submit.sub` and executable, `for_condor_xanadata.sh`. A bash script has also been created to help with submission, `submitUntuple.sh`. This helper script compiles the c++ code, creates necessary directories (if not present), and prepares a list of files for which to use as inputs for the condor jobs. The number of files per chunk defaults to 100.
+Condor jobs require a submission script, `condor_submit.sub` and executable, `for_condor_xanadata.sh`. A bash script has also been created to help with submission, `submitUntuple.sh`. This helper script compiles the c++ code, creates necessary directories (if not present), and prepares a list of files for which to use as inputs for the condor jobs. The number of files per chunk defaults to 100 and is set by `filesInChunk`.
 
 In order to submit jobs, the user must have a valid VOMS proxy and a way to access the storage location of the ggTree.root files, as well as the storage location for the output of this step. Currently, the `gfal` protocal is used for accessing data at different sites, and copying the job outputs from condor to the storage location.
+
+The bash helper script `submitUntuple.sh` contains three lines at the top which must be changed for your specifications. 
+```
+export url=""
+export era=EGamma0_Run2023B_0000
+export copydir=${url}/eos/user/j/jnatoli/Untuplizer/${era}
+```
+
+- `url`: used if your storage site is not where you are running the code from. For example, if you are submitting from lxplus but the data is stored on the University of Wisconsin T3 cluster, the url will be `davs://cmsxrootd.hep.wisc.edu:1094`
+- `era`: a unique name for the job, ideally descriptive of the task
+- `copydir`: the storage location for the output, must be accessible from condor
+
+Once these variables are set, the jobs can be submitted with 
+```
+./submitUntuple.sh [path to input files]
+```
+The following are examples for passing in input files located on `eos` and the Wisconsin T3 cluster
+```
+./submitUntuple.sh /eos/user/j/jnatoli/2023HF/EGamma0/crab_EGamma0_Run2023B_test/231105_135940/0000/
+./submitUntuple.sh /store/user/jnatoli/2022HF/EGamma/crab_EGamma_Run2022F/231003_155006/0002/
+```
+
+### Useful Condor Links
+- [Condor submit file documentation](https://htcondor.readthedocs.io/en/latest/users-manual/submitting-a-job.html)
 
 # Step 3: Analysis & Plotting
 - Add Data/MC analysisTree path to L90/92 in Analysis18.h, change the output file name in L49 accordingly and set isData bool in L45 in Analysis18.C accordingly
