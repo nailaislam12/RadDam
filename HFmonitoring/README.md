@@ -49,7 +49,7 @@ cmsRun run_data.py
 
 This will create a new root file in the directory called `ggTree.root`, which can be inspected. It is a good idea to check that the code works with a single file from the dataset you plan to process before submitting to CRAB, to avoid all of the jobs failing. 
 
-Jobs are submitted to CRAB via `crabConfig_data.py` and `crabConfig_mc.py`. The datasets to be processed must be specificed with their DAS paths. We typically use the EGamma datasets and the DYJetsToLL_M-50 MadGraph-MLM mc samples in this analysis. A luminosity mask is specified with the variable `config.Data.lumiMask` and can be found in `/eos/user/c/cmsdqm/www/CAF/certification/` or (online)[https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/], but the path specific must be accessible from lxplus. The CRAB environment must be setup prior to submission with `source /cvmfs/cms.cern.ch/common/crab-setup.sh` (you will need to do this every time you log in)
+Jobs are submitted to CRAB via `crabConfig_data.py` and `crabConfig_mc.py`. The datasets to be processed must be specificed with their DAS paths. We typically use the EGamma datasets and the DYJetsToLL_M-50 MadGraph-MLM mc samples in this analysis. A luminosity mask is specified with the variable `config.Data.lumiMask` and can be found in `/eos/user/c/cmsdqm/www/CAF/certification/` or [online](https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/), but the path specific must be accessible from lxplus. The CRAB environment must be setup prior to submission with `source /cvmfs/cms.cern.ch/common/crab-setup.sh` (you will need to do this every time you log in)
 
 The CRAB jobs are submitted with 
 ```
