@@ -18,7 +18,7 @@ cp -r RadDam/HFmonitoring/nTuplizer/ggAnalysis .
 scram b clean
 scram b -j10
 ```
-If you make a change to the `ggNtuplizer` module, you must copy if again to `CMSSW_X_X_X/src` and recompile. The compile command can only access modules that are in `/src/`. The `scram b -j10` command should print out something similar to the following, if our additional modules were properly compiled
+If you make a change to the `ggNtuplizer` module, you must copy if again to `CMSSW_X_X_X/src` and recompile. The compile command can only access modules that are in `/src/`. The `scram b -j10` command must be run from `CMSSW_X_X_X/src` and should print out something similar to the following, if our additional modules were properly compiled
 
 ```
 Entering library rule at src/ggAnalysis/ggNtuplizer/plugins
@@ -38,7 +38,7 @@ Entering library rule at src/ggAnalysis/ggNtuplizer/plugins
 Leaving library rule at src/ggAnalysis/ggNtuplizer/plugins
 ```
 
-The code is now ready to use, and can be executed with the macros in the `RadDam/HFmonitoring/nTuplizer/ggAnalysis/ggNtuplizer/test` directory. Global Tag information can be found at the (PdmVRun3Analysis)[https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis] site. To process a single file, add the path to the file from DAS in the line
+The code is now ready to use, and can be executed with the macros in the `RadDam/HFmonitoring/nTuplizer/ggAnalysis/ggNtuplizer/test` directory. Global Tag information can be found at the [PdmVRun3Analysis](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis) site. To process a single file, add the path to the file from DAS in the line
 ```
 process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/path/to/file.root'))
 ```
