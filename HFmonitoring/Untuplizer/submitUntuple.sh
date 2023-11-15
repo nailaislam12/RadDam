@@ -4,16 +4,58 @@
 # TODO: works for all root files under an era
 # TODO: figure out procedure for if jobs fail?
 
-# Make these vars available to the condor submission script
-
-url="" 
-# url=davs://cmsxrootd.hep.wisc.edu:1094
-export copydir=${url}/eos/user/j/jnatoli/Untuplizer/${era}
-export era=EGamma0_Run2023B_0000
-
 RCOMP="`root-config --cflags --glibs`"
 macro=xAna_data.C
 bin=xanadata
+
+# Parse arguments
+iflag=false; oflag=false; eflag=false; uflag=false; nflag=false; dflag=false
+while getopts ":i:o:e:u:n:d" opt; do
+    case ${opt} in
+	i) iflag=true; indir=$OPTARG;;
+	o) oflag=true; copydir=$OPTARG;;
+	e) eflag=true; era=$OPTARG;;
+	u) uflag=true; site=$OPTARG;;
+	n) nflag=true; nfilesInChunk=$OPTARG;;
+	d) dflag=true;;
+	?) echo "Usage: ./submitUntuple.sh [-d /Directory/to/copy/to/ (/store/user/username/)] [-e era (EGamma0_Run2023B_0000)] [-u site (T3_US_WISCONSIN)] [-n nperchunk (100)]"
+	    echo "Exiting..."; exit 1;;
+	:) echo "ERROR: Option $OPTARG requires an argument... exiting"; exit 1;;
+    esac
+done
+
+# Check required args
+if ! ${iflag} || ! ${oflag} || ! ${eflag}; then
+    echo "Error: One or more arguments missing, exiting..."
+    exit 1
+fi
+
+# Clean url
+if $uflag; then
+    if [[ $site == "T3_US_WISCONSIN" ]]; then
+	url=davs://cmsxrootd.hep.wisc.edu:1094/
+    else
+	echo "Error: Unknown site \"$site\", exiting..."; exit 1
+	# url=cms-xrd-global.cern.ch
+    fi
+    # Check VOMS (TODO: set it up)
+    if [ -z $X509_USER_PROXY ]; then
+	echo "Error: VOMS proxy not set but needed by ${url}... exiting"; exit 1
+    fi
+fi
+
+# Clean nperchunk
+if $nflag; then
+    re_NumCheck='^[0-9]+$'
+    if ! [[ $nperchunk =~ $re_NumCheck ]] ; then
+	echo "Error: Integer number of files per chunk required, exiting..."; exit 1
+    fi
+fi
+
+# Make these vars available to the condor submission script
+export era
+export copydir=${url}${copydir}/${era}
+indir=${url}${indir}
 
 # Check if environment is clean
 if [ ! -z ${CMSSW_BASE} ]; then
@@ -22,6 +64,7 @@ if [ ! -z ${CMSSW_BASE} ]; then
   exit 1
 fi
 
+
 # Compile the code
 echo ">>> Compiling macro: ${macro}" 
 if ! $(g++ $RCOMP $macro -o $bin); then
@@ -29,15 +72,14 @@ if ! $(g++ $RCOMP $macro -o $bin); then
     exit 1
 fi
 
-# Pass in a path to the root files
-indir=${1}
-[ ${1} ] || indir=/store/user/jnatoli/2022HF/EGamma/crab_EGamma_Run2022F/231003_155006/0002/
-indir=${url}${indir}
-
 chunk=0
 counter=1
 chunkdir=${era}/infiles
-filesInChunk=100
+[ $nfilesInChunk ] || nfilesInChunk=100
+
+echo ">>> Era:    ${era}"
+echo ">>> Indir:  ${indir}"
+echo -e ">>> Outdir: ${copydir}\n"
 
 # Create directories as necessary
 echo ">>> Checking directories: ${era}" 
@@ -72,7 +114,7 @@ if [ ! -d ${era}/jobs/log ]; then
 fi
 
 # Check for existing chunks
-echo ">>> Checking for chunks: ${chunkdir}" 
+echo ">>> Checking for chunks:  ${chunkdir}" 
 # NB: &> redirects stderr and stdout, > just stdout
 if ls ${chunkdir}/*.txt &> /dev/null; then
     echo -e "\tOld chunks exist... deleting"
@@ -80,24 +122,35 @@ if ls ${chunkdir}/*.txt &> /dev/null; then
 fi
 
 # Look for the files
-echo ">>> Looking for files: ${indir}" 
+echo ">>> Looking for files:    ${indir}" 
 if ! env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-ls ${indir} > /dev/null; then
     echo -e "\tUnable to access files: ${indir}"
     echo -e "\tExiting..."
     exit 1
+else
+    totalFiles=$(env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-ls ${indir} | wc -l)
 fi
 
 # Make the chunks
+echo ">>> Will create chunks of ${nfilesInChunk} from ${totalFiles} files"
 echo ">>> Creating chunk: ${chunk}"
 for file in $( env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-ls ${indir}); do
-    echo ${indir}/${file} >> ${chunkdir}/chunk_${chunk}.txt
-    if [ $((${counter} % ${filesInChunk})) -eq 0 ]; then
-	chunk=$((${chunk} + 1))
-	echo ">>> Creating chunk: ${chunk}"
+    if [[ $file == *.root ]]; then # only match root files
+	echo ${indir}/${file} >> ${chunkdir}/chunk_${chunk}.txt
+	if [ $((${counter} % ${nfilesInChunk})) -eq 0 ]; then
+	    chunk=$((${chunk} + 1))
+	    echo ">>> Creating chunk: ${chunk}"
+	fi
+	counter=$((${counter} + 1))
+    else
+	echo -e "\tfile: ${file} is not a ROOT file"
     fi
-    counter=$((${counter} + 1))
 done
 
 # Submit jobs!
-echo ">>> Submitting jobs: condor_submit era=${era} condor_submit.sub"
-condor_submit era=${era} condor_submit.sub
+if $dflag; then 
+    echo ">>> This was a dry run... skipping submission"
+else
+    echo ">>> Submitting jobs: condor_submit era=${era} condor_submit.sub"
+    condor_submit era=${era} condor_submit.sub
+fi
