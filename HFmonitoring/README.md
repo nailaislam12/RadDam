@@ -62,9 +62,9 @@ This step can proceed either interactively or via jobs with Condor. The interact
 
 ## Running Interactively
 - Use hadd to combine the nTuple trees (recommended to have one final MC file and one final data file for each run range)
-- Compare the EGamma cut-based ID for ECAL electrons in xAna macros (~L220) with latest recommendations (https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2)
+- Compare the EGamma cut-based ID for ECAL electrons in xAna macros (~L220) with [latest recommendations](https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2)
   **NOTE:** usually we have to use the ID from the year before or very preliminary IDs
-- Add hadded nTuple paths in run macros and execute these with ROOT
+- Add hadded nTuple paths in run macros (`run_data.C` and `run_mc.C`) and execute these with ROOT: `root -l run_data.C`
 
 ## Using Condor Jobs
 Rather than hadding the all of the ggTree.root output files from the nTuplizer step, we will group them in to more manageable chunks and then run one job per chunk. 
