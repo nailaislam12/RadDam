@@ -19,6 +19,7 @@ if [ -f ${OUTFILE} ]; then
     echo "Copying output: ${URL}/${COPYDIR}/${OUTFILE}_${ERA}_${PROCID}.root"
     echo ">>> env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -pf ${OUTFILE} ${COPYDIR}/output_data_${ERA}_${CLUSTERID}_${PROCID}.root"
     env -i X509_USER_PROXY=${X509_USER_PROXY} gfal-copy -pf ${OUTFILE} ${COPYDIR}/output_data_${ERA}_${CLUSTERID}_${PROCID}.root
+
 else
     echo "ERROR: No outfile created!!!" 
 fi

@@ -72,6 +72,7 @@ if ! $(g++ $RCOMP $macro -o $bin); then
     exit 1
 fi
 
+
 chunk=0
 counter=1
 chunkdir=${era}/infiles
