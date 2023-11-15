@@ -2,20 +2,60 @@
 Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter using Z-->ee events. There are 3 steps required to make plots, which utilize both CRAB and HTCOndor batch submission systems
 
 # Step 0: Setup
-Setup an appropriate CMSSW version. For 2022 data, use `CMSSW_12_4_11_patch3`
-
-Clone the repository using
+Checkout an appropriate CMSSW version. Below is an example for 2022:
 ```
+cmsrel CMSSW_12_4_11_patch3
+cd CMSSW_12_4_11_patch3/src
 git clone https://github.com/jamesnatoli/RadDam.git
+cmsenv
 ```
 
 # Step 1: nTuplizer
-- Setup CMSSW_10_2_9 and copy ggAnalysis directory in CMSSW/src
-- Do a 'scram b clean' followed by 'scram b -j10'
-- Code is ready to use (macros are in nTuplizer/ggAnalysis/ggNtuplizer/test): 
--- Submit CRAB jobs via crabConfig (NOTE: you can submit multiple samples at once using multiprocessing)
--- Samples of interest: (Data) SingleElectron/EGamma dataset, (MC) DYJetsToLL_M-50 MadGraph-MLM sample
--- Check the latest GlobalTag in the cmsRun macros (different for data & MC - see https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable)
+The first step in the workflow is to process MINIAOD samples. HF sits outside of the tracker acceptance, so we need to build electron candidates ourselves from Particle Flow (PF) jets. This involves adding a module `ggNtuplizer` to CMSSW such that it can be used to process samples. To compile this module, execute the following steps, beginning from the `CMSSW_X_X_X/src` directory
+
+```
+cp -r RadDam/HFmonitoring/nTuplizer/ggAnalysis .
+scram b clean
+scram b -j10
+```
+If you make a change to the `ggNtuplizer` module, you must copy if again to `CMSSW_X_X_X/src` and recompile. The compile command can only access modules that are in `/src/`. The `scram b -j10` command should print out something similar to the following, if our additional modules were properly compiled
+
+```
+Entering library rule at src/ggAnalysis/ggNtuplizer/plugins
+>> Compiling edm plugin /afs/cern.ch/work/j/jnatoli/private/HCAL/HFCalib/CMSSW_12_4_11_patch3/src/ggAnalysis/ggNtuplizer/plugins/ggNtuplizer.cc
+>> Compiling edm plugin /afs/cern.ch/work/j/jnatoli/private/HCAL/HFCalib/CMSSW_12_4_11_patch3/src/ggAnalysis/ggNtuplizer/plugins/ggNtuplizer_globalEvent.cc
+>> Compiling edm plugin /afs/cern.ch/work/j/jnatoli/private/HCAL/HFCalib/CMSSW_12_4_11_patch3/src/ggAnalysis/ggNtuplizer/plugins/ggNtuplizer_hfelectrons.cc
+>> Compiling edm plugin /afs/cern.ch/work/j/jnatoli/private/HCAL/HFCalib/CMSSW_12_4_11_patch3/src/ggAnalysis/ggNtuplizer/plugins/ggNtuplizer_electrons.cc
+>> Leaving Package RadDam/HFmonitoring
+>> Leaving Package RadDam/oldHFmonitoring
+>> Leaving Package oldRaddam/HFmonitoring
+>> Package RadDam/HFmonitoring built
+>> Package RadDam/oldHFmonitoring built
+>> Package oldRaddam/HFmonitoring built
+>> Subsystem RadDam built
+>> Subsystem oldRaddam built
+>> Building  edm plugin tmp/slc7_amd64_gcc10/src/ggAnalysis/ggNtuplizer/plugins/ggAnalysisggNtuplizerAuto/libggAnalysisggNtuplizerAuto.so
+Leaving library rule at src/ggAnalysis/ggNtuplizer/plugins
+```
+
+The code is now ready to use, and can be executed with the macros in the `RadDam/HFmonitoring/nTuplizer/ggAnalysis/ggNtuplizer/test` directory. Global Tag information can be found at the (PdmVRun3Analysis)[https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis] site. To process a single file, add the path to the file from DAS in the line
+```
+process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/path/to/file.root'))
+```
+and then use `cmsRun` to run the appropriate python script.
+```
+cmsRun run_data.py
+```
+
+This will create a new root file in the directory called `ggTree.root`, which can be inspected. It is a good idea to check that the code works with a single file from the dataset you plan to process before submitting to CRAB, to avoid all of the jobs failing. 
+
+Jobs are submitted to CRAB via `crabConfig_data.py` and `crabConfig_mc.py`. The datasets to be processed must be specificed with their DAS paths. We typically use the EGamma datasets and the DYJetsToLL_M-50 MadGraph-MLM mc samples in this analysis. A luminosity mask is specified with the variable `config.Data.lumiMask` and can be found in `/eos/user/c/cmsdqm/www/CAF/certification/` or (online)[https://cms-service-dqmdc.web.cern.ch/CAF/certification/Collisions23/], but the path specific must be accessible from lxplus. The CRAB environment must be setup prior to submission with `source /cvmfs/cms.cern.ch/common/crab-setup.sh` (you will need to do this every time you log in)
+
+The CRAB jobs are submitted with 
+```
+python3 crabConfig_data.py
+```
+which crates a directory `DataJobs` with a subdirectory named according to the variable `config.General.requestName`. The jobs can be monitored with `crab status DataJobs/RequestName` which also provides a grafana link.
 
 # Step 2: Untuplizer
 This step can proceed either interactively or via jobs with Condor. The interactive script can take a long time to run (5-10 hours, or more) and so it can be more convenient to use jobs. Both methods are described below
