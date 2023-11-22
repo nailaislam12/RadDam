@@ -18,7 +18,7 @@ while getopts ":i:o:e:u:n:d" opt; do
 	u) uflag=true; site=$OPTARG;;
 	n) nflag=true; nfilesInChunk=$OPTARG;;
 	d) dflag=true;;
-	?) echo "Usage: ./submitUntuple.sh [-d /Directory/to/copy/to/ (/store/user/username/)] [-e era (EGamma0_Run2023B_0000)] [-u site (T3_US_WISCONSIN)] [-n nperchunk (100)]"
+	?) echo "Usage: ./submitUntuple.sh [-i InputDirectory] [-o OutputDirectory] [-e era (EGamma0_Run2023B_0000)] [-u site (T3_US_WISCONSIN)] [-n nperchunk] [-d]"
 	    echo "Exiting..."; exit 1;;
 	:) echo "ERROR: Option $OPTARG requires an argument... exiting"; exit 1;;
     esac
