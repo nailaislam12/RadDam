@@ -119,8 +119,8 @@ The following are examples for passing in input files located on `eos` and the W
 ## Analysis
 Now that the samples are Untupled, we can fill histograms (Analysis Step) and then plot data and mc together (Plotting Step). At this point, you will need to `hadd` the files from the Untuple step. They should be small enough by now that you can move them to whichever site you are actively working on, if they are not stored there already. An example is below:
 ```
-hadd output_dataBCD_10Dec2022.root SOURCES
-hadd output_DYJetsToLL_M-50_Winter22.root SOURCES
+hadd output_dataBCD_10Dec2022.root source1.root source2.root source3.root ... 
+hadd output_DYJetsToLL_M-50_Winter22.root source1.root source2.root source3.root ... 
 ```
 The names are arbitrary, as long as the data file contains the name `data`. A few values must be properly set the `Loop` function of `Analysis22.C` in prior to execution:
 - `usePU`: set to `true` if you want to apply Pileup Corrections. These need to be derived from the plots. Default: `false`
