@@ -1,7 +1,7 @@
-
 #!/bin/bash
 # quick script to create a figures directory...
 
+[ ${1} ] || { echo "Please enter a directory name..."; exit 1; }
 NEWDIR=${1}
 
 if [[ ! -d ${NEWDIR} ]]; then
