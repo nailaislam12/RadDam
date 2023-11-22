@@ -1,6 +1,14 @@
 # HF Z-->ee Radiation Damage Calibrations
 Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter using Z-->ee events. There are 3 steps required to make plots, which utilize both CRAB and HTCOndor batch submission systems
 
+Usefull Links:
+
+### Table of Contents
+0. [Step 0: Setup](#step-0-setup)
+1. [Step 1: nTuplizer](#step-1-ntuplizer)
+2. [Step 2: Untuplizer](#step-2-untuplizer)
+
+
 # Step 0: Setup
 Checkout an appropriate CMSSW version. Below is an example for 2022:
 ```
@@ -99,7 +107,37 @@ The following are examples for passing in input files located on `eos` and the W
 - [Advanced Commands](https://indico.cern.ch/event/611296/contributions/2604401/attachments/1472675/2279456/TJs_Did_You_Know_Condor_Week_Madison_2017.pdf)
 
 # Step 3: Analysis & Plotting
-- Add Data/MC analysisTree path to L90/92 in Analysis18.h, change the output file name in L49 accordingly and set isData bool in L45 in Analysis18.C accordingly
-- Open ROOT, compile the Analysis18 class ('.L Analysis18.C+'), create a Analysis18 object ('Analysis18 t') and execute the loop-function ('t.Loop()')
-- Create a 'Figures18' directory with the following subdirectories: Eta, Phi, PU, EtaPhiFit, EtaBin (and Run)
-- Add the ROOT file with the histograms in the MakePlots macro and execute this with ROOT
+## Analysis
+Now that the samples are Untupled, we can fill histograms (Analysis Step) and then plot data and mc together (Plotting Step). At this point, you will need to `hadd` the files from the Untuple step. They should be small enough by now that you can move them to whichever site you are actively working on, if they are not stored there already. An example is below:
+```
+hadd output_dataBCD_10Dec2022.root SOURCES
+hadd output_DYJetsToLL_M-50_Winter22.root SOURCES
+```
+The names are arbitrary, as long as the data file contains the name `data`. A few values must be properly set the `Loop` function of `Analysis22.C` in prior to execution:
+- `usePU`: set to `true` if you want to apply Pileup Corrections. These need to be derived from the plots. Default: `false`
+- `useRaddam`: set to `true` if you want to apply radiation damage corrections. These also need to be derived. Default: `false`
+- `numfactors`: for deriving the radition damage corrections, set to `0` if you do not want to do this. Default: `11`
+- `finterval`: for deriving the radition damage corrections, the spacing between values used to plot the line. Default: `0.1`
+- `tag`: a unique identifying name for the output root file which will contain the histograms
+
+Once these are set properly, you can go about executing the Analysis code with interactive ROOT:
+```
+root -l Analysis22.C
+root [0] 
+Processing Analysis22.C...
+(Analysis22) @0x6a24ac0
+root [1] Analysis22 a("/Path/to/output_dataBCD_10Dec2022.root")
+(Analysis22 &) @0x7f9a8e070208
+root [2] a.Loop()
+```
+This step can take up to a few hours, depending on how many events are being analyzed. 
+## Plotting
+Once **both** data and mc are analyzed, we can make plots. First, use the `makeFigDir.sh` script to create a directory with the necessary dependencies
+```
+./makeFigDr.sh NewFigDir2022
+```
+## Pileup Corrections
+## Radiation Damage Corrections
+## Typical Workflow
+
+
