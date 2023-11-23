@@ -145,6 +145,18 @@ Once **both** data and mc are analyzed, we can make plots. First, use the `makeF
 ```
 ./makeFigDr.sh NewFigDir2022
 ```
+The following lines need to be changed in `MakePNGPlots22.C` according to your specifications, where `figdir` should match the directory you have just created. The files `fMC` and `fData` should be locations of the files produced in the previous Analysis step.
+```
+TString figdir = "Figures22_noPU/";
+TFile *fMC = new TFile("outplots/outplots2022_mc_noPU.root");
+TFile *fData = new TFile("outplots/outplots2022_data_noPU.root");
+```
+
+Execute this macro with ROOT to produce the plots
+```
+root -l MakePNGPlots22.C
+```
+The plots will be populated in `figdir`
 ## Pileup Corrections
 ## Radiation Damage Corrections
 ## Typical Workflow
