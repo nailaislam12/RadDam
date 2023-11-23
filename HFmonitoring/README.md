@@ -4,13 +4,13 @@ Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter u
 Usefull Links:
 
 ### Table of Contents
-0. [Step 0: Setup](#step-0-setup)
-1. [Step 1: nTuplizer](#step-1-ntuplizer)
-2. [Step 2: Untuplizer](#step-2-untuplizer)
+0. [Setup](#step-0-setup)
+1. [nTuplizer](#step-1-ntuplizer)
+2. [Untuplizer](#step-2-untuplizer)
 	1. [Running Interactively](#running-interactively)
  	2. [Using Condor Jobs](#using-condor-jobs)
 		1. [Useful Condor Links](#useful-condor-links)
-4. [Step 3: Analysis & Plotting](#step-3-analysis--plotting)
+4. [Analysis & Plotting](#step-3-analysis--plotting)
 	1. [Analysis](#analysis)
 	2. [Plotting](#plotting)
 	3. [Deriving Corrections](#deriving-corrections)
