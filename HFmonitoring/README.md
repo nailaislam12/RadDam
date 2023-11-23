@@ -14,8 +14,8 @@ Usefull Links:
 	1. [Analysis](#analysis)
 	2. [Plotting](#plotting)
 	3. [Deriving Corrections](#deriving-corrections)
-		1. [Pileup Corrections](#pileup-corrections)
-		2. [Radiation Damage Corrections](#radiation-damage-corrections)
+		1. [Radiation Damage](#radiation-damage)
+		2. [Pileup](#pileup)
 	4. [Typical Workflow](#typical-workflow)
 
 
