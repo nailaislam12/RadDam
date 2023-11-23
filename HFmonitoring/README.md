@@ -13,9 +13,10 @@ Usefull Links:
 4. [Step 3: Analysis & Plotting](#step-3-analysis--plotting)
 	1. [Analysis](#analysis)
 	2. [Plotting](#plotting)
-	3. [Pileup Corrections](#pileup-corrections)
-	4. [Radiation Damage Corrections](#radiation-damage-corrections)
-	5. [Typical Workflow](#typical-workflow)
+	3. [Deriving Corrections](#deriving-corrections)
+		1. [Pileup Corrections](#pileup-corrections)
+		2. [Radiation Damage Corrections](#radiation-damage-corrections)
+	4. [Typical Workflow](#typical-workflow)
 
 
 # Step 0: Setup
@@ -157,8 +158,16 @@ Execute this macro with ROOT to produce the plots
 root -l MakePNGPlots22.C
 ```
 The plots will be populated in `figdir`
-## Pileup Corrections
-## Radiation Damage Corrections
+## Deriving Corrections
+This analysis focuses on assessing the radiation damage to HF and deriving appropriate corrections which can then be applied on the detector during data taking. The effects of pileup (PU) are also taken in to account. This typically does not change the results of the radiation damage corrections, but are still important to be applied to remove sources of error
+### Radiation Damage 
+
+### Pileup 
+The p_{T} of both electrons (ECAL and HF) is corrected in both data and MC to remove the dependence of the reconstructed Z mass on the number of PU vertices in a given evnet.
 ## Typical Workflow
+After the requisite data and mc samples have been processed through steps 1 and 2, the analysis/plotting step is run multiple times
+- **Bare Comparisons:** First analyze both data and mc with **no** corrections applied, to make plots with the bare data/mc comparisons. The results of this step will be used to derive corrections if necessary. During the analysis step of data, you can derive the factors, it will not affect the plots
+- **Deriving Corrections:** Next, follow the steps in [Deriving Corrections](#deriving-corrections). The radiation damage corrections affect the pileup corrections, so they should be derived first. After applying the radiation damage, the pileup corrections can be derived
+- **Applying Corrections:** Now apply the corrections by changing appropriate lines in `Analysis22.C` and rerun the analysis code with the boolean values  `true` so that they are applied. 
 
 
