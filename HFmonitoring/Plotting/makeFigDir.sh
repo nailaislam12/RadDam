@@ -13,7 +13,8 @@ fi
 
 for i in Eta EtaBin EtaPhiFit PU Phi; do 
     if [[ ! -d ${NEWDIR}/${i} ]]; then 
-	mkdir ${NEWDIR}/${i}; 
+	echo -e "\tmkdir ${NEWDIR}/${i}"
+	mkdir ${NEWDIR}/${i}
     else
 	echo "Directory ${NEWDIR}/${i} already exists, will not overwrite"
     fi
