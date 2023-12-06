@@ -144,7 +144,7 @@ This step can take up to a few hours, depending on how many events are being ana
 ## Plotting
 Once **both** data and mc are analyzed, we can make plots. First, use the `makeFigDir.sh` script to create a directory with the necessary dependencies
 ```
-./makeFigDr.sh NewFigDir2022
+./makeFigDir.sh NewFigDir2022
 ```
 The following lines need to be changed in `MakePNGPlots22.C` according to your specifications, where `figdir` should match the directory you have just created. The files `fMC` and `fData` should be locations of the files produced in the previous Analysis step.
 ```
