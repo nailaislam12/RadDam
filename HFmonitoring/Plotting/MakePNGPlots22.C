@@ -5,10 +5,12 @@
 
 void MakePNGPlots22() {
   setTDRStyle();
-  TString figdir = "Figures22_noPU/";
   TCanvas* canvas = new TCanvas("canvas");
-  TFile *fMC = new TFile("outplots/outplots2022_mc_noPU.root");
-  TFile *fData = new TFile("outplots/outplots2022_data_noPU.root");
+  // Make Changes Here
+  TString figdir = "Figures23_test/";
+  TString year = "2023";
+  TFile *fMC = new TFile("outplots/outplots2023_mc_noPU_test.root");
+  TFile *fData = new TFile("outplots/outplots2023_data_noPU_test.root");
   TF1 *funcGaus = new TF1("fitGaus","gaus",0,100);
   funcGaus->SetLineWidth(2);
   canvas->SetLogy(0);
@@ -85,7 +87,7 @@ void MakePNGPlots22() {
   TextMassData.SetTextFont(42);     
   TextMassData.SetNDC();     
   TextMassData.SetTextSize(0.03);
-  TextMassData.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (2022)}}");
+  TextMassData.DrawLatex(0.6,0.86,"#scale[1.2]{#font[62]{Inv. mass (" + year + ")}}");
   TextMassData.DrawLatex(0.6,0.81,EntriesMassData);
   TextMassData.DrawLatex(0.6,0.77,MeanMassData);
   TextMassData.DrawLatex(0.6,0.73,SigmaMassData);
@@ -119,7 +121,7 @@ void MakePNGPlots22() {
   if (MC_maxDPhi > Data_maxDPhi) LSRAtioStack->SetMaximum(MC_maxDPhi);
   if (MC_maxDPhi < Data_maxDPhi) LSRAtioStack->SetMaximum(Data_maxDPhi);
   TLegend* legendLSRAtio = new TLegend(0.475,0.775,0.625,0.875,"","NDC");
-  legendLSRAtio->AddEntry(hLSRAtioData, "2022", "p");
+  legendLSRAtio->AddEntry(hLSRAtioData, year, "p");
   legendLSRAtio->AddEntry(hLSRAtioMC, "MC LO", "p");
   legendLSRAtio->SetBorderSize(0);
   legendLSRAtio->Draw();
@@ -505,7 +507,7 @@ void MakePNGPlots22() {
   PhiStack->SetMaximum(90);
   TLegend* legendPhi = new TLegend(0.2,0.2,0.35,0.3,"","NDC");
   legendPhi->AddEntry(hPhiMCAll, "MC LO", "ep");
-  legendPhi->AddEntry(hPhiDataAll, "2022", "ep");
+  legendPhi->AddEntry(hPhiDataAll, year, "ep");
   legendPhi->SetLineColor(kWhite);
   legendPhi->SetBorderSize(0);
   legendPhi->Draw();
@@ -691,7 +693,7 @@ void MakePNGPlots22() {
     EtaPhiFitStack->SetMinimum(50);
     EtaPhiFitStack->SetMaximum(100);
     TLegend* legendEtaPhiFit = new TLegend(0.25,0.75,0.4,0.85,EtaRange[e-30],"NDC");
-    legendEtaPhiFit->AddEntry(hEtaPhiFitDataAll, "2022", "ep");
+    legendEtaPhiFit->AddEntry(hEtaPhiFitDataAll, year, "ep");
     legendEtaPhiFit->AddEntry(hEtaPhiFitMCAll, "MC LO", "ep");
     legendEtaPhiFit->SetBorderSize(0);
     legendEtaPhiFit->Draw();
@@ -725,7 +727,7 @@ void MakePNGPlots22() {
     if (MC_maxPU > Data_maxPU) EtaPUStack->SetMaximum(MC_maxPU);
     if (MC_maxPU < Data_maxPU) EtaPUStack->SetMaximum(Data_maxPU);
     TLegend* legendEtaPU = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaPU->AddEntry(hEtaPUData, "2022", "p");
+    legendEtaPU->AddEntry(hEtaPUData, year, "p");
     legendEtaPU->AddEntry(hEtaPUMC, "MC LO", "p");
     legendEtaPU->SetBorderSize(0);
     legendEtaPU->Draw();
@@ -759,7 +761,7 @@ void MakePNGPlots22() {
     if (MC_maxPhi > Data_maxPhi) EtaPhiStack->SetMaximum(MC_maxPhi);
     if (MC_maxPhi < Data_maxPhi) EtaPhiStack->SetMaximum(Data_maxPhi);
     TLegend* legendEtaPhi = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaPhi->AddEntry(hEtaPhiData, "2022", "p");
+    legendEtaPhi->AddEntry(hEtaPhiData, year, "p");
     legendEtaPhi->AddEntry(hEtaPhiMC, "MC LO", "p");
     legendEtaPhi->SetBorderSize(0);
     legendEtaPhi->Draw();
@@ -793,7 +795,7 @@ void MakePNGPlots22() {
     if (MC_maxPhiEE > Data_maxPhiEE) EtaPhiEEStack->SetMaximum(MC_maxPhiEE);
     if (MC_maxPhiEE < Data_maxPhiEE) EtaPhiEEStack->SetMaximum(Data_maxPhiEE);
     TLegend* legendEtaPhiEE = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaPhiEE->AddEntry(hEtaPhiEEData, "2022", "p");
+    legendEtaPhiEE->AddEntry(hEtaPhiEEData, year, "p");
     legendEtaPhiEE->AddEntry(hEtaPhiEEMC, "MC LO", "p");
     legendEtaPhiEE->SetBorderSize(0);
     legendEtaPhiEE->Draw();
@@ -827,7 +829,7 @@ void MakePNGPlots22() {
     if (MC_maxEtaEE > Data_maxEtaEE) EtaEtaEEStack->SetMaximum(MC_maxEtaEE);
     if (MC_maxEtaEE < Data_maxEtaEE) EtaEtaEEStack->SetMaximum(Data_maxEtaEE);
     TLegend* legendEtaEtaEE = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaEtaEE->AddEntry(hEtaEtaEEData, "2022", "p");
+    legendEtaEtaEE->AddEntry(hEtaEtaEEData, year, "p");
     legendEtaEtaEE->AddEntry(hEtaEtaEEMC, "MC LO", "p");
     legendEtaEtaEE->SetBorderSize(0);
     legendEtaEtaEE->Draw();
@@ -861,7 +863,7 @@ void MakePNGPlots22() {
     if (MC_maxDPhi > Data_maxDPhi) EtaDPhiStack->SetMaximum(MC_maxDPhi);
     if (MC_maxDPhi < Data_maxDPhi) EtaDPhiStack->SetMaximum(Data_maxDPhi);
     TLegend* legendEtaDPhi = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaDPhi->AddEntry(hEtaDPhiData, "2022", "p");
+    legendEtaDPhi->AddEntry(hEtaDPhiData, year, "p");
     legendEtaDPhi->AddEntry(hEtaDPhiMC, "MC LO", "p");
     legendEtaDPhi->SetBorderSize(0);
     legendEtaDPhi->Draw();
@@ -895,7 +897,7 @@ void MakePNGPlots22() {
     if (MC_maxEn > Data_maxEn) EtaEnStack->SetMaximum(MC_maxEn);
     if (MC_maxEn < Data_maxEn) EtaEnStack->SetMaximum(Data_maxEn);
     TLegend* legendEtaEn = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaEn->AddEntry(hEtaEnData, "2022", "p");
+    legendEtaEn->AddEntry(hEtaEnData, year, "p");
     legendEtaEn->AddEntry(hEtaEnMC, "MC LO", "p");
     legendEtaEn->SetBorderSize(0);
     legendEtaEn->Draw();
@@ -929,7 +931,7 @@ void MakePNGPlots22() {
     if (MC_maxEnEE > Data_maxEnEE) EtaEnEEStack->SetMaximum(MC_maxEnEE);
     if (MC_maxEnEE < Data_maxEnEE) EtaEnEEStack->SetMaximum(Data_maxEnEE);
     TLegend* legendEtaEnEE = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEtaEnEE->AddEntry(hEtaEnEEData, "2022", "p");
+    legendEtaEnEE->AddEntry(hEtaEnEEData, year, "p");
     legendEtaEnEE->AddEntry(hEtaEnEEMC, "MC LO", "p");
     legendEtaEnEE->SetBorderSize(0);
     legendEtaEnEE->Draw();
@@ -963,7 +965,7 @@ void MakePNGPlots22() {
     if (MC_max_lsRatio > Data_max_lsRatio) Eta_lsRatioStack->SetMaximum(MC_max_lsRatio);
     if (MC_max_lsRatio < Data_max_lsRatio) Eta_lsRatioStack->SetMaximum(Data_max_lsRatio);
     TLegend* legendEta_lsRatio = new TLegend(0.475,0.775,0.625,0.875,EtaRange[e-30],"NDC");
-    legendEta_lsRatio->AddEntry(hEta_lsRatioData, "2022", "p");
+    legendEta_lsRatio->AddEntry(hEta_lsRatioData, year, "p");
     legendEta_lsRatio->AddEntry(hEta_lsRatioMC, "MC LO", "p");
     legendEta_lsRatio->SetBorderSize(0);
     legendEta_lsRatio->Draw();
@@ -1018,7 +1020,7 @@ void MakePNGPlots22() {
     hRunData->SetMinimum(65);
     hRunData->SetMaximum(85);
     TLegend* legendRun = new TLegend(0.7,0.7,0.85,0.85,"","NDC");
-    legendRun->AddEntry(hRunData, "2022", "ep");
+    legendRun->AddEntry(hRunData, year, "ep");
     legendRun->SetBorderSize(0);
     legendRun->Draw();
     CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
