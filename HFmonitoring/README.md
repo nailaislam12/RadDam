@@ -163,7 +163,14 @@ This analysis focuses on assessing the radiation damage to HF and deriving appro
 ### Radiation Damage 
 
 ### Pileup 
-The p<sub>T</sub> of both electrons (ECAL and HF) is corrected in both data and MC to remove the dependence of the reconstructed Z mass on the number of PU vertices in a given evnet.
+The p<sub>T</sub> of both electrons (ECAL and HF) is corrected in both data and MC to remove the dependence of the reconstructed Z mass on the number of PU vertices in a given evnet. The corrections are applied in the following lines:
+```
+if (usePU == 1) { puCorrection = 1./(1.0 + 0.095/78.464*(nvtx-29)); } // MC (peak @ 29)
+if (usePU == 1 && isData == 1 ) { puCorrection = 1./(1.0 + 0.078/68.909*(nvtx-27)); } // Data (peak @ 27)
+```
+The formula for the PU corrections are
+$$ \frac{1}{1 + \frac{m}{b}(x - p)} $$
+
 ## Typical Workflow
 After the requisite data and mc samples have been processed through steps 1 and 2, the analysis/plotting step is run multiple times
 - **Bare Comparisons:** First analyze both data and mc with **no** corrections applied, to make plots with the bare data/mc comparisons. The results of this step will be used to derive corrections if necessary. During the analysis step of data, you can derive the factors, it will not affect the plots
