@@ -116,7 +116,7 @@ Analysis22::Analysis22( const char* fname) : fChain(0)
 
   if (!f || !f->IsOpen()) {
     std::cout << ">>> Failed to open file :(" << std::endl;
-    return 1;
+    return;
   }
   f->GetObject("miniTree",tree);
   Init(tree);
@@ -136,7 +136,7 @@ Analysis22::Analysis22( const char* fname, Bool_t isData) : fChain(0)
 
   if (!f || !f->IsOpen()) {
     std::cout << ">>> Failed to open file :(" << std::endl;
-    return 1;
+    return;
   }
   f->GetObject("miniTree",tree);
   Init(tree);
