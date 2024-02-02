@@ -4,6 +4,7 @@
 #include "setTDRStyle.C"
 
 void MakePNGPlots22() {
+  std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
   setTDRStyle();
   TCanvas* canvas = new TCanvas("canvas");
   // Make Changes Here
@@ -47,7 +48,7 @@ void MakePNGPlots22() {
   hMassMC->GetXaxis()->SetLabelSize(0.04);
   hMassMC->GetYaxis()->SetLabelSize(0.03);
   hMassMC->SetLineColor(kBlack);
-  hMassMC->Fit("fitGaus","RS");
+  hMassMC->Fit("fitGaus","RSQ");
   TString EntriesMassMC = TString::Format("Entries: %.0f", hMassMC->GetEntries());
   TString MeanMassMC = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
   TString SigmaMassMC = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
@@ -79,7 +80,7 @@ void MakePNGPlots22() {
   hMassData->GetXaxis()->SetLabelSize(0.04);
   hMassData->GetYaxis()->SetLabelSize(0.03);
   hMassData->SetLineColor(kBlack);
-  hMassData->Fit("fitGaus","RS");
+  hMassData->Fit("fitGaus","RSQ");
   TString EntriesMassData = TString::Format("Entries: %.0f", hMassData->GetEntries());
   TString MeanMassData = TString::Format("#mu = %.3f #pm %.3f", funcGaus->GetParameter(1), funcGaus->GetParError(1));
   TString SigmaMassData = TString::Format("#sigma = %.3f #pm %.3f", funcGaus->GetParameter(2), funcGaus->GetParError(2));
@@ -132,7 +133,8 @@ void MakePNGPlots22() {
   
   canvas->SetLogy(0);
   
-  //Eta 
+  // Eta Loop
+  gROOT->SetBatch(kTRUE);
   TH1F *hEtaMCAll = new TH1F("hEtaMCAll", "", 10, 29.5, 39.5);
   TH1F *hEtaPlusDataAll = new TH1F("hEtaPlusDataAll", "", 10, 29.5, 39.5);
   TH1F *hEtaMinusDataAll = new TH1F("hEtaMinusDataAll", "", 10, 29.5, 39.5);
@@ -146,7 +148,7 @@ void MakePNGPlots22() {
     TH1F *hEtaPlusMC = (TH1F*)fMC->Get(EtaPlusNum);
     hEtaPlusMC->Draw();
     funcGaus->SetRange(hEtaPlusMC->GetMaximumBin()+5,hEtaPlusMC->GetMaximumBin()+35);
-    TFitResultPtr FitResultEtaPlusMC = hEtaPlusMC->Fit("fitGaus","RS");
+    TFitResultPtr FitResultEtaPlusMC = hEtaPlusMC->Fit("fitGaus","RSQ");
     double mcPlus = funcGaus->GetParameter(1);
     double mcPlusErr = funcGaus->GetParError(1);
     double mcWidthPlus = funcGaus->GetParameter(2);
@@ -176,7 +178,7 @@ void MakePNGPlots22() {
     TH1F *hEtaPlusData = (TH1F*)fData->Get(EtaPlusNum);
     hEtaPlusData->Draw();
     funcGaus->SetRange(hEtaPlusData->GetMaximumBin()+5,hEtaPlusData->GetMaximumBin()+35);
-    TFitResultPtr FitResultEtaPlusData = hEtaPlusData->Fit("fitGaus","RS");
+    TFitResultPtr FitResultEtaPlusData = hEtaPlusData->Fit("fitGaus","RSQ");
     double dataPlus = funcGaus->GetParameter(1);
     double dataPlusErr = funcGaus->GetParError(1);
     double dataWidthPlus = funcGaus->GetParameter(2);
@@ -190,7 +192,7 @@ void MakePNGPlots22() {
     TextEtaPlusData.SetTextFont(42);     
     TextEtaPlusData.SetNDC();     
     TextEtaPlusData.SetTextSize(0.02);
-    TextEtaPlusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaPlusBin+" (2022)}");
+    TextEtaPlusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaPlusBin+" ("+year+")}");
     TextEtaPlusData.DrawLatex(0.7,0.82,EntriesEtaPlusData);
     TextEtaPlusData.DrawLatex(0.7,0.79,MeanEtaPlusData);
     TextEtaPlusData.DrawLatex(0.7,0.76,SigmaEtaPlusData);
@@ -209,7 +211,7 @@ void MakePNGPlots22() {
     TH1F *hEtaMinusMC = (TH1F*)fMC->Get(EtaMinusNum);
     hEtaMinusMC->Draw();
     funcGaus->SetRange(hEtaMinusMC->GetMaximumBin()+5,hEtaMinusMC->GetMaximumBin()+35);
-    TFitResultPtr FitResultEtaMinusMC = hEtaMinusMC->Fit("fitGaus","RS");
+    TFitResultPtr FitResultEtaMinusMC = hEtaMinusMC->Fit("fitGaus","RSQ");
     double mcMinus = funcGaus->GetParameter(1);
     double mcMinusErr = funcGaus->GetParError(1);
     double mcWidthMinus = funcGaus->GetParameter(2);
@@ -239,7 +241,7 @@ void MakePNGPlots22() {
     TH1F *hEtaMinusData = (TH1F*)fData->Get(EtaMinusNum);
     hEtaMinusData->Draw();
     funcGaus->SetRange(hEtaMinusData->GetMaximumBin()+5,hEtaMinusData->GetMaximumBin()+35);
-    TFitResultPtr FitResultEtaMinusData = hEtaMinusData->Fit("fitGaus","RS");
+    TFitResultPtr FitResultEtaMinusData = hEtaMinusData->Fit("fitGaus","RSQ");
     double dataMinus = funcGaus->GetParameter(1);
     double dataMinusErr = funcGaus->GetParError(1);
     double dataWidthMinus = funcGaus->GetParameter(2);
@@ -253,7 +255,7 @@ void MakePNGPlots22() {
     TextEtaMinusData.SetTextFont(42);     
     TextEtaMinusData.SetNDC();     
     TextEtaMinusData.SetTextSize(0.02);
-    TextEtaMinusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaMinusBin+" (2022)}");
+    TextEtaMinusData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+EtaMinusBin+" ("+year+")}");
     TextEtaMinusData.DrawLatex(0.7,0.82,EntriesEtaMinusData);
     TextEtaMinusData.DrawLatex(0.7,0.79,MeanEtaMinusData);
     TextEtaMinusData.DrawLatex(0.7,0.76,SigmaEtaMinusData);
@@ -279,6 +281,7 @@ void MakePNGPlots22() {
     
     canvas->SetLogy(0);
   } // end eta loop
+  gROOT->SetBatch(kFALSE);
   // std::cout << "EXITING" << std::endl;
   // return;
 	
@@ -329,8 +332,8 @@ void MakePNGPlots22() {
   //TLegend* legendEta = new TLegend(0.63,0.65,0.83,0.85,"","NDC");
   TLegend* legendEta = new TLegend(0.63,0.15,0.83,0.30,"","NDC");
   legendEta->AddEntry(hEtaMCAll, "MC LO", "l");
-  legendEta->AddEntry(hEtaPlusDataAll, "2022 HF+", "ep");
-  legendEta->AddEntry(hEtaMinusDataAll, "2022 HF-", "ep");
+  legendEta->AddEntry(hEtaPlusDataAll, ""+year+" HF+", "ep");
+  legendEta->AddEntry(hEtaMinusDataAll, ""+year+" HF-", "ep");
   legendEta->SetBorderSize(0);
   legendEta->Draw();
   CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
@@ -369,8 +372,8 @@ void MakePNGPlots22() {
   hEtaPRatio->SetMinimum(0);
   hEtaPRatio->SetMaximum(1.6);
   TLegend* legendEtaRatio = new TLegend(0.2,0.2,0.5,0.3,"","NDC");
-  legendEtaRatio->AddEntry(hEtaPRatio, "2022 HF+ Ratio", "ep");
-  legendEtaRatio->AddEntry(hEtaMRatio, "2022 HF- Ratio", "ep");
+  legendEtaRatio->AddEntry(hEtaPRatio, ""+year+" HF+ Ratio", "ep");
+  legendEtaRatio->AddEntry(hEtaMRatio, ""+year+" HF- Ratio", "ep");
   legendEtaRatio->SetBorderSize(0);
   legendEtaRatio->Draw();
   CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
@@ -409,16 +412,17 @@ void MakePNGPlots22() {
   //TLegend* legendEtaWidth = new TLegend(0.63,0.65,0.83,0.85,"","NDC");
   TLegend* legendEtaWidth = new TLegend(0.23,0.65,0.43,0.85,"","NDC");
   legendEtaWidth->AddEntry(hEtaWidthMCAll, "MC LO", "l");
-  legendEtaWidth->AddEntry(hEtaWidthDataAll, "2022 HF", "ep");
+  legendEtaWidth->AddEntry(hEtaWidthDataAll, ""+year+" HF", "ep");
   legendEtaWidth->SetBorderSize(0);
   legendEtaWidth->Draw();
   CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
   canvas->Print( figdir + "EtaWidthFit.png");
   canvas->Clear();
 	
-  //Phi 
+  // Phi Loop
   TH1F *hPhiMCAll = new TH1F("hPhiMCAll", "", 71, 0.5, 71.5);
   TH1F *hPhiDataAll = new TH1F("hPhiDataAll", "", 71, 0.5, 71.5);
+  gROOT->SetBatch(kTRUE);
   for(int i = 1; i <= 71; i+=2) {
     TString PhiNum = TString::Format("phi%i", i);
     TString PhiBin = TString::Format("#phi%i", i);
@@ -426,7 +430,7 @@ void MakePNGPlots22() {
 				
     TH1F *hPhiMC = (TH1F*)fMC->Get(PhiNum);
     funcGaus->SetRange(hPhiMC->GetMaximumBin()+5,hPhiMC->GetMaximumBin()+35);
-    TFitResultPtr FitResultPhiMC = hPhiMC->Fit("fitGaus","RS");		
+    TFitResultPtr FitResultPhiMC = hPhiMC->Fit("fitGaus","RSQ");		
     hPhiMC->Draw();
     hPhiMCAll->SetBinContent(i, funcGaus->GetParameter(1));
     hPhiMCAll->SetBinError(i, funcGaus->GetParError(1));
@@ -454,7 +458,7 @@ void MakePNGPlots22() {
 		
     TH1F *hPhiData = (TH1F*)fData->Get(PhiNum);
     funcGaus->SetRange(hPhiData->GetMaximumBin()+5,hPhiData->GetMaximumBin()+35);
-    TFitResultPtr FitResultPhiData = hPhiData->Fit("fitGaus","RS");		
+    TFitResultPtr FitResultPhiData = hPhiData->Fit("fitGaus","RSQ");		
     hPhiData->Draw();
     hPhiDataAll->SetBinContent(i, funcGaus->GetParameter(1));
     hPhiDataAll->SetBinError(i, funcGaus->GetParError(1));
@@ -467,7 +471,7 @@ void MakePNGPlots22() {
     TextPhiData.SetTextFont(42);     
     TextPhiData.SetNDC();     
     TextPhiData.SetTextSize(0.02);
-    TextPhiData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+PhiBin+" (2022)}");
+    TextPhiData.DrawLatex(0.7,0.86,"#scale[1.4]{i"+PhiBin+" ("+year+")}");
     TextPhiData.DrawLatex(0.7,0.82,EntriesPhiData);
     TextPhiData.DrawLatex(0.7,0.79,MeanPhiData);
     TextPhiData.DrawLatex(0.7,0.76,SigmaPhiData);
@@ -481,7 +485,8 @@ void MakePNGPlots22() {
     canvas->Clear();
 		
     canvas->SetLogy(0);
-  }
+  } // end phi loop
+  gROOT->SetBatch(kFALSE);
 	
   hPhiMCAll->SetMarkerStyle(20);
   hPhiMCAll->SetMarkerSize(0.75);
@@ -536,6 +541,7 @@ void MakePNGPlots22() {
   TH1F *hPUmcFit = new TH1F("hPUmcFit", "", 9, 0, 54);
   TH1F *hPUdataFit = new TH1F("hPUdataFit", "", 9, 0, 54);
   const TString PUbin[] = {"nVtx 1-6","nVtx 6-12","nVtx 12-18","nVtx 18-24","nVtx 24-30","nVtx 30-36","nVtx 36-42","nVtx 42-48","nVtx 48+"};
+  gROOT->SetBatch(kTRUE);
   for(int i = 1; i <= 9; ++i) {
     TString PUnum = TString::Format("nVtx%i", i);
     canvas->SetLogy(0);
@@ -543,7 +549,7 @@ void MakePNGPlots22() {
     TH1F *hPUmc = (TH1F*)fMC->Get(PUnum);
     if (hPUmc->GetEntries() > 0) {
       funcGaus->SetRange(hPUmc->GetMaximumBin()+5,hPUmc->GetMaximumBin()+35);
-      TFitResultPtr FitResultPUmc = hPUmc->Fit("fitGaus","RS");		
+      TFitResultPtr FitResultPUmc = hPUmc->Fit("fitGaus","RSQ");		
       hPUmcFit->SetBinContent(i, funcGaus->GetParameter(1));
       hPUmcFit->SetBinError(i, funcGaus->GetParError(1));
       TString EntriesPUmc = TString::Format("Entries: %.0f", hPUmc->GetEntries());
@@ -571,7 +577,7 @@ void MakePNGPlots22() {
     TH1F *hPUdata = (TH1F*)fData->Get(PUnum);
     if (hPUdata->GetEntries() > 0) {
       funcGaus->SetRange(hPUdata->GetMaximumBin()+5,hPUdata->GetMaximumBin()+35);
-      TFitResultPtr FitResultPUdata = hPUdata->Fit("fitGaus","RS");		
+      TFitResultPtr FitResultPUdata = hPUdata->Fit("fitGaus","RSQ");		
       hPUdataFit->SetBinContent(i, funcGaus->GetParameter(1));
       hPUdataFit->SetBinError(i, funcGaus->GetParError(1));
       TString EntriesPUdata = TString::Format("Entries: %.0f", hPUdata->GetEntries());
@@ -583,7 +589,7 @@ void MakePNGPlots22() {
       TextPUdata.SetTextFont(42);     
       TextPUdata.SetNDC();     
       TextPUdata.SetTextSize(0.02);
-      TextPUdata.DrawLatex(0.7,0.86,"#scale[1.4]{"+PUbin[i-1]+" (2022)}");
+      TextPUdata.DrawLatex(0.7,0.86,"#scale[1.4]{"+PUbin[i-1]+" ("+year+")}");
       TextPUdata.DrawLatex(0.7,0.82,EntriesPUdata);
       TextPUdata.DrawLatex(0.7,0.79,MeanPUdata);
       TextPUdata.DrawLatex(0.7,0.76,SigmaPUdata);
@@ -597,7 +603,8 @@ void MakePNGPlots22() {
       canvas->Clear();}
 		
     canvas->SetLogy(0);
-  }
+  } // end PU loop
+  gROOT->SetBatch(kFALSE);
 	
   hPUmcFit->SetMarkerStyle(21);
   hPUmcFit->SetMarkerSize(1);
@@ -607,7 +614,7 @@ void MakePNGPlots22() {
   hPUmcFit->GetYaxis()->SetRangeUser(50,100);
   hPUmcFit->GetXaxis()->SetTitle("nVtx");
   hPUmcFit->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
-  hPUmcFit->Fit("fitLinMC","R");
+  hPUmcFit->Fit("fitLinMC","RQ");
   TString LinFitMC = TString::Format("MC LO: %.3f + %.3f #times nVtx", funcLinMC->GetParameter(0), funcLinMC->GetParameter(1));
   if (funcLinMC->GetParameter(1) < 0) LinFitMC = TString::Format("MC LO: %.3f - %.3f #times nVtx", funcLinMC->GetParameter(0), (-1)*funcLinMC->GetParameter(1));
 	
@@ -619,9 +626,9 @@ void MakePNGPlots22() {
   hPUdataFit->GetYaxis()->SetRangeUser(50,100);
   hPUdataFit->GetXaxis()->SetTitle("nVtx");
   hPUdataFit->GetYaxis()->SetTitle("M_{e, hf}^{fit} (GeV)");
-  hPUdataFit->Fit("fitLinData","R");
-  TString LinFitData = TString::Format("2022: %.3f + %.3f #times nVtx", funcLinData->GetParameter(0), funcLinData->GetParameter(1));
-  if (funcLinData->GetParameter(1) < 0) LinFitData = TString::Format("2022: %.3f - %.3f #times nVtx", funcLinData->GetParameter(0), (-1)*funcLinData->GetParameter(1));
+  hPUdataFit->Fit("fitLinData","RQ");
+  TString LinFitData = TString::Format(year+": %.3f + %.3f #times nVtx", funcLinData->GetParameter(0), funcLinData->GetParameter(1));
+  if (funcLinData->GetParameter(1) < 0) LinFitData = TString::Format(year+": %.3f - %.3f #times nVtx", funcLinData->GetParameter(0), (-1)*funcLinData->GetParameter(1));
 	
   THStack *PUStack = new THStack("PUstack", "");
   PUStack->Add(hPUmcFit);
@@ -642,6 +649,7 @@ void MakePNGPlots22() {
   canvas->Clear();
   
   TString EtaRange[12] = {"i#eta30","i#eta31","i#eta32","i#eta33","i#eta34","i#eta35","i#eta36","i#eta37","i#eta38","i#eta39","i#eta40","i#eta41"};
+  gROOT->SetBatch(kTRUE);
   for (int e = 30; e <= 41; ++e) {	
     
     TH1F *hEtaPhiFitDataAll = new TH1F("hEtaPhiFitDataAll", "", 71, 0.5, 71.5);
@@ -654,7 +662,7 @@ void MakePNGPlots22() {
       TString EtaPhiFitNum = TString::Format("eta%iphi%i", e, i);
       TH1F *hEtaPhiFitData = (TH1F*)fData->Get(EtaPhiFitNum);
       funcGaus->SetRange(hEtaPhiFitData->GetMaximumBin()+10,hEtaPhiFitData->GetMaximumBin()+30);
-      hEtaPhiFitData->Fit("fitGaus","RS");
+      hEtaPhiFitData->Fit("fitGaus","RSQ");
       hEtaPhiFitData->Draw();
       hEtaPhiFitDataAll->SetBinContent(i, funcGaus->GetParameter(1));
       hEtaPhiFitDataAll->SetBinError(i, funcGaus->GetParError(1));
@@ -662,7 +670,7 @@ void MakePNGPlots22() {
 				
       TH1F *hEtaPhiFitMC = (TH1F*)fMC->Get(EtaPhiFitNum);
       funcGaus->SetRange(hEtaPhiFitMC->GetMaximumBin()+10,hEtaPhiFitMC->GetMaximumBin()+30);
-      hEtaPhiFitMC->Fit("fitGaus","RS");
+      hEtaPhiFitMC->Fit("fitGaus","RSQ");
       hEtaPhiFitMC->Draw();
       hEtaPhiFitMCAll->SetBinContent(i, funcGaus->GetParameter(1));
       hEtaPhiFitMCAll->SetBinError(i, funcGaus->GetParError(1));
@@ -973,7 +981,8 @@ void MakePNGPlots22() {
     TString Eta_lsRatioFitName = TString::Format( figdir + "EtaBin/Eta%ilsRatio.png", e);
     canvas->Print(Eta_lsRatioFitName);
     canvas->Clear();
-  }
+  } // end etaphi loop
+  gROOT->SetBatch(kFALSE);
 	
   //Run Data
   /*TH1F *hRunData = new TH1F("hRunData", "", 5, 0, 5);
@@ -982,7 +991,7 @@ void MakePNGPlots22() {
     for(int i = 1; i <= 5; ++i) {
     TH1F *hRun = (TH1F*)fData->Get(RunName[i-1]);
     funcGaus->SetRange(hRun->GetMaximumBin()+5,hRun->GetMaximumBin()+35);
-    TFitResultPtr FitResultRunData = hRun->Fit("fitGaus","RS");
+    TFitResultPtr FitResultRunData = hRun->Fit("fitGaus","RSQ");
     hRunData->SetBinContent(i, funcGaus->GetParameter(1));
     hRunData->SetBinError(i, funcGaus->GetParError(1));
     hRunData->GetXaxis()->SetBinLabel(i,RunLabel[i-1]);		
@@ -1026,5 +1035,8 @@ void MakePNGPlots22() {
     CMSlabel.DrawLatex(0.128,0.955,"#bf{CMS} #it{Preliminary}");
     canvas->Print( figdir + "Run.png");
     canvas->Clear();*/
-	
+
+  // std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
+  std::cout << "Finished in " << round(std::chrono::duration<float>(std::chrono::high_resolution_clock::now() - start).count()) << " seconds" << std::endl;
+  std::cout << "All Done!" << std::endl;
 }

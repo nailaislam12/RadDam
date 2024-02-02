@@ -11,6 +11,7 @@
 #include "CMSStyle.C"
 
 #include "Raddam.C"
+#include "../progressBar.C"
 
 using namespace std;
 void beautify(TH1F* plot, TString xTitle, TString yTitle, int color) {
@@ -161,7 +162,7 @@ float getRaddamCorrection( float eta) {
 
 std::string getOutName( bool isData, bool usePU, bool useRaddam, int nf, std::string tag="") {
   std::string outdir  = "outplots/";
-  std::string outname = outdir + "outplots2022";
+  std::string outname = outdir + "outplots2023";
   if (isData)
     outname += "_data";
   else
@@ -192,7 +193,7 @@ void Analysis22::Loop() {
   // Always use PU, dummy
   bool usePU = false;
   bool useRaddam = false;
-  int numfactors = 11; // Number of factors to check, set to zero if NO rederiving factors
+  int numfactors = 0; // Number of factors to check, set to zero if NO rederiving factors
   float finterval = 0.1; // spacing between factors
   std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "test");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
@@ -912,18 +913,21 @@ void Analysis22::Loop() {
   std::stringstream ratio;
 
   // nentries = 10000;
+  std::cout << "Processing " << nentries << " events..." << std::endl;
+  std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
     eventsProcessed++;
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
 
+    progressBar( jentry, nentries, start);
     // if ( jentry%1000 == 0 ) cout << "Processed " << jentry << " events" << endl;
-    if ((jentry % (nentries / 50)) == 0) {
-      ratio << std::fixed << std::setprecision(2) << 100.0 * (double)jentry / nentries;
-      std::cout << ratio.str() << "%" << std::endl;
-      ratio.str(std::string());
-    }
+    // if ((jentry % (nentries / 50)) == 0) {
+    //   ratio << std::fixed << std::setprecision(2) << 100.0 * (double)jentry / nentries;
+    //   std::cout << ratio.str() << "%" << std::endl;
+    //   ratio.str(std::string());
+    // }
       
     // PU bins
     bool PU1 = (nvtx <= 6); 
