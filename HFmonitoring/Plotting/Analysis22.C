@@ -40,8 +40,8 @@ int getEtaIndex(float eta) {
 float getRaddamRatio( float eta) {
 
   // Eta Minus
-  // if ((eta < -2.964) && (eta > -3.139))
-  if ((eta < -2.850) && (eta > -3.139))
+  if ((eta < -2.964) && (eta > -3.139))
+  // if ((eta < -2.850) && (eta > -3.139))
     return RaddamRatios[-30];
   else if ((eta < -3.139) && (eta > -3.314)) 
     return RaddamRatios[-31];
@@ -67,8 +67,8 @@ float getRaddamRatio( float eta) {
     return RaddamRatios[-41];
 
   // Eta Plus
-  // if ((eta > 2.964) && (eta < 3.139)) 
-  if ((eta > 2.850) && (eta < 3.139))
+  if ((eta > 2.964) && (eta < 3.139)) 
+  // if ((eta > 2.850) && (eta < 3.139))
     return RaddamRatios[30];
   else if ((eta > 3.139) && (eta < 3.314)) 
     return RaddamRatios[31];
@@ -103,8 +103,8 @@ float getRaddamRatio( float eta) {
 float getRaddamCorrection( float eta) {
 
   // Eta Minus
-  // if ((eta < -2.964) && (eta > -3.139))
-  if ((eta < -2.850) && (eta > -3.139))
+  if ((eta < -2.964) && (eta > -3.139))
+    // if ((eta < -2.850) && (eta > -3.139))
     return RaddamCorrections[-30];
   else if ((eta < -3.139) && (eta > -3.314)) 
     return RaddamCorrections[-31];
@@ -130,8 +130,8 @@ float getRaddamCorrection( float eta) {
     return 1;
 
   // Eta Plus
-  // if ((eta > 2.964) && (eta < 3.139)) 
-  if ((eta > 2.850) && (eta < 3.139))
+  if ((eta > 2.964) && (eta < 3.139)) 
+  // if ((eta > 2.850) && (eta < 3.139))
     return RaddamCorrections[30];
   else if ((eta > 3.139) && (eta < 3.314)) 
     return RaddamCorrections[31];
@@ -222,7 +222,7 @@ void Analysis22::Loop() {
   else 
     std::cout << ">>> Calculating Factors" << std::endl;
    
-  TH1F* h_nvtx = new TH1F("h_nvtx", "", 60, 0, 60);
+  TH1F* h_nvtx = new TH1F("h_nvtx", "", 100, 0, 100);
   beautify(h_nvtx, "nVtx", "Events", 2);
 
   TH1F* h_lsRatio = new TH1F("h_lsRatio", "", 80, 0, 20);
@@ -729,29 +729,29 @@ void Analysis22::Loop() {
   TH1F* eta41phi67  = new TH1F("eta41phi67", "", 140, 20, 160);
   TH1F* eta41phi71  = new TH1F("eta41phi71", "", 140, 20, 160);
    
-  TH1F* eta30nvtx = new TH1F("eta30nvtx", "", 60, 0, 60);
+  TH1F* eta30nvtx = new TH1F("eta30nvtx", "", 100, 0, 100);
   beautify(eta30nvtx, "nVtx (i#eta30)", "Events", 2);
-  TH1F* eta31nvtx = new TH1F("eta31nvtx", "", 60, 0, 60);
+  TH1F* eta31nvtx = new TH1F("eta31nvtx", "", 100, 0, 100);
   beautify(eta31nvtx, "nVtx (i#eta31)", "Events", 2);
-  TH1F* eta32nvtx = new TH1F("eta32nvtx", "", 60, 0, 60);
+  TH1F* eta32nvtx = new TH1F("eta32nvtx", "", 100, 0, 100);
   beautify(eta32nvtx, "nVtx (i#eta32)", "Events", 2);
-  TH1F* eta33nvtx = new TH1F("eta33nvtx", "", 60, 0, 60);
+  TH1F* eta33nvtx = new TH1F("eta33nvtx", "", 100, 0, 100);
   beautify(eta33nvtx, "nVtx (i#eta33)", "Events", 2);
-  TH1F* eta34nvtx = new TH1F("eta34nvtx", "", 60, 0, 60);
+  TH1F* eta34nvtx = new TH1F("eta34nvtx", "", 100, 0, 100);
   beautify(eta34nvtx, "nVtx (i#eta34)", "Events", 2);
-  TH1F* eta35nvtx = new TH1F("eta35nvtx", "", 60, 0, 60);
+  TH1F* eta35nvtx = new TH1F("eta35nvtx", "", 100, 0, 100);
   beautify(eta35nvtx, "nVtx (i#eta35)", "Events", 2);
-  TH1F* eta36nvtx = new TH1F("eta36nvtx", "", 60, 0, 60);
+  TH1F* eta36nvtx = new TH1F("eta36nvtx", "", 100, 0, 100);
   beautify(eta36nvtx, "nVtx (i#eta36)", "Events", 2);
-  TH1F* eta37nvtx = new TH1F("eta37nvtx", "", 60, 0, 60);
+  TH1F* eta37nvtx = new TH1F("eta37nvtx", "", 100, 0, 100);
   beautify(eta37nvtx, "nVtx (i#eta37)", "Events", 2);
-  TH1F* eta38nvtx = new TH1F("eta38nvtx", "", 60, 0, 60);
+  TH1F* eta38nvtx = new TH1F("eta38nvtx", "", 100, 0, 100);
   beautify(eta38nvtx, "nVtx (i#eta38)", "Events", 2);
-  TH1F* eta39nvtx = new TH1F("eta39nvtx", "", 60, 0, 60);
+  TH1F* eta39nvtx = new TH1F("eta39nvtx", "", 100, 0, 100);
   beautify(eta39nvtx, "nVtx (i#eta39)", "Events", 2);
-  TH1F* eta40nvtx = new TH1F("eta40nvtx", "", 60, 0, 60);
+  TH1F* eta40nvtx = new TH1F("eta40nvtx", "", 100, 0, 100);
   beautify(eta40nvtx, "nVtx (i#eta40)", "Events", 2);
-  TH1F* eta41nvtx = new TH1F("eta41nvtx", "", 60, 0, 60);
+  TH1F* eta41nvtx = new TH1F("eta41nvtx", "", 100, 0, 100);
   beautify(eta41nvtx, "nVtx (i#eta41)", "Events", 2);
    
   TH1F* eta30phi = new TH1F("eta30phi", "eta30", 36, -TMath::Pi(), TMath::Pi());
@@ -999,8 +999,8 @@ void Analysis22::Loop() {
       // Loop over all HF electrons
       for(int i = 0; i != nhf; ++i) {
 	if ( hf_pt->at(i) < 15.0 ) continue;
-	// if ( fabs(hf_eta->at(i)) < 2.964 ) continue;
-	if ( fabs(hf_eta->at(i)) < 2.850 ) continue;
+	if ( fabs(hf_eta->at(i)) < 2.964 ) continue;
+	// if ( fabs(hf_eta->at(i)) < 2.850 ) continue;
 	if ( fabs(hf_eta->at(i)) > 5.191 ) continue;
 	if ( hf_hcal->at(i)/hf_ecal->at(i) > 1.2 ) continue;
 	if ( hf_iso->at(i)/hf_en->at(i) > 0.55 ) continue;
@@ -1081,8 +1081,8 @@ void Analysis22::Loop() {
       eta = e2pu.Eta();
 
       // iEta bins
-      // iEta30Plus = eta > 2.964 && eta < 3.139;
-      iEta30Plus = eta > 2.850 && eta < 3.139;
+      iEta30Plus = eta > 2.964 && eta < 3.139;
+      // iEta30Plus = eta > 2.850 && eta < 3.139;
       iEta31Plus = eta > 3.139 && eta < 3.314;
       iEta32Plus = eta > 3.314 && eta < 3.489;
       iEta33Plus = eta > 3.489 && eta < 3.664;
@@ -1094,8 +1094,8 @@ void Analysis22::Loop() {
       iEta39Plus = eta > 4.538 && eta < 4.716;
       iEta40Plus = eta > 4.716 && eta < 4.889;
       iEta41Plus = eta > 4.889 && eta < 5.191;
-      // iEta30Minus = eta < -2.964 && eta > -3.139;
-      iEta30Minus = eta < -2.850 && eta > -3.139;
+      iEta30Minus = eta < -2.964 && eta > -3.139;
+      // iEta30Minus = eta < -2.850 && eta > -3.139;
       iEta31Minus = eta < -3.139 && eta > -3.314;
       iEta32Minus = eta < -3.314 && eta > -3.489;
       iEta33Minus = eta < -3.489 && eta > -3.664;
