@@ -134,7 +134,6 @@ void MakePNGPlots22() {
   canvas->SetLogy(0);
   
   // Eta Loop
-  gROOT->SetBatch(kTRUE);
   TH1F *hEtaMCAll = new TH1F("hEtaMCAll", "", 10, 29.5, 39.5);
   TH1F *hEtaPlusDataAll = new TH1F("hEtaPlusDataAll", "", 10, 29.5, 39.5);
   TH1F *hEtaMinusDataAll = new TH1F("hEtaMinusDataAll", "", 10, 29.5, 39.5);
@@ -281,7 +280,6 @@ void MakePNGPlots22() {
     
     canvas->SetLogy(0);
   } // end eta loop
-  gROOT->SetBatch(kFALSE);
   // std::cout << "EXITING" << std::endl;
   // return;
 	
@@ -422,7 +420,6 @@ void MakePNGPlots22() {
   // Phi Loop
   TH1F *hPhiMCAll = new TH1F("hPhiMCAll", "", 71, 0.5, 71.5);
   TH1F *hPhiDataAll = new TH1F("hPhiDataAll", "", 71, 0.5, 71.5);
-  gROOT->SetBatch(kTRUE);
   for(int i = 1; i <= 71; i+=2) {
     TString PhiNum = TString::Format("phi%i", i);
     TString PhiBin = TString::Format("#phi%i", i);
@@ -486,7 +483,6 @@ void MakePNGPlots22() {
 		
     canvas->SetLogy(0);
   } // end phi loop
-  gROOT->SetBatch(kFALSE);
 	
   hPhiMCAll->SetMarkerStyle(20);
   hPhiMCAll->SetMarkerSize(0.75);
@@ -541,7 +537,6 @@ void MakePNGPlots22() {
   TH1F *hPUmcFit = new TH1F("hPUmcFit", "", 9, 0, 54);
   TH1F *hPUdataFit = new TH1F("hPUdataFit", "", 9, 0, 54);
   const TString PUbin[] = {"nVtx 1-6","nVtx 6-12","nVtx 12-18","nVtx 18-24","nVtx 24-30","nVtx 30-36","nVtx 36-42","nVtx 42-48","nVtx 48+"};
-  gROOT->SetBatch(kTRUE);
   for(int i = 1; i <= 9; ++i) {
     TString PUnum = TString::Format("nVtx%i", i);
     canvas->SetLogy(0);
@@ -604,7 +599,6 @@ void MakePNGPlots22() {
 		
     canvas->SetLogy(0);
   } // end PU loop
-  gROOT->SetBatch(kFALSE);
 	
   hPUmcFit->SetMarkerStyle(21);
   hPUmcFit->SetMarkerSize(1);
@@ -649,7 +643,6 @@ void MakePNGPlots22() {
   canvas->Clear();
   
   TString EtaRange[12] = {"i#eta30","i#eta31","i#eta32","i#eta33","i#eta34","i#eta35","i#eta36","i#eta37","i#eta38","i#eta39","i#eta40","i#eta41"};
-  gROOT->SetBatch(kTRUE);
   for (int e = 30; e <= 41; ++e) {	
     
     TH1F *hEtaPhiFitDataAll = new TH1F("hEtaPhiFitDataAll", "", 71, 0.5, 71.5);
@@ -982,7 +975,6 @@ void MakePNGPlots22() {
     canvas->Print(Eta_lsRatioFitName);
     canvas->Clear();
   } // end etaphi loop
-  gROOT->SetBatch(kFALSE);
 	
   //Run Data
   /*TH1F *hRunData = new TH1F("hRunData", "", 5, 0, 5);
