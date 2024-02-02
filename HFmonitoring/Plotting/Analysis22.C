@@ -194,6 +194,14 @@ void Analysis22::Loop() {
   bool usePU = false;
   bool useRaddam = false;
   int numfactors = 0; // Number of factors to check, set to zero if NO rederiving factors
+  bool useFactors = (numfactors > 0);
+
+  // Sanity check...
+  if ((useRaddam) && (useFactors)) {
+    std::cout << "ERROR: Raddam corrections shouldn't be applied WHILE deriving factors";
+    return;
+  }
+  
   float finterval = 0.1; // spacing between factors
   std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "test");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
@@ -1015,7 +1023,8 @@ void Analysis22::Loop() {
 	double corrL = L;
 	double corrS = S;
 	if (isData == 1) { // here we apply corrections to DATA
-	  corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving
+	  if (useFactors)
+	    corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving
 	  if (useRaddam == 1) { 
 	    corrL = (L*getRaddamCorrection( hf_eta->at(i))); 
 	  }
