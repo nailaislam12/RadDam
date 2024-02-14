@@ -2,7 +2,7 @@
 Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter using Z-->ee events. There are 3 steps required to make plots, which utilize both CRAB and HTCOndor batch submission systems
 
 Usefull Links:
--[ HCAL Calibration Paper](https://cds.cern.ch/record/2691403/files/Sirunyan_2020_J._Inst._15_P05002.pdf)
+- [HCAL Calibration Paper](https://cds.cern.ch/record/2691403/files/Sirunyan_2020_J._Inst._15_P05002.pdf)
 
 ### Table of Contents
 0. [Setup](#step-0-setup)
