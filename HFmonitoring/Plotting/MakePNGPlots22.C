@@ -8,10 +8,14 @@ void MakePNGPlots22() {
   setTDRStyle();
   TCanvas* canvas = new TCanvas("canvas");
   // Make Changes Here
-  TString figdir = "Figures23_test/";
-  TString year = "2023";
-  TFile *fMC = new TFile("outplots/outplots2023_mc_noPU_test.root");
-  TFile *fData = new TFile("outplots/outplots2023_data_noPU_test.root");
+  TString figdir = "Figures22BCD_preEE_noPU_testAgain/";
+  TString year = "2022";
+  TFile *fMC = new TFile("outplots/output_DYJetsToLL_M-50_Winter22_PLOTS_mc_noPU_test.root");
+  TFile *fData = new TFile("outplots/output_data_EGamma_Run2022BCD_10Dec2022_preEE_PLOTS_data_noPU_testAgain.root");
+  
+  // TFile *fMC = new TFile("outplots/output_MC_DYto2L-4Jets_MLL-50_Winter23_PLOTS_mc_noPU_test.root");
+  // TFile *fData = new TFile("outplots/output_data_EGamma_Run2023D_BPix_PLOTS_data_noPU_RaddCorr_testOriginalRatio.root");
+
   TF1 *funcGaus = new TF1("fitGaus","gaus",0,100);
   funcGaus->SetLineWidth(2);
   canvas->SetLogy(0);
@@ -347,10 +351,16 @@ void MakePNGPlots22() {
   hEtaPRatio->SetLineColor(kRed);
   hEtaPRatio->Divide( hEtaPlusDataAll);
   hEtaPRatio->SetStats(0);
-  hEtaPRatio->Draw("P9E1");
-  hEtaPRatio->GetXaxis()->SetTitle("i#eta");
-  hEtaPRatio->GetYaxis()->SetTitle("MC / Data");
-  hEtaPRatio->GetYaxis()->SetTitleOffset(1.54);
+  hEtaPRatio->Draw();
+
+  float etabin = 0;
+  float binval = 0;
+  for (unsigned int i = 0; i < hEtaPRatio->GetNbinsX(); ++i) {
+    std::cout << ">>> Eta PLUS Ratios " << i << std::endl;
+    etabin = hEtaPRatio->GetXaxis()->GetBinCenter(i);
+    binval = hEtaPRatio->GetBinContent(i);
+    std::cout << "{" << etabin << ", " << binval << "}," << std::endl;
+  }
   
   TH1F* hEtaMRatio = (TH1F*)hEtaMCAll->Clone("mratio");
   hEtaMRatio->SetMarkerStyle(20);
@@ -358,17 +368,32 @@ void MakePNGPlots22() {
   hEtaMRatio->SetMarkerColor(kBlue);
   hEtaMRatio->SetLineColor(kBlue);
   hEtaMRatio->Divide( hEtaMinusDataAll);
-  hEtaMRatio->Draw("SAME P9E1");
 
-  TGaxis *axisEtaRatio = new TGaxis(29.5,100,39.5,100,"fEta",510,"-");
+  for (unsigned int i = 0; i < hEtaMRatio->GetNbinsX(); ++i) {
+    std::cout << ">>> Eta MINUS Ratios " << i << std::endl;
+    etabin = hEtaMRatio->GetXaxis()->GetBinCenter(i);
+    binval = hEtaMRatio->GetBin(i);
+    std::cout << "{-" << etabin << ", " << binval << "}," << std::endl;
+  }
+
+  THStack *EtaRatioStack = new THStack();
+  EtaRatioStack->Add(hEtaPRatio);
+  EtaRatioStack->Add(hEtaMRatio);
+  EtaRatioStack->Draw("nostackP9E1");  
+  EtaRatioStack->GetXaxis()->SetTitle("i#eta");
+  EtaRatioStack->GetYaxis()->SetTitle("MC / Data");
+  EtaRatioStack->GetYaxis()->SetTitleOffset(1.54);
+  TGaxis *axisEtaRatio = new TGaxis(29.5,1.6,39.5,1.6,"fEta",510,"-");
   axisEtaRatio->SetLabelFont(42);
   axisEtaRatio->SetLabelSize(0.035);
   axisEtaRatio->SetTitleSize(0.05);
   axisEtaRatio->SetLabelOffset(0.0025);
   axisEtaRatio->SetTitle("|#eta|");
   axisEtaRatio->Draw();
-  hEtaPRatio->SetMinimum(0);
-  hEtaPRatio->SetMaximum(1.6);
+  EtaRatioStack->SetMinimum(0);
+  EtaRatioStack->SetMaximum(1.6);
+  hEtaMRatio->Draw("SAME P9E1");
+  hEtaMRatio->GetYaxis()->SetRangeUser(0,1.6);
   TLegend* legendEtaRatio = new TLegend(0.2,0.2,0.5,0.3,"","NDC");
   legendEtaRatio->AddEntry(hEtaPRatio, ""+year+" HF+ Ratio", "ep");
   legendEtaRatio->AddEntry(hEtaMRatio, ""+year+" HF- Ratio", "ep");
