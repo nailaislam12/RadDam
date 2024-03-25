@@ -24,6 +24,19 @@ double FindIntercept(TF1* f1, TF1* f2) {
   return xint;
 }
 
+int getNFactors( TFile* f) {
+  int nFactors = 0;
+  TString EtaPlusNum = TString::Format("h_mass_etaPlus30_Xn%i", nFactors);
+  
+  while ((TH1F*)f->Get(EtaPlusNum)) {
+    nFactors++;
+    EtaPlusNum = TString::Format("h_mass_etaPlus30_Xn%i", nFactors);
+  }
+
+  std::cout << "File " << f->GetName() << " has " << nFactors << " factors" << std::endl;
+  return nFactors;
+}
+
 void MarkAndText( double xpos, double ypos) {
   TMarker *m = new TMarker( xpos, ypos, 24);
   m->SetMarkerColor(kBlack);
@@ -41,14 +54,18 @@ void MarkAndText( double xpos, double ypos) {
 void CalcRaddamFactors() {
   gErrorIgnoreLevel = kWarning;
   setTDRStyle();
-  TString figdir = "FactorFigures22_noPU/";
-  // idk man...
+  
+  // MAKE CHANGES HERE 
+  TString figdir = "FactorFigures22EFG_postEE_noPU/";
+  TFile *fMC = new TFile("outplots/outplots2022_mc_noPU.root");
+  TFile *fData = new TFile("outplots/output_data_EGamma_Run2022EFG_postEE_PLOTS_data_noPU_radFactors_test.root");
+  
+  // create canvases
   TCanvas* pcanvas = new TCanvas("canvasPlus"); 
   TCanvas* mcanvas = new TCanvas("canvasMinus");
   TCanvas* gcanvas = new TCanvas("canvasGraph");
 
-  TFile *fMC = new TFile("outplots/outplots2022_mc_noPU.root");
-  TFile *fData = new TFile("outplots/outplots2022_data_noPU_radFactors_test.root");
+  // For extracting the mean mass value
   TF1 *funcGaus = new TF1("fitGaus","gaus",0,100);
   funcGaus->SetLineWidth(2);
   TLatex CMSlabel = TLatex(); 
@@ -58,6 +75,7 @@ void CalcRaddamFactors() {
   gStyle->SetPalette(0);
   gStyle->SetPadLeftMargin(0.13);
 
+  // check files exist
   if ((!fData) || (!fData->IsOpen())) {
     std::cout << "Data file didn't exist!" << std::endl;
     return;
@@ -67,15 +85,35 @@ void CalcRaddamFactors() {
   }    
   
   // For extracting the factor
-  Double_t meansPlus[11] = {0};
-  Double_t errorsPlus[11] = {0};
-  Double_t meansMinus[11] = {0};
-  Double_t errorsMinus[11] = {0};
-  Double_t factors[11] = {0};
-  Double_t ferrors[11] = {0};
+  // Double_t meansPlus[11] = {0};
+  // Double_t errorsPlus[11] = {0};
+  // Double_t meansMinus[11] = {0};
+  // Double_t errorsMinus[11] = {0};
+  // Double_t factors[11] = {0};
+  // Double_t ferrors[11] = {0};
+
+  // usually 10, but get the exact number
+  int nFactors = getNFactors( fData);
+
+  // initialize vectors 
+  std::vector<Double_t> meansPlus(nFactors);
+  std::vector<Double_t> errorsPlus(nFactors);
+  std::vector<Double_t> meansMinus(nFactors);
+  std::vector<Double_t> errorsMinus(nFactors);
+
+  // actual factors
+  std::vector<Double_t> factors;
+  std::vector<Double_t> ferrors;
+
+  // store the full alpha value
   std::map< int, double> RaddamFactors;
-  for (int i = 10; i <= 20; ++i)
-    factors[i-10] = i / 10.0;
+
+  // hardcoded interval, find a better way
+  float fint = 0.1;
+
+  // fill vector with factors for x values
+  for (int i = 0; i < nFactors; ++i)
+    factors.push_back( 1.0 + (i * fint));
 
   // Get the MC / Data ratio
   std::map< int, double> RaddamRatios;
@@ -95,6 +133,7 @@ void CalcRaddamFactors() {
     // First MC PLUS
     TString EtaPlusNum = TString::Format("etaPlus%i", i);
     TH1F *hEtaPlusMC = (TH1F*)fMC->Get(EtaPlusNum);
+    // This is how the range is set in MakePNGPlots... but GetMaximumBin() returns a BIN #, not an x value??
     funcGaus->SetRange(hEtaPlusMC->GetMaximumBin()+5,hEtaPlusMC->GetMaximumBin()+35);
     TFitResultPtr FitResultEtaPlusMC = hEtaPlusMC->Fit("fitGaus","QRS");
     double mcMeanPlus = funcGaus->GetParameter(1);
@@ -111,7 +150,7 @@ void CalcRaddamFactors() {
     TString EtaMinusNameData = TString::Format( figdir + "EtaMinus%i_data.png", i);
 
     // Loop over 10 factors
-    for (int f = 0; f <= 10; ++f) {
+    for (int f = 0; f < nFactors; ++f) {
       pcanvas->cd(0);
       TString EtaPlusNum = TString::Format("h_mass_etaPlus%i_Xn%i", i, f);
 
@@ -135,6 +174,9 @@ void CalcRaddamFactors() {
       TFitResultPtr FitResultEtaPlusData = hEtaPlusData->Fit("fitGaus","QRS");
       meansPlus[f] = funcGaus->GetParameter(1);
       errorsPlus[f] = funcGaus->GetParError(1);
+
+      // meansPlus.push_back( funcGaus->GetParameter(1));
+      // errorsPlus.push_back( funcGaus->GetParError(1));
       
       mcanvas->cd(0);
       EtaMinusNum = TString::Format("h_mass_etaMinus%i_Xn%i", i, f);
@@ -157,6 +199,9 @@ void CalcRaddamFactors() {
       TFitResultPtr FitResultEtaMinusData = hEtaMinusData->Fit("fitGaus","QRS");
       meansMinus[f] = funcGaus->GetParameter(1);
       errorsMinus[f] = funcGaus->GetParError(1);
+
+      // meansMinus.push_back( funcGaus->GetParameter(1));
+      // errorsMinus.push_back( funcGaus->GetParError(1));
 		
     } // end factors loop
 
@@ -179,7 +224,7 @@ void CalcRaddamFactors() {
     // Plot the factors
     gStyle->SetOptFit(0);
     gcanvas->cd();
-    auto graphPlus = new TGraphErrors( 11, factors, meansPlus, ferrors, errorsPlus);
+    auto graphPlus = new TGraphErrors( nFactors, &factors[0], &meansPlus[0], &ferrors[0], &errorsPlus[0]);
     graphPlus->SetTitle(TString::Format("Factor vs Z Peak EtaPlus%i", i));
     graphPlus->GetXaxis()->SetTitle("#alpha Factor");
     graphPlus->GetYaxis()->SetTitle("M_{e, hf} (GeV)");
@@ -212,7 +257,7 @@ void CalcRaddamFactors() {
     gcanvas->Clear();
 
     // Now EtaMinus
-    auto graphMinus = new TGraphErrors( 11, factors, meansMinus, ferrors, errorsMinus);
+    auto graphMinus = new TGraphErrors( nFactors, &factors[0], &meansMinus[0], &ferrors[0], &errorsMinus[0]);
     graphMinus->SetTitle(TString::Format("Factor vs Z Peak EtaMinus%i", i));
     graphMinus->GetXaxis()->SetTitle("#alpha Factor");
     graphMinus->GetYaxis()->SetTitle("M_{e, hf} (GeV)");
@@ -262,6 +307,7 @@ void CalcRaddamFactors() {
     std::cout << "iEta " << setw(3) << ele.first << ": " << ele.second << std::endl;
   }
 
+  // I think this is obselete?
   // Now print (or save some fun way) the Raddam Ratios (mc/data)
   std::cout << "\n" << std::endl;
   std::cout << "*** RADDAM RATIOS for iEtas *** " << std::endl;

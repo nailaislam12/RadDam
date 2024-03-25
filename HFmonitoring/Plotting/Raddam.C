@@ -1,150 +1,155 @@
-
-// Raddam Corrections for 2022 Data
+std::map<Float_t, Float_t> RaddamRatios = {};
+std::map<Float_t, Float_t> RaddamFactors = {};
 // stored as ieta -> (MC/Data Ratio * Factor)
-std::map<Float_t, Float_t> RaddamCorrections = {
-  {-41, 1.0},
-  {-40, 1.0},
-  {-39, 1.14271 * 1.17714}, 
-  {-38, 1.24669 * 1.35537},
-  {-37, 1.27372 * 1.30168},
-  {-36, 1.26973 * 1.29404},
-  {-35, 1.24090 * 1.26085},
-  {-34, 1.21110 * 1.22321},
-  {-33, 1.14734 * 1.15346},
-  {-32, 1.11192 * 1.11275},
-  {-31, 1.12210 * 1.12381},
-  {-30, 1.16172 * 1.15782},
-  { 30, 1.17326 * 1.17039},
-  { 31, 1.12241 * 1.12195},
-  { 32, 1.12604 * 1.12896},
-  { 33, 1.16191 * 1.16952},
-  { 34, 1.20773 * 1.21954},
-  { 35, 1.24580 * 1.26741},
-  { 36, 1.25006 * 1.27228},
-  { 37, 1.26339 * 1.30814},
-  { 38, 1.22343 * 1.23125},
-  { 39, 1.0}, // uncorrected
-  { 40, 1.0},
-  { 41, 1.0}
-};
+std::map<Float_t, Float_t> RaddamCorrections = {};
 
-std::map<Float_t, Float_t> RaddamRatios = {
-  {-41, 1.0},
-  {-40, 1.0},
-  {-39, 1.14271}, 
-  {-38, 1.24669},
-  {-37, 1.27372},
-  {-36, 1.26973},
-  {-35, 1.24090},
-  {-34, 1.21110},
-  {-33, 1.14734},
-  {-32, 1.11192},
-  {-31, 1.12210},
-  {-30, 1.16172},
-  { 30, 1.17326},
-  { 31, 1.12241},
-  { 32, 1.12604},
-  { 33, 1.16191},
-  { 34, 1.20773},
-  { 35, 1.24580},
-  { 36, 1.25006},
-  { 37, 1.26339},
-  { 38, 1.22343},
-  { 39, 1.15942},
-  { 40, 1.0},
-  { 41, 1.0}
-};
+void setRaddam( int year) {
+  std::cout << "SETTING CORRECTIONS FOR " << year << std::endl;
+  
+  if (year == 2022) { 
+    RaddamRatios = { // MC / Data Ratio for 2022 Data
+      {-41, 1.0}, // uncorrected
+      {-40, 1.0}, // uncorrected
+      {-39, 1.14271}, 
+      {-38, 1.24669},
+      {-37, 1.27372},
+      {-36, 1.26973},
+      {-35, 1.24090},
+      {-34, 1.21110},
+      {-33, 1.14734},
+      {-32, 1.11192},
+      {-31, 1.12210},
+      {-30, 1.16172},
+      { 30, 1.17326},
+      { 31, 1.12241},
+      { 32, 1.12604},
+      { 33, 1.16191},
+      { 34, 1.20773},
+      { 35, 1.24580},
+      { 36, 1.25006},
+      { 37, 1.26339},
+      { 38, 1.22343},
+      { 39, 1.15942},
+      { 40, 1.0}, // uncorrected
+      { 41, 1.0}, // uncorrected
+    };
+    RaddamFactors = { // Raddam Factors for 2022 Data
+      {-41, 1.0}, // uncorrected
+      {-40, 1.0}, // uncorrected
+      {-39, 1.17714}, 
+      {-38, 1.35537},
+      {-37, 1.30168},
+      {-36, 1.29404},
+      {-35, 1.26085},
+      {-34, 1.22321},
+      {-33, 1.15346},
+      {-32, 1.11275},
+      {-31, 1.12381},
+      {-30, 1.15782},
+      { 30, 1.17039},
+      { 31, 1.12195},
+      { 32, 1.12896},
+      { 33, 1.16952},
+      { 34, 1.21954},
+      { 35, 1.26741},
+      { 36, 1.27228},
+      { 37, 1.30814},
+      { 38, 1.23125},
+      { 39, 1.0}, // uncorrected
+      { 40, 1.0}, // uncorrected
+      { 41, 1.0}, // uncorrected
+    };
+  } else if (year == 2023) { 
+    RaddamRatios = { // MC / Data Ratio for 2023 Data
+      {-30, 1.023858},
+      {-31, 1.039107},
+      {-32, 1.03318 }, 
+      {-33, 1.06587 },
+      {-34, 1.135859},
+      {-35, 1.167418},
+      {-36, 1.215035},
+      {-37, 1.22995 },
+      {-38, 1.221107},
+      {-39, 3.124965},
+      {-40, 1.0}, // uncorrected
+      {-41, 1.0}, // uncorrected
+      { 30, 1.039857},
+      { 31, 1.040895},
+      { 32, 1.05097 },
+      { 33, 1.082178},
+      { 34, 1.133049},
+      { 35, 1.183821},
+      { 36, 1.188473},
+      { 37, 1.223797},
+      { 38, 1.193354},
+      { 39, 1.217267},
+      { 40, 1.0}, // uncorrected
+      { 41, 1.0}, // uncorrected
+    };
+      RaddamFactors = { // Raddam Factors for 2023 Data
+      {-41, 1.0}, // uncorrected
+      {-40, 1.0}, // uncorrected
+      {-39, 0.323284}, // bad?
+      {-38, 1.23977 },
+      {-37, 1.25972 },
+      {-36, 1.22228 },
+      {-35, 1.17694 },
+      {-34, 1.13823 },
+      {-33, 1.0581  },
+      {-32, 1.01704 },
+      {-31, 1.02409 },
+      {-30, 1.00105 },
+      { 30, 1.03445 },
+      { 31, 1.02951 },
+      { 32, 1.04188 },
+      { 33, 1.07876 },
+      { 34, 1.13446 },
+      { 35, 1.18752 },
+      { 36, 1.20739 },
+      { 37, 1.23178 },
+      { 38, 1.20845 },
+      { 39, 1.22826 }, 
+      { 40, 1.0}, // uncorrected
+      { 41, 1.0}, // uncorrected
+    };
+  } else { // NOT READY YET
+    std::cout << "!!! YOU ARE DOING SOMETHING VERY BAD !!!" << std::endl;
+  }
 
-// Should I make these arrays instead?
-// that's a little more dangerous, in case we try to access outside the range
-// CORRECTIONS: the floating parameter which brings the data to MC
-// the XINT from the CalcRaddamFactors.C
-std::vector<Float_t> EtaMinus_RaddamCorrections = {
-  1.12056,
-  1.12285,
-  1.11277,
-  1.14827,
-  1.21182,
-  1.24013,
-  1.26913,
-  1.27133,
-  1.24048,
-  1.09554
-};
-
-// FACTORS: the mc/data ratio which is multiplied by the corrections
-std::vector<Float_t> EtaMinus_RaddamFactors = {
-  1.44244,
-  1.47573,
-  1.32429,
-  1.2823,
-  1.224,
-  1.18842,
-  1.08006,
-  1.0683,
-  1.12877,
-  1.11282
-};
-
-std::vector<Float_t> EtaMinus_RaddamCorrectionsError = {
-  0.127265,
-  0.123839,
-  0.12449,
-  0.128502,
-  0.1338,
-  0.137083,
-  0.140567,
-  0.141248,
-  0.139228,
-  0.310287
-};
-
-std::vector<Float_t> EtaPlus_RaddamCorrections = {
-  1.13093,
-  1.12563,
-  1.12833,
-  1.164,
-  1.20923,
-  1.24541,
-  1.25277,
-  1.26739,
-  1.22058,
-  1.14205
-};
-
-std::vector<Float_t> EtaPlus_RaddamFactors = {
-  1.12318,
-  1.11248,
-  1.08407,
-  1.11315,
-  1.17516,
-  1.24775,
-  1.25259,
-  1.34533,
-  1.31489,
-  1.42504
-};
-
-std::vector<Float_t> EtaPlus_RaddamCorrectionsError = {
-  0.128441,
-  0.124145,
-  0.12623,
-  0.130262,
-  0.133513,
-  0.137666,
-  0.138751,
-  0.14082,
-  0.136473,
-  0.175312
-};
-
-void Raddam() {
-  int num = EtaMinus_RaddamCorrections.size();
-  for (int i = 0; i < num; ++i)
-    std::cout << "iEta -" << i+30 << ": " 
-	      << EtaMinus_RaddamCorrections[i] * EtaMinus_RaddamFactors[i] << std::endl;
-
-  for (int i = 0; i < num; ++i)
-    std::cout << "iEta +" << i+30 << ": " 
-	      << EtaPlus_RaddamCorrections[i] * EtaPlus_RaddamFactors[i] << std::endl;
+  // Now set the corrections
+  std::cout << ">>> USING FOLLOWING RADDAM CORRECTIONS FOR " << year << std::endl;
+  for (auto rat : RaddamRatios) {
+    RaddamCorrections[rat.first] = rat.second * RaddamFactors[rat.first];
+    std::cout << setw(3) << rat.first << ": " << RaddamCorrections[rat.first] << std::endl;
+  }
+  
 }
+
+/*
+    RaddamCorrections = { // Raddam Corrections for 2022 Data
+      {-41, 1.0},
+      {-40, 1.0},
+      {-39, 1.14271 * 1.17714}, 
+      {-38, 1.24669 * 1.35537},
+      {-37, 1.27372 * 1.30168},
+      {-36, 1.26973 * 1.29404},
+      {-35, 1.24090 * 1.26085},
+      {-34, 1.21110 * 1.22321},
+      {-33, 1.14734 * 1.15346},
+      {-32, 1.11192 * 1.11275},
+      {-31, 1.12210 * 1.12381},
+      {-30, 1.16172 * 1.15782},
+      { 30, 1.17326 * 1.17039},
+      { 31, 1.12241 * 1.12195},
+      { 32, 1.12604 * 1.12896},
+      { 33, 1.16191 * 1.16952},
+      { 34, 1.20773 * 1.21954},
+      { 35, 1.24580 * 1.26741},
+      { 36, 1.25006 * 1.27228},
+      { 37, 1.26339 * 1.30814},
+      { 38, 1.22343 * 1.23125},
+      { 39, 1.0}, // uncorrected
+      { 40, 1.0},
+      { 41, 1.0}
+    };
+*/

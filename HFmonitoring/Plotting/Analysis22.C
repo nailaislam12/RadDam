@@ -160,9 +160,19 @@ float getRaddamCorrection( float eta) {
   return 1;
 }
 
-std::string getOutName( bool isData, bool usePU, bool useRaddam, int nf, std::string tag="") {
+std::string getOutName( bool isData, bool usePU, bool useRaddam, int nf, std::string fname, std::string tag="") {
   std::string outdir  = "outplots/";
-  std::string outname = outdir + "outplots2023";
+
+  std::string outname = "";
+
+  if (fname.find("/") != std::string::npos) {
+    int distance = fname.find(".root") - fname.rfind("/");
+    outname = outdir + fname.substr( fname.rfind("/"), distance) + "_PLOTS";
+  } else {
+    int distance = fname.find(".root");
+    outname = outdir + fname.substr( 0, distance) + "_PLOTS";
+  }
+    
   if (isData)
     outname += "_data";
   else
@@ -191,21 +201,24 @@ void Analysis22::Loop() {
   if (fChain == 0) return;
   
   // Always use PU, dummy
+  int year = 2022;
   bool usePU = false;
   bool useRaddam = false;
+  if (useRaddam)
+    setRaddam( year); // this sets ratios AND corrections
   int numfactors = 0; // Number of factors to check, set to zero if NO rederiving factors
   bool useFactors = (numfactors > 0);
+  float finterval = 0.1; // spacing between factors
 
   // Sanity check...
   if ((useRaddam) && (useFactors)) {
     std::cout << "ERROR: Raddam corrections shouldn't be applied WHILE deriving factors";
     return;
   }
-  
-  float finterval = 0.1; // spacing between factors
-  std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, "test");
+
+  std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, this->fname, "testAgain");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
-   
+  
   TFile* out;
   out = TFile::Open( outname.c_str(), "RECREATE");
   
@@ -916,6 +929,13 @@ void Analysis22::Loop() {
   double beta = 1;
 
   Long64_t nentries = fChain->GetEntriesFast();
+
+  // If using a TChain, need to do this
+  if (nentries == TTree::kMaxEntries) {
+    std::cout << "Entries was large... I think you're using a TChain, will now get slow entries" << std::endl;
+    nentries = fChain->GetEntries();
+  }
+  
   Long64_t eventsProcessed = 0;
   Long64_t nbytes = 0, nb = 0;
   std::stringstream ratio;
@@ -1001,7 +1021,6 @@ void Analysis22::Loop() {
     bool anyHF = true;
     int firstIndex = -1;
     // Loop over Factors
-    // std::cout << "*** *** *** " << std::endl;
     for (int f = 0; f < factors.size(); ++f) {
       vector<TLorentzVector> hf;
       // Loop over all HF electrons
@@ -1023,8 +1042,9 @@ void Analysis22::Loop() {
 	double corrL = L;
 	double corrS = S;
 	if (isData == 1) { // here we apply corrections to DATA
-	  if (useFactors)
+	  if (useFactors == 1) {
 	    corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving
+	  }
 	  if (useRaddam == 1) { 
 	    corrL = (L*getRaddamCorrection( hf_eta->at(i))); 
 	  }
@@ -1040,9 +1060,10 @@ void Analysis22::Loop() {
 	TLorentzVector e;
 	double newpT = corrpT*(corrL*alpha + corrS*beta)/(corrL + corrS);
 	newpT *= 1.00; // cross check
-	
+
+	// std::cout << "corrL:  " << corrL << std::endl;
 	// std::cout << "factor: " << f << std::endl;
-	// std::cout << "newpT: " << newpT << std::endl;
+	// std::cout << "newpT:  " << newpT << std::endl;
 	e.SetPtEtaPhiM(newpT, hf_eta->at(i), hf_phi->at(i), 0);
 	hf.push_back(e);
 	
@@ -1144,7 +1165,7 @@ void Analysis22::Loop() {
 	if ( iEta39Minus ) h_masses[-39][f]->Fill(Mass);
 	if ( iEta40Minus ) h_masses[-40][f]->Fill(Mass);
 	if ( iEta41Minus ) h_masses[-41][f]->Fill(Mass);
-      }
+      } 
     } // end loop over factors...
 
     // Require at least 1 HF electron
@@ -1917,6 +1938,8 @@ void Analysis22::Loop() {
 
   } // END jentry LOOP
 
+  std::cout.flush();
+  std::cout << std::endl;
   std::cout << "Events Processed: " << eventsProcessed << std::endl;
   
   h_mass->Write();

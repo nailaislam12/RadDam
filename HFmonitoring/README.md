@@ -141,7 +141,22 @@ root [1] Analysis22 a("/Path/to/output_dataBCD_10Dec2022.root")
 (Analysis22 &) @0x7f9a8e070208
 root [2] a.Loop()
 ```
-This step can take up to a few hours, depending on how many events are being analyzed. 
+This step can take up to a few hours, depending on how many events are being analyzed.
+
+If you have multiple files from the Untuple step and don't want to `hadd` them for some reason, you can pass a `TChain` to the Analysis22.C function as well. You **must** set a name for the TChain in order for the output file to be named appropriately.
+```
+root -l 
+root [0] TChain *bb = new TChain("miniTree")
+(TChain *) 0x55f7724e81f0
+root [1] bb->Add("file1.root")
+(int) 1
+root [2] bb->Add("file2.root")
+root [3] bb->SetName("output_data_files1_2.root")
+root [4] .L Analysis22.C
+root [5] Analysis22 a(bb)
+(Analysis22 &) @0x7f2d5e9dd000
+root [6] a.Loop()
+```
 ## Plotting
 Once **both** data and mc are analyzed, we can make plots. First, use the `makeFigDir.sh` script to create a directory with the necessary dependencies
 ```

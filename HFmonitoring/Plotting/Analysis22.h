@@ -20,6 +20,7 @@ public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
    Bool_t          isData; // for naming output
+  const char*     fname; // for naming output
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -93,16 +94,18 @@ Analysis22::Analysis22(TTree *tree) : fChain(0)
 // used to generate this class and read the Tree.
   if (tree == 0) {
     // Look locally at first
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/user/j/jnatoli/HFCalib/2022HF/Untuplizer/output_dataBCD_10Dec2022.root");
+    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/eos/user/j/jnatoli/HFCalib/2022HF/Untuplizer/output_data_EGamma_Run2022BCD_10Dec2022_preEE.root");
     if (!f || !f->IsOpen()) {
-      f = new TFile("/eos/user/j/jnatoli/HFCalib/2022HF/Untuplizer/output_dataBCD_10Dec2022.root");
+      f = new TFile("/eos/user/j/jnatoli/HFCalib/2022HF/Untuplizer/output_data_EGamma_Run2022BCD_10Dec2022_preEE.root");
     }
     f->GetObject("miniTree",tree);
     
   }
   Init(tree);
-  // Make sure to change this, if not passing file as string
-  isData = true;
+  
+  // Naming help
+  Analysis22::fname = tree->GetName();
+  isData = strstr( fname, "data");
 }
 
 // New function to take a string with the filename and figure out if it's data
@@ -123,6 +126,7 @@ Analysis22::Analysis22( const char* fname) : fChain(0)
 
   // Naming help
   isData = strstr( fname, "data");
+  Analysis22::fname = fname;
 }
 
 // New function to take a string with the filename and explicit data or not
@@ -143,6 +147,7 @@ Analysis22::Analysis22( const char* fname, Bool_t isData) : fChain(0)
 
   // Naming help
   this->isData = isData;
+  Analysis22::fname = fname;
 }
 
 Analysis22::~Analysis22()
