@@ -8,10 +8,10 @@ void MakePNGPlots22() {
   setTDRStyle();
   TCanvas* canvas = new TCanvas("canvas");
   // Make Changes Here
-  TString figdir = "Figures22BCD_preEE_noPU_testAgain/";
+  TString figdir = "Figures22FG_afterHFTiming_noPU_RaddCorr_testAgain/";
   TString year = "2022";
   TFile *fMC = new TFile("outplots/output_DYJetsToLL_M-50_Winter22_PLOTS_mc_noPU_test.root");
-  TFile *fData = new TFile("outplots/output_data_EGamma_Run2022BCD_10Dec2022_preEE_PLOTS_data_noPU_testAgain.root");
+  TFile *fData = new TFile("outplots/output_data_EGamma_Run2022FG_afterHFTiming_PLOTS_data_noPU_RaddCorr_testAgain.root");
   
   // TFile *fMC = new TFile("outplots/output_MC_DYto2L-4Jets_MLL-50_Winter23_PLOTS_mc_noPU_test.root");
   // TFile *fData = new TFile("outplots/output_data_EGamma_Run2023D_BPix_PLOTS_data_noPU_RaddCorr_testOriginalRatio.root");
@@ -353,10 +353,11 @@ void MakePNGPlots22() {
   hEtaPRatio->SetStats(0);
   hEtaPRatio->Draw();
 
+  // Print out the ratios for Raddam.C
   float etabin = 0;
   float binval = 0;
+  std::cout << ">>> Eta PLUS Ratios " << std::endl;
   for (unsigned int i = 0; i < hEtaPRatio->GetNbinsX(); ++i) {
-    std::cout << ">>> Eta PLUS Ratios " << i << std::endl;
     etabin = hEtaPRatio->GetXaxis()->GetBinCenter(i);
     binval = hEtaPRatio->GetBinContent(i);
     std::cout << "{" << etabin << ", " << binval << "}," << std::endl;
@@ -369,10 +370,10 @@ void MakePNGPlots22() {
   hEtaMRatio->SetLineColor(kBlue);
   hEtaMRatio->Divide( hEtaMinusDataAll);
 
+  std::cout << ">>> Eta MINUS Ratios " << std::endl;
   for (unsigned int i = 0; i < hEtaMRatio->GetNbinsX(); ++i) {
-    std::cout << ">>> Eta MINUS Ratios " << i << std::endl;
     etabin = hEtaMRatio->GetXaxis()->GetBinCenter(i);
-    binval = hEtaMRatio->GetBin(i);
+    binval = hEtaMRatio->GetBinContent(i);
     std::cout << "{-" << etabin << ", " << binval << "}," << std::endl;
   }
 
@@ -666,12 +667,12 @@ void MakePNGPlots22() {
   canvas->Print( figdir + "PUFit.png");
   canvas->SaveAs( figdir + "PUFit.C");
   canvas->Clear();
-  
+
+  // Memory leaks on 'hEtaPhiFitDataAll' and 'hEtaPhiFitMCAll'
+  TH1F *hEtaPhiFitDataAll = new TH1F("hEtaPhiFitDataAll", "", 71, 0.5, 71.5);
+  TH1F *hEtaPhiFitMCAll = new TH1F("hEtaPhiFitMCAll", "", 71, 0.5, 71.5);
   TString EtaRange[12] = {"i#eta30","i#eta31","i#eta32","i#eta33","i#eta34","i#eta35","i#eta36","i#eta37","i#eta38","i#eta39","i#eta40","i#eta41"};
-  for (int e = 30; e <= 41; ++e) {	
-    
-    TH1F *hEtaPhiFitDataAll = new TH1F("hEtaPhiFitDataAll", "", 71, 0.5, 71.5);
-    TH1F *hEtaPhiFitMCAll = new TH1F("hEtaPhiFitMCAll", "", 71, 0.5, 71.5);
+  for (int e = 30; e <= 41; ++e) {
     int count = 0;
     for(int i = 1; i <= 71; i+=2) {
       
@@ -999,6 +1000,9 @@ void MakePNGPlots22() {
     TString Eta_lsRatioFitName = TString::Format( figdir + "EtaBin/Eta%ilsRatio.png", e);
     canvas->Print(Eta_lsRatioFitName);
     canvas->Clear();
+
+    hEtaPhiFitDataAll->Reset();
+    hEtaPhiFitMCAll->Reset();
   } // end etaphi loop
 	
   //Run Data
