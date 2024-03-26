@@ -177,6 +177,24 @@ The plots will be populated in `figdir`
 ## Deriving Corrections
 This analysis focuses on assessing the radiation damage to HF and deriving appropriate corrections which can then be applied on the detector during data taking. The effects of pileup (PU) are also taken in to account. This typically does not change the results of the radiation damage corrections, but are still important to be applied to remove sources of error
 ### Radiation Damage 
+To derive the radiation damage corrections, we must perform a few steps, running the Analysis22.C code twice more. These steps assume that you have already ran the Analysis22.C code on data and MC with **no** corrections applied and produced the plots.
+
+1) Take the MC / Data ratios outputted to terminal by `MakePNGPlots22.C` and add them to `Raddam.C` just like the other ratios for the other years
+2) Rerun `Analysis22.C`, now changing `numfactors` to some nonzero value. I usually test 11 values spaced 0.1 apart, which calculates factors of 1.0, 1.1, 1.2, ... , 2.0
+3) Now run edit the following lines in `CalcRaddamFactors.C` to use the data file that was just produced. It should have `_radFactors_` in its name.
+   
+    ```
+    TString figdir = "FactorFigures/";
+    TFile *fMC = new TFile("outplots/outplots_mc.root");
+    TFile *fData = new TFile("outplots/output_data_radFactors.root");
+    ```
+5) Take the factors outputted by the script and add them to `Raddam.C` just like the other factors for the other years
+6) Rerun `Analysis22.C`, now changing `numfactors` back to **zero** and `useRaddam` to **true**
+7) Lastly, run `MakePNGPlots22.C` on the output of the analysis script. It should have `_RaddCorr_` in it's name. Be sure to change the output `figdir` in `MakePNGPlots22.C` to something descriptive so that the original images aren't overwritten.
+
+Now we have plots of the data with the appropriate radiation damage corrections applied 
+
+**NB:** The MC file will stay the same throughout all of this
 
 ### Pileup 
 The p<sub>T</sub> of both electrons (ECAL and HF) is corrected in both data and MC to remove the dependence of the reconstructed Z mass on the number of PU vertices in a given evnet. The corrections are applied in the following lines:
