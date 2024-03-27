@@ -203,7 +203,7 @@ if (usePU == 1) { puCorrection = 1./(1.0 + 0.095/78.464*(nvtx-29)); } // MC (pea
 if (usePU == 1 && isData == 1 ) { puCorrection = 1./(1.0 + 0.078/68.909*(nvtx-27)); } // Data (peak @ 27)
 ```
 The formula for the PU corrections are
-$$ \frac{1}{1 + \frac{m}{b}(x - p)} $$
+$$\frac{1}{1 + \frac{m}{b}(x - p)}$$
 
 ## Typical Workflow
 After the requisite data and mc samples have been processed through steps 1 and 2, the analysis/plotting step is run multiple times
