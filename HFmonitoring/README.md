@@ -3,8 +3,22 @@ Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter u
 
 Usefull Links:
 - [HCAL Calibration Paper](https://cds.cern.ch/record/2691403/files/Sirunyan_2020_J._Inst._15_P05002.pdf)
+- [PdmV Run 3 Analysis Recipes](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis)
+- [PdmV Run 2 UL Analysis Recipes](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun2LegacyAnalysis)
+- [Golden JSONs](https://cms-service-dqmdc.web.cern.ch/CAF/certification/)
 
-### Table of Contents
+# Analysis Recipes
+Analyzing different eras of data requires a few different parameters. The following table summarizes those for the studies that have been completed. The `CMSSW` versions do not need to be exact, but must be **newer** than listed (x is any number)
+
+| Year | Eras | Data | MC | CMSSW | Golden JSON |
+| -----| :--: | ---- | -- | ----- | ----------- |
+| 2018         | A, B, C, D | |
+| 2022preEE    | C, D       | /EGamma/Run2022\*22Sep2023\*/MINIAOD | /DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer22MiniAODv4-130X_mcRun3_2022_realistic_v5-v2/MINIAODSIM | `CMSSW_12_3_x` | Collisions22/Cert_Collisions2022_355100_362760_Golden.json |
+| 2022postEE   | E*, F, G   | /EGamma/Run2022\*22Sep2023\*/MINIAOD | DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v5-v2/MINIAODSIM | `CMSSW_12_3_x` | Collisions22/Cert_Collisions2022_355100_362760_Golden.json |
+| 2023preBPix  | C          | /EGamma*/Run2023C-22Sep2023*/MINIAOD | /DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v3/MINIAODSIM | `CMSSW_13_0_6` | Collisions23/Cert_Collisions2023_366442_370790_Golden.json |
+| 2023postBPix | D          | /EGamma*/Run2023D-22Sep2023*/MINIAOD | /DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v1/MINIAODSIM | `CMSSW_13_0_10` | Collisions23/Cert_Collisions2023_366442_370790_Golden.json |
+
+# Table of Contents
 0. [Setup](#step-0-setup)
 1. [nTuplizer](#step-1-ntuplizer)
 2. [Untuplizer](#step-2-untuplizer)
