@@ -1,11 +1,11 @@
 # HF Z-->ee Radiation Damage Calibrations
-Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter using Z-->ee events. There are 3 steps required to make plots, which utilize both CRAB and HTCOndor batch submission systems
+Framework to study the radiation damage of the Hadron Forward (HF) Calorimeter using Z-->ee events. There are 3 steps required to make plots, which utilize both CRAB and HTCondor batch submission systems
 
 Usefull Links:
-- [HCAL Calibration Paper](https://cds.cern.ch/record/2691403/files/Sirunyan_2020_J._Inst._15_P05002.pdf)
-- [PdmV Run 3 Analysis Recipes](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis)
-- [PdmV Run 2 UL Analysis Recipes](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun2LegacyAnalysis)
-- [Golden JSONs](https://cms-service-dqmdc.web.cern.ch/CAF/certification/)
+- <a href="https://cds.cern.ch/record/2691403/files/Sirunyan_2020_J._Inst._15_P05002.pdf" target="_blank">HCAL Calibration Paper</a>
+- <a href="https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis" target="_blank">PdmV Run 3 Analysis Recipes</a>
+- <a href="https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun2LegacyAnalysis" target="_blank">PdmV Run 2 UL Analysis Recipes</a>
+- <a href="https://cms-service-dqmdc.web.cern.ch/CAF/certification/" target="_blank">Golden JSONs</a>
 
 # Analysis Recipes
 Analyzing different eras of data requires a few different parameters. The following table summarizes those for the studies that have been completed. The `CMSSW` versions do not need to be exact, but must be **newer** than listed (x is any number)
