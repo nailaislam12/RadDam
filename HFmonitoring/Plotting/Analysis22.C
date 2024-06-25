@@ -41,7 +41,7 @@ float getRaddamRatio( float eta) {
 
   // Eta Minus
   if ((eta < -2.964) && (eta > -3.139))
-  // if ((eta < -2.850) && (eta > -3.139))
+    // if ((eta < -2.850) && (eta > -3.139))
     return RaddamRatios[-30];
   else if ((eta < -3.139) && (eta > -3.314)) 
     return RaddamRatios[-31];
@@ -104,7 +104,7 @@ float getRaddamCorrection( float eta) {
 
   // Eta Minus
   if ((eta < -2.964) && (eta > -3.139))
-    // if ((eta < -2.850) && (eta > -3.139))
+  // if ((eta < -2.850) && (eta > -3.139))
     return RaddamCorrections[-30];
   else if ((eta < -3.139) && (eta > -3.314)) 
     return RaddamCorrections[-31];
@@ -201,14 +201,15 @@ void Analysis22::Loop() {
   if (fChain == 0) return;
   
   // Always use PU, dummy
-  int year = 2022;
-  bool usePU = false;
-  bool useRaddam = false;
-  if (useRaddam)
-    setRaddam( year); // this sets ratios AND corrections
-  int numfactors = 0; // Number of factors to check, set to zero if NO rederiving factors
-  bool useFactors = (numfactors > 0);
-  float finterval = 0.1; // spacing between factors
+  std::string year = "2023postBPix";
+  bool usePU       = false;
+  bool useRaddam   = false;
+  int numfactors   = 0; // Number of factors to check, set to zero if NO rederiving factors
+  bool useFactors  = (numfactors > 0);
+  float finterval  = 0.1; // spacing between factors
+
+  // this sets ratios AND corrections
+  setRaddam( year, useRaddam); 
 
   // Sanity check...
   if ((useRaddam) && (useFactors)) {
@@ -216,7 +217,7 @@ void Analysis22::Loop() {
     return;
   }
 
-  std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, this->fname, "testAgain");
+  std::string outname = getOutName( this->isData, usePU, useRaddam, numfactors, this->fname, "testFactor1p3");
   std::cout << ">>> Creating outfile: " << outname << std::endl;
   
   TFile* out;
@@ -1041,6 +1042,7 @@ void Analysis22::Loop() {
 	// Raddam correction - only data
 	double corrL = L;
 	double corrS = S;
+	
 	if (isData == 1) { // here we apply corrections to DATA
 	  if (useFactors == 1) {
 	    corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving
