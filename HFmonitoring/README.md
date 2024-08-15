@@ -74,7 +74,7 @@ Leaving library rule at src/ggAnalysis/ggNtuplizer/plugins
 
 **NB:** at the moment, CRAB does **NOT** work with the new `el9` architecture. This means that it must be used with a `sl7` CMSSW release
 
-The code is now ready to use, and can be executed with the macros in the `RadDam/HFmonitoring/nTuplizer/ggAnalysis/ggNtuplizer/test` directory. Global Tag information can be found at the [PdmVRun3Analysis](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis) site. To process a single file, add the path to the file from DAS in the line
+The code is now ready to use, and can be executed with the macros in the `RadDam/HFmonitoring/nTuplizer/ggAnalysis/ggNtuplizer/test` directory. Global Tag (GT) information can be found at the [PdmVRun3Analysis](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun3Analysis) site. If there is no GT available on this website yet, the GT used to process the file can also be found directly on DAS by making a query with `condig dataset=/DATA/SET/`. To process a single file, add the path to the file from DAS in the line
 ```
 process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/path/to/file.root'))
 ```
