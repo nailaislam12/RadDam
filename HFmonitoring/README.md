@@ -17,7 +17,7 @@ Analyzing different eras of data requires a few different parameters. The follow
 | 2022postEE   | E*, F, G   | /EGamma/Run2022\*22Sep2023\*/MINIAOD | DYJetsToLL_M-50_TuneCP5_13p6TeV-madgraphMLM-pythia8/Run3Summer22EEMiniAODv4-130X_mcRun3_2022_realistic_postEE_v5-v2/MINIAODSIM | `CMSSW_12_3_x` | Collisions22/Cert_Collisions2022_355100_362760_Golden.json |
 | 2023preBPix  | C          | /EGamma*/Run2023C-22Sep2023*/MINIAOD | /DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer23MiniAODv4-130X_mcRun3_2023_realistic_v14-v1/MINIAODSIM | `CMSSW_13_0_6` | Collisions23/Cert_Collisions2023_366442_370790_Golden.json |
 | 2023postBPix | D          | /EGamma*/Run2023D-22Sep2023*/MINIAOD | /DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Summer23BPixMiniAODv4-130X_mcRun3_2023_realistic_postBPix_v2-v3/MINIAODSIM | `CMSSW_13_0_10` | Collisions23/Cert_Collisions2023_366442_370790_Golden.json |
-| 2024         | C, D, E, F | /EGamma*/Run2024*/MINIAOD            | TBD | `CMSSW_14_0_11` | Collisions24/Cert_Collisions2024_378981_383743_Golden.json |
+| 2024         | C, D, E, F | /EGamma*/Run2024*/MINIAOD            | /DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/Run3Winter24MiniAOD-133X_mcRun3_2024_realistic_v10-v3/MINIAODSIM | `CMSSW_14_0_11` | Collisions24/Cert_Collisions2024_378981_383743_Golden.json |
 
 # Table of Contents
 0. [Setup](#step-0-setup)
