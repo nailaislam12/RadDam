@@ -78,7 +78,7 @@ The code is now ready to use, and can be executed with the macros in the `RadDam
 ```
 process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/path/to/file.root'))
 ```
-and then use `cmsRun` to run the appropriate python script.
+and then use `cmsRun` to run the appropriate python script. If you are processing a file that is not stored locally, be sure to set your VOMS proxy.
 ```
 cmsRun run_data.py
 ```
