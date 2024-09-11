@@ -9,7 +9,7 @@ void MakePNGPlots22() {
   TCanvas* canvas = new TCanvas("canvas");
   // Make Changes Here
   TString figdir = "Figures22FG_afterHFTiming_noPU_RaddCorr_testAgain/";
-  TString year = "2024";
+  TString year = "2024F";
   TFile *fMC = new TFile("outplots/output_DYJetsToLL_M-50_Winter22_PLOTS_mc_noPU_test.root");
   TFile *fData = new TFile("outplots/output_data_EGamma_Run2022FG_afterHFTiming_PLOTS_data_noPU_RaddCorr_testAgain.root");
   
