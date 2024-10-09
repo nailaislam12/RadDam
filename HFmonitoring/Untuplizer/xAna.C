@@ -86,6 +86,11 @@ void xAna( TreeReader* pdata) {
     
     vector<TLorentzVector> genElectrons;
 
+    nmc = 0;
+    mc_pt.clear();
+    mc_eta.clear();
+    mc_phi.clear();
+
     if ( isMC ) {
       nmc = data.GetInt("nMC");
       Int_t*   mcPID       = data.GetPtrInt("mcPID");
@@ -96,6 +101,9 @@ void xAna( TreeReader* pdata) {
       Int_t*   mcStatus    = data.GetPtrInt("mcStatus");
       
       for(int i = 0; i != nmc; ++i) {
+	//mc_pt.push_back(mcPt[i]);
+	//mc_eta.push_back(mcEta[i]);
+	//mc_phi.push_back(mcPhi[i]);
 	if ( abs(mcPID[i]) == 11 && mcStatus[i] == 1 ) {
 	  bool z = (mcParentage[i] & (1 << 3)) > 0;
 	  if ( z ) {
@@ -106,10 +114,17 @@ void xAna( TreeReader* pdata) {
 	}
       }
       if ( nmc != 0 && genElectrons.size() != 2 ) {
-	continue;
+      	continue;
       }
+      mc_pt.push_back(mcPt[0]);
+      mc_pt.push_back(mcPt[1]);
+      mc_eta.push_back(mcEta[0]);
+      mc_eta.push_back(mcEta[1]);
+      mc_eta.push_back(mcPhi[0]);
+      mc_eta.push_back(mcPhi[1]);
     }
 
+    //cout << "Passed MC block"<<endl;
     nvtx = 0;
     rho  = 0;
 
@@ -129,10 +144,10 @@ void xAna( TreeReader* pdata) {
     hf_hcal.clear();
     hf_match.clear();
 
-    nmc = 0;
-    mc_pt.clear();
-    mc_eta.clear();
-    mc_phi.clear();
+    //nmc = 0;
+    //mc_pt.clear();
+    //mc_eta.clear();
+    //mc_phi.clear();
 
     if (!condor)
       progressBar( ev, nev, start);
@@ -142,6 +157,7 @@ void xAna( TreeReader* pdata) {
     //                            << "%)"
     //                            << endl;
     
+    //cout << 1 <<endl;
     Int_t nHFEle = 0;
     Float_t* hfeleEn = 0;
     Float_t* hfelePt = 0;
@@ -153,6 +169,7 @@ void xAna( TreeReader* pdata) {
     Float_t* hfeleHCALEn = 0;
 
     nHFEle      = data.GetInt("npfHF");
+    //std::cout << " nHFEle " << nHFEle << std::endl;
     if ( nHFEle != 0 ) {
       hfeleEn     = data.GetPtrFloat("pfHFEn");
       hfelePt     = data.GetPtrFloat("pfHFPt");
@@ -173,6 +190,7 @@ void xAna( TreeReader* pdata) {
       hf_ecal.push_back(hfeleECALEn[i]);
       hf_hcal.push_back(hfeleHCALEn[i]);
 
+      //std::cout << " 2-3 " << std::endl;
       if ( isMC ) {
 	TLorentzVector hf;
 	hf.SetPtEtaPhiM(hfelePt[i], hfeleEta[i], hfelePhi[i], 0);
@@ -192,9 +210,12 @@ void xAna( TreeReader* pdata) {
 	hf_match.push_back(-2);
       } // if ( isMC )
       ++nhf;
-      
+      //cout << "2-4" << endl;
     } // for( nHFEle)
-   
+    
+    // cout << "Passed HF block" <<endl;
+    //cout << "3" << endl;
+    
     Int_t nEle = 0;
     Float_t*  elePt = 0;
     Float_t*  eleEta = 0;
@@ -215,6 +236,7 @@ void xAna( TreeReader* pdata) {
     nvtx     = data.GetInt("nVtx");
     rho      = data.GetFloat("rho");
     nEle     = data.GetInt("nEle");
+    //std::cout << " nEle " << nEle << std::endl;
     if ( nEle != 0 ) {
       elePt    = data.GetPtrFloat("elePt");
       eleEta   = data.GetPtrFloat("eleEta");
@@ -294,6 +316,7 @@ void xAna( TreeReader* pdata) {
       ele_mediumID.push_back(isMediumEle);
 
     } // for (int iele...
+    //cout << "Passed Ele block" << endl;
     
     // Selection criteria, either two electrons with pT 10 GeV in EB/EE
     // or one electron with 10 GeV in EB/EE and at least on HF electron
@@ -312,7 +335,9 @@ void xAna( TreeReader* pdata) {
     
 
     tree->Fill();
+    //cout << "Event is done" << endl;
   } // End Event Loop
+  
   std::cout.flush();
   std::cout << "\n";
   auto end = std::chrono::high_resolution_clock::now();
@@ -328,7 +353,7 @@ void xAna(std::vector<std::string> inpaths) {
 
 void xAna(const char** inpaths, int npaths) {
   TreeReader* data = new TreeReader(inpaths, npaths);
-  xAna( data);
+  xAna(data);
 }
 
 // for use with HTCondor
@@ -351,7 +376,7 @@ int main( int argc, char** argv) {
   }
 
   // for (auto ele : inpaths)
-  //   std::cout << ele << std::endl;
+  //std::cout << ele << std::endl;
 
   xAna( inpaths);
   std::cout << "All done!" << std::endl;
