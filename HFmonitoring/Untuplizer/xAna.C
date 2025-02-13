@@ -116,12 +116,12 @@ void xAna( TreeReader* pdata) {
       if ( nmc != 0 && genElectrons.size() != 2 ) {
       	continue;
       }
-      mc_pt.push_back(mcPt[0]);
-      mc_pt.push_back(mcPt[1]);
-      mc_eta.push_back(mcEta[0]);
-      mc_eta.push_back(mcEta[1]);
-      mc_eta.push_back(mcPhi[0]);
-      mc_eta.push_back(mcPhi[1]);
+      mc_pt.push_back((genElectrons[0]).Pt());
+      mc_pt.push_back((genElectrons[1]).Pt());
+      mc_phi.push_back((genElectrons[0]).Phi());
+      mc_phi.push_back((genElectrons[1]).Phi());
+      mc_eta.push_back((genElectrons[0]).Eta());
+      mc_eta.push_back((genElectrons[1]).Eta());
     }
 
     //cout << "Passed MC block"<<endl;
