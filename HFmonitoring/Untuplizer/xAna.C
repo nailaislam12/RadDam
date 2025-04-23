@@ -337,7 +337,11 @@ void xAna( TreeReader* pdata) {
 
     } // for (int iele...
     //cout << "Passed Ele block " << nele << "\t" << nhf << endl;
-    
+
+    if (ele_pt.empty() || ele_mediumID.empty()) continue;
+    int idx_maxEle = std::distance(ele_pt.begin(), std::max_element(ele_pt.begin(), ele_pt.end()));
+    if (ele_mediumID[idx_maxEle] != 1) continue;
+
     // Selection criteria, either two electrons with pT 10 GeV in EB/EE
     // or one electron with 10 GeV in EB/EE and at least on HF electron
     // or two electrons in HF
