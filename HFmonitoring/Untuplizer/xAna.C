@@ -347,7 +347,7 @@ void xAna( TreeReader* pdata) {
     //bool passEvent =  twoElectrons || electronAndHF || twoHF;
     //if ( nele == 0 || nhf == 0 ) continue;
     
-    //bool passEvent = ele_pt[0] > 15.0 && hf_pt[0] > 10.0;
+    bool passEvent = ele_pt[0] > 22.0 && hf_pt[0] > 15.0;
     if ( !passEvent ) continue;
 
     run = data.GetInt("run");
