@@ -203,7 +203,7 @@ void Analysis22::Loop() {
   // Always use PU, dummy
   std::string year = "2024I";
   bool usePU       = false;
-  bool useRaddam   = true;
+  bool useRaddam   = false;
   int numfactors   = 0; // Number of factors to check, set to zero if NO rederiving factors
   bool useFactors  = (numfactors > 0);
   float finterval  = 0.1; // spacing between factors
