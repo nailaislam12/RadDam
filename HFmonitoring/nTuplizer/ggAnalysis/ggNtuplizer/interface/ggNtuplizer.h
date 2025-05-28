@@ -25,6 +25,11 @@
 #include <HepMC3/GenEvent.h>
 #include <HepMC3/GenPdfInfo.h>
 
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+//#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
+
 using namespace std;
 
 void setbit(UShort_t& x, UShort_t bit);
@@ -42,6 +47,10 @@ class ggNtuplizer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
   //   virtual void beginJob() {};
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   //   virtual void endJob() {};
+  
+  void initTriggerFilters(const edm::Event&);
+  ULong64_t matchSingleElectronTriggerFilters(double pt, double eta, double phi);
+  ULong64_t matchL1TriggerFilters(double pt, double eta, double phi);
   
   Double_t deltaPhi(Double_t phi1, Double_t phi2);
   Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2);
@@ -61,6 +70,16 @@ class ggNtuplizer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
   vector<int> newparticles_;
   bool doGenParticles_;
   bool runOnParticleGun_;
+  
+  double trgFilterDeltaPtCut_;
+  double trgFilterDeltaRCut_;
+  
+  edm::EDGetTokenT<trigger::TriggerEvent>           trgEventLabel_;
+  edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsLabel_;
+  edm::EDGetTokenT<edm::TriggerResults>             trgResultsLabel_;
+  string                                            trgResultsProcess_;
+  edm::EDGetTokenT<edm::TriggerResults>             patTrgResultsLabel_;
+  
   edm::EDGetTokenT<GenEventInfoProduct>         generatorLabel_;
   edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;
   edm::EDGetTokenT<vector<PileupSummaryInfo> >  puCollection_;
