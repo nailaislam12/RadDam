@@ -19,14 +19,15 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 # process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Prompt_v11')
 # process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Prompt_v14'
 
-process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v4')
-# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v2')
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 250
 
-process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/Run2024F/EGamma0/MINIAOD/PromptReco-v1/000/382/250/00000/133c3dd0-3b4d-46cd-af21-f5c2da6333db.root'))
+process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/data/Run2024D/EGamma1/MINIAOD/PromptReco-v1/000/380/306/00000/06599d58-8321-4562-9e23-c3ce618bf331.root'))
 
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
+process.load( "PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff" )
 process.load("PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggTree.root'))
@@ -44,4 +45,3 @@ process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.p = cms.Path(
   process.ggNtuplizer
 )
-
