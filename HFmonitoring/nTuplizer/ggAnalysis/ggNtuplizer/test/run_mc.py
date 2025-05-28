@@ -20,9 +20,10 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/mc/Run3Winter24MiniAOD/DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/MINIAODSIM/133X_mcRun3_2024_realistic_v10-v3/2830000/03d86fb7-e565-4f19-80f7-b40fb08613c4.root'))
+process.source = cms.Source("PoolSource",fileNames = cms.untracked.vstring('/store/mc/Run3Winter24MiniAOD/DYto2L-4Jets_MLL-50_TuneCP5_13p6TeV_madgraphMLM-pythia8/MINIAODSIM/133X_mcRun3_2024_realistic_v10_ext1-v2/2520000/01106d96-f8ac-4eed-b701-792836b8b06e.root'))
 
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
+process.load( "PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff" )
 process.load("PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggTree_mc.root'))
@@ -41,4 +42,3 @@ process.ggNtuplizer.doGenParticles=cms.bool(True)
 process.p = cms.Path(
     process.ggNtuplizer
     )
-
