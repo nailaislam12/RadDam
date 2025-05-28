@@ -18,5 +18,13 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              generatorLabel   = cms.InputTag("generator"),
                              newParticles     = cms.vint32(4000011, 4000013, 1000006, 1000022, 1000024, 1000025),
                              pileupCollection = cms.InputTag("addPileupInfo"),
+                             
+                             trgFilterDeltaPtCut  = cms.double(0.5),
+                             trgFilterDeltaRCut   = cms.double(0.3),
+
+                             triggerEvent         = cms.InputTag("slimmedPatTrigger", "", ""),
+                             triggerResults       = cms.InputTag("TriggerResults", "", "HLT"),
+                             patTriggerResults    = cms.InputTag("TriggerResults", "", "PAT"),
+                             #patTriggerResults    = cms.InputTag("TriggerResults", "", "RECO"),
 
 )
