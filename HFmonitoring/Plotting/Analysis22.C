@@ -29,6 +29,25 @@ void beautify(TH2F* plot, TString xTitle, TString yTitle, int color) {
   return;
 }
 
+double mt_by_hand(const TLorentzVector &Lep1_vec,
+                  const TLorentzVector &Lep2_vec,
+                  const TLorentzVector &MET_vec,
+                  bool mt3obj = false) {
+  if (!mt3obj) {
+    double delta_phi = Lep1_vec.Phi() - MET_vec.Phi();
+    return std::sqrt( 2.0 * Lep1_vec.Pt() * MET_vec.Pt() * (1.0 - std::cos(delta_phi)) );
+  } else {
+    double dphi12 = Lep1_vec.Phi() - Lep2_vec.Phi();
+    double dphi13 = Lep1_vec.Phi() - MET_vec.Phi();
+    double dphi23 = Lep2_vec.Phi() - MET_vec.Phi();
+
+    double mt12 = std::sqrt( 2.0 * Lep1_vec.Pt() * Lep2_vec.Pt() * (1.0 - std::cos(dphi12)) );
+    double mt13 = std::sqrt( 2.0 * Lep1_vec.Pt() * MET_vec.Pt() * (1.0 - std::cos(dphi13)) );
+    double mt23 = std::sqrt( 2.0 * Lep2_vec.Pt() * MET_vec.Pt() * (1.0 - std::cos(dphi23)) );
+    return mt12 + mt13 + mt23;
+  }
+}
+
 int getRunIndex(int run) {
   return -1;
 }
@@ -161,7 +180,7 @@ float getRaddamCorrection( float eta) {
 }
 
 std::string getOutName( bool isData, bool usePU, bool useRaddam, int nf, std::string fname, std::string tag="") {
-  std::string outdir  = "outplots/2024I_v1.2/";
+  std::string outdir  = "outplots/testing/";
 
   std::string outname = "";
 
@@ -201,7 +220,7 @@ void Analysis22::Loop() {
   if (fChain == 0) return;
   
   // Always use PU, dummy
-  std::string year = "2024I";
+  std::string year = "2025C";
   bool usePU       = false;
   bool useRaddam   = false;
   int numfactors   = 0; // Number of factors to check, set to zero if NO rederiving factors
@@ -231,7 +250,7 @@ void Analysis22::Loop() {
   std::vector<float> factors; // this holds the factors
   std::map< int, std::vector<TH1F*>> h_masses; // this will map iEtas to a vector of factors
   for (int i = 0; i < numfactors; ++i) { // Loop over factors
-    factors.push_back(1 + (finterval * i));
+    factors.push_back(0.8 + (finterval * i));
     for (int j = 30; j <= 42; ++j) { // Loop over ietas (plus and minus)
       temp = new TH1F( ("h_mass_etaPlus" + to_string(j) + "_Xn" + to_string(i)).c_str(), "", 140, 20, 160);
       h_masses[j].push_back( temp);
@@ -244,18 +263,21 @@ void Analysis22::Loop() {
   else 
     std::cout << ">>> Calculating Factors" << std::endl;
     
-  //float scale_factor = 1.0;
-  float lumi_fb = 11.47;         // Luminosity in fb^-1 {2024 C:7.24, D:7.96, E:11.32, F:27.76, G:37.77, H:5.44, I:11.47}
+  float scale_factor = 1.0;
+  
+  //------------Scaling MC to data------------------
+  /*float lumi_fb = 19.18;        // Luminosity of data in fb^-1 to which MC must be scaled
   float xsec_pb = 6331.5;        // Cross section in pb
-  float nGen = 103907003.0;        // Total number of generated events
+  float nGen = 72033742.0;        // Total number of generated events in MC samples (make sure to use NWeighted events when using NLO samples)
   float scale_factor = 1.0;
 
   if (isData) {
       scale_factor = 1.0;
   } else {
       scale_factor = (lumi_fb * 1000.0 * xsec_pb) / nGen;  // convert fb^-1 to pb^-1
-  }
-  cout << "Scale factor used:  " << scale_factor << endl;
+  }*/
+  
+  cout << ">>> Scale factor used:  " << scale_factor << endl;
   
   TH1F* h_nvtx = new TH1F("h_nvtx", "", 100, 0, 100);
   beautify(h_nvtx, "nVtx", "Events", 2);
@@ -284,7 +306,23 @@ void Analysis22::Loop() {
   TH1F* h_dphi = new TH1F("h_dphi", " #Delta#phi between e1 and e2 ", 64, 0, 6.4);
   beautify(h_dphi, "#Delta #phi", "Events", 2);
   
- 
+  TH1F* h_backgroundShape = new TH1F("h_backgroundShape", "Background Shape", 70, 20, 160);
+  beautify(h_backgroundShape, "M_{e^{+}e^{-}} (GeV)", "Events", 2);
+  
+  TH1F* h_mt1  = new TH1F("h_mt1",  "M_{T}(e1, #slash{E}_{T})", 120, 0, 240);
+  beautify(h_mt1,  "M_{T}(e1, #slash{E}_{T}) [GeV]", "Events", 2);
+  
+  TH1F* h_puppiMET  = new TH1F("h_puppiMET",  "puppiMET", 120, 0, 240);
+  beautify(h_puppiMET,  "puppiMET [GeV]", "Events", 2);
+  
+  TH1F* h_dphi2 = new TH1F("h_dphi2", " #Delta#phi between e2 and MET ", 64, 0, 6.4);
+  beautify(h_dphi2, "#Delta #phi2", "Events", 2);
+  
+  TH1F* h_eta1_eta2 = new TH1F("h_eta1_eta", " #eta_{e1}*#eta_{e2}", 30, -15, 15);
+  
+  TH1F* h_nhf = new TH1F("h_nhf", "No. of HF electron", 6, 0, 6);
+  
+  
   TH1F* etaPlus30  = new TH1F("etaPlus30", "", 140, 20, 160);
   TH1F* etaPlus31  = new TH1F("etaPlus31", "", 140, 20, 160);
   TH1F* etaPlus32  = new TH1F("etaPlus32", "", 140, 20, 160);
@@ -294,9 +332,9 @@ void Analysis22::Loop() {
   TH1F* etaPlus36  = new TH1F("etaPlus36", "", 140, 20, 160);
   TH1F* etaPlus37  = new TH1F("etaPlus37", "", 140, 20, 160);
   TH1F* etaPlus38  = new TH1F("etaPlus38", "", 140, 20, 160);
-  TH1F* etaPlus39  = new TH1F("etaPlus39", "", 180, 20, 200);
-  TH1F* etaPlus40  = new TH1F("etaPlus40", "", 180, 20, 200);
-  TH1F* etaPlus41  = new TH1F("etaPlus41", "", 180, 20, 200);
+  TH1F* etaPlus39  = new TH1F("etaPlus39", "", 140, 20, 160);
+  TH1F* etaPlus40  = new TH1F("etaPlus40", "", 140, 20, 160);
+  TH1F* etaPlus41  = new TH1F("etaPlus41", "", 140, 20, 160);
   TH1F* etaMinus30  = new TH1F("etaMinus30", "", 140, 20, 160);
   TH1F* etaMinus31  = new TH1F("etaMinus31", "", 140, 20, 160);
   TH1F* etaMinus32  = new TH1F("etaMinus32", "", 140, 20, 160);
@@ -306,9 +344,34 @@ void Analysis22::Loop() {
   TH1F* etaMinus36  = new TH1F("etaMinus36", "", 140, 20, 160);
   TH1F* etaMinus37  = new TH1F("etaMinus37", "", 140, 20, 160);
   TH1F* etaMinus38  = new TH1F("etaMinus38", "", 140, 20, 160);
-  TH1F* etaMinus39  = new TH1F("etaMinus39", "", 180, 20, 200);
-  TH1F* etaMinus40  = new TH1F("etaMinus40", "", 180, 20, 200);
-  TH1F* etaMinus41  = new TH1F("etaMinus41", "", 180, 20, 200);
+  TH1F* etaMinus39  = new TH1F("etaMinus39", "", 140, 20, 160);
+  TH1F* etaMinus40  = new TH1F("etaMinus40", "", 140, 20, 160);
+  TH1F* etaMinus41  = new TH1F("etaMinus41", "", 140, 20, 160);
+  
+  TH1F* eta30_bg = new TH1F("eta30_bg", "", 140, 20, 160);
+  beautify(eta30_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta31_bg = new TH1F("eta31_bg", "", 140, 20, 160);
+  beautify(eta31_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta32_bg = new TH1F("eta32_bg", "", 140, 20, 160);
+  beautify(eta32_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta33_bg = new TH1F("eta33_bg", "", 140, 20, 160);
+  beautify(eta33_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta34_bg = new TH1F("eta34_bg", "", 140, 20, 160);
+  beautify(eta34_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta35_bg = new TH1F("eta35_bg", "", 140, 20, 160);
+  beautify(eta35_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta36_bg = new TH1F("eta36_bg", "", 140, 20, 160);
+  beautify(eta36_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta37_bg = new TH1F("eta37_bg", "", 140, 20, 160);
+  beautify(eta37_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta38_bg = new TH1F("eta38_bg", "", 140, 20, 160);
+  beautify(eta38_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta39_bg = new TH1F("eta39_bg", "", 140, 20, 160);
+  beautify(eta39_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta40_bg = new TH1F("eta40_bg", "", 140, 20, 160);
+  beautify(eta40_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
+  TH1F* eta41_bg = new TH1F("eta41_bg", "", 140, 20, 160);
+  beautify(eta41_bg, "M_{e_{EE}+HF} (GeV)", "Events", 4);
     
   TH1F* eta30lsRatio = new TH1F("eta30lsRatio", "", 80, 0, 20);
   beautify(eta30lsRatio, "Long/Short Fiber Energy Ratio (i#eta30)", "Events", 2);
@@ -978,6 +1041,106 @@ void Analysis22::Loop() {
   beautify(eta40hf_iso, "HF Isolation", "Events", 2);
   TH1F* eta41hf_iso = new TH1F("eta41hf_iso", "eta41hf_iso", 60, 0, 0.6);
   beautify(eta41hf_iso, "HF Isolation", "Events", 2);
+  
+  TH1F* eta30deta = new TH1F("eta30deta", "eta30deta", 90, 0, 9.0);
+  beautify(eta30deta, "#Delta#eta", "Events", 2);
+  TH1F* eta31deta = new TH1F("eta31deta", "eta31deta", 90, 0, 9.0);
+  beautify(eta31deta, "#Delta#eta", "Events", 2);
+  TH1F* eta32deta = new TH1F("eta32deta", "eta32deta", 90, 0, 9.0);
+  beautify(eta32deta, "#Delta#eta", "Events", 2);
+  TH1F* eta33deta = new TH1F("eta33deta", "eta33deta", 90, 0, 9.0);
+  beautify(eta33deta, "#Delta#eta", "Events", 2);
+  TH1F* eta34deta = new TH1F("eta34deta", "eta34deta", 90, 0, 9.0);
+  beautify(eta34deta, "#Delta#eta", "Events", 2);
+  TH1F* eta35deta = new TH1F("eta35deta", "eta35deta", 90, 0, 9.0);
+  beautify(eta35deta, "#Delta#eta", "Events", 2);
+  TH1F* eta36deta = new TH1F("eta36deta", "eta36deta", 90, 0, 9.0);
+  beautify(eta36deta, "#Delta#eta", "Events", 2);
+  TH1F* eta37deta = new TH1F("eta37deta", "eta37deta", 90, 0, 9.0);
+  beautify(eta37deta, "#Delta#eta", "Events", 2);
+  TH1F* eta38deta = new TH1F("eta38deta", "eta38deta", 90, 0, 9.0);
+  beautify(eta38deta, "#Delta#eta", "Events", 2);
+  TH1F* eta39deta = new TH1F("eta39deta", "eta39deta", 90, 0, 9.0);
+  beautify(eta39deta, "#Delta#eta", "Events", 2);
+  TH1F* eta40deta = new TH1F("eta40deta", "eta40deta", 90, 0, 9.0);
+  beautify(eta40deta, "#Delta#eta", "Events", 2);
+  TH1F* eta41deta = new TH1F("eta41deta", "eta41deta", 90, 0, 9.0);
+  beautify(eta41deta, "#Delta#eta", "Events", 2);
+
+  TH1F* eta30dR = new TH1F("eta30dR", "eta30dR", 90, 0, 9.0);
+  beautify(eta30dR, "#DeltaR", "Events", 2);
+  TH1F* eta31dR = new TH1F("eta31dR", "eta31dR", 90, 0, 9.0);
+  beautify(eta31dR, "#DeltaR", "Events", 2);
+  TH1F* eta32dR = new TH1F("eta32dR", "eta32dR", 90, 0, 9.0);
+  beautify(eta32dR, "#DeltaR", "Events", 2);
+  TH1F* eta33dR = new TH1F("eta33dR", "eta33dR", 90, 0, 9.0);
+  beautify(eta33dR, "#DeltaR", "Events", 2);
+  TH1F* eta34dR = new TH1F("eta34dR", "eta34dR", 90, 0, 9.0);
+  beautify(eta34dR, "#DeltaR", "Events", 2);
+  TH1F* eta35dR = new TH1F("eta35dR", "eta35dR", 90, 0, 9.0);
+  beautify(eta35dR, "#DeltaR", "Events", 2);
+  TH1F* eta36dR = new TH1F("eta36dR", "eta36dR", 90, 0, 9.0);
+  beautify(eta36dR, "#DeltaR", "Events", 2);
+  TH1F* eta37dR = new TH1F("eta37dR", "eta37dR", 90, 0, 9.0);
+  beautify(eta37dR, "#DeltaR", "Events", 2);
+  TH1F* eta38dR = new TH1F("eta38dR", "eta38dR", 90, 0, 9.0);
+  beautify(eta38dR, "#DeltaR", "Events", 2);
+  TH1F* eta39dR = new TH1F("eta39dR", "eta39dR", 90, 0, 9.0);
+  beautify(eta39dR, "#DeltaR", "Events", 2);
+  TH1F* eta40dR = new TH1F("eta40dR", "eta40dR", 90, 0, 9.0);
+  beautify(eta40dR, "#DeltaR", "Events", 2);
+  TH1F* eta41dR = new TH1F("eta41dR", "eta41dR", 90, 0, 9.0);
+  beautify(eta41dR, "#DeltaR", "Events", 2);
+
+  TH1F* eta30pT = new TH1F("eta30pT", "eta30pT", 150, 0, 150);
+  beautify(eta30pT, "#p_{T}", "Events", 2);
+  TH1F* eta31pT = new TH1F("eta31pT", "eta31pT", 150, 0, 150);
+  beautify(eta31pT, "#p_{T}", "Events", 2);
+  TH1F* eta32pT = new TH1F("eta32pT", "eta32pT", 150, 0, 150);
+  beautify(eta32pT, "#p_{T}", "Events", 2);
+  TH1F* eta33pT = new TH1F("eta33pT", "eta33pT", 150, 0, 150);
+  beautify(eta33pT, "#p_{T}", "Events", 2);
+  TH1F* eta34pT = new TH1F("eta34pT", "eta34pT", 150, 0, 150);
+  beautify(eta34pT, "#p_{T}", "Events", 2);
+  TH1F* eta35pT = new TH1F("eta35pT", "eta35pT", 150, 0, 150);
+  beautify(eta35pT, "#p_{T}", "Events", 2);
+  TH1F* eta36pT = new TH1F("eta36pT", "eta36pT", 150, 0, 150);
+  beautify(eta36pT, "#p_{T}", "Events", 2);
+  TH1F* eta37pT = new TH1F("eta37pT", "eta37pT", 150, 0, 150);
+  beautify(eta37pT, "#p_{T}", "Events", 2);
+  TH1F* eta38pT = new TH1F("eta38pT", "eta38pT", 150, 0, 150);
+  beautify(eta38pT, "#p_{T}", "Events", 2);
+  TH1F* eta39pT = new TH1F("eta39pT", "eta39pT", 150, 0, 150);
+  beautify(eta39pT, "#p_{T}", "Events", 2);
+  TH1F* eta40pT = new TH1F("eta40pT", "eta40pT", 150, 0, 150);
+  beautify(eta40pT, "#p_{T}", "Events", 2);
+  TH1F* eta41pT = new TH1F("eta41pT", "eta41pT", 150, 0, 150);
+  beautify(eta41pT, "#p_{T}", "Events", 2);
+  
+  TH1F* eta30pTEE = new TH1F("eta30pTEE", "eta30pTEE", 150, 0, 150);
+  beautify(eta30pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta31pTEE = new TH1F("eta31pTEE", "eta31pTEE", 150, 0, 150);
+  beautify(eta31pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta32pTEE = new TH1F("eta32pTEE", "eta32pTEE", 150, 0, 150);
+  beautify(eta32pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta33pTEE = new TH1F("eta33pTEE", "eta33pTEE", 150, 0, 150);
+  beautify(eta33pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta34pTEE = new TH1F("eta34pTEE", "eta34pTEE", 150, 0, 150);
+  beautify(eta34pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta35pTEE = new TH1F("eta35pTEE", "eta35pTEE", 150, 0, 150);
+  beautify(eta35pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta36pTEE = new TH1F("eta36pTEE", "eta36pTEE", 150, 0, 150);
+  beautify(eta36pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta37pTEE = new TH1F("eta37pTEE", "eta37pTEE", 150, 0, 150);
+  beautify(eta37pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta38pTEE = new TH1F("eta38pTEE", "eta38pTEE", 150, 0, 150);
+  beautify(eta38pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta39pTEE = new TH1F("eta39pTEE", "eta39pTEE", 150, 0, 150);
+  beautify(eta39pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta40pTEE = new TH1F("eta40pTEE", "eta40pTEE", 150, 0, 150);
+  beautify(eta40pTEE, "#p_{T}^{EE}", "Events", 2);
+  TH1F* eta41pTEE = new TH1F("eta41pTEE", "eta41pTEE", 150, 0, 150);
+  beautify(eta41pTEE, "#p_{T}^{EE}", "Events", 2);
 
      
   double alpha = 1;
@@ -995,10 +1158,11 @@ void Analysis22::Loop() {
   Long64_t nbytes = 0, nb = 0;
   std::stringstream ratio;
 
-  // nentries = 10000;
   std::cout << "Processing " << nentries << " events..." << std::endl;
   std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+  
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+  //for (Long64_t jentry=0; jentry<10000;jentry++) {
     eventsProcessed++;
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
@@ -1011,7 +1175,14 @@ void Analysis22::Loop() {
     //   std::cout << ratio.str() << "%" << std::endl;
     //   ratio.str(std::string());
     // }
-      
+    
+    // Adding trigger bits are set in "nTuplizer/ggAnalysis/ggNtuplizer/plugins/ggNtuplizer_trigger.cc"
+    // Recomended trigger: Lowest(pT) unprescaled Single electron trigger must be used
+    ULong64_t trig = eleFiredSingleTrgs->at(0); 
+
+    bool passTrigger = (trig & (1 << 1));
+    if (!passTrigger) continue;
+    
     // PU bins
     bool PU1 = (nvtx <= 6); 
     bool PU2 = (nvtx > 6 && nvtx <= 12); 
@@ -1022,22 +1193,26 @@ void Analysis22::Loop() {
     bool PU7 = (nvtx > 36 && nvtx <= 42);
     bool PU8 = (nvtx > 42 && nvtx <= 48);
     bool PU9 = (nvtx > 48);
-    
-    //if (run > 380852) continue;
       
     vector<TLorentzVector> electrons;
     for(int i = 0; i != nele; ++i ) {
-      if ( ele_mediumID->at(i) == 0 ) continue;
+      // Select Tight ID electrons (bit 3 set in VID bitmask) using the cut based identification 
+      // Set in "nTuplizer/ggAnalysis/ggNtuplizer/plugins/ggNtuplizer_electrons.cc
+      if ( !(eleIDbit->at(i) & (1 << 3)) ) continue;
+      //if ( eleIDMVAIso->at(i) < 0.9995 ) continue;
       if ( ele_pt->at(i) < 33.0 ) continue; // energetic to fire trigger
-      //if ( ecal_match->at(i) < 0 ) continue;
+      if ( fabs(ele_eta->at(i)) < 1.479) continue;
+      if ( fabs(ele_eta->at(i)) > 2.5 ) continue;
+      if (!isData) {
+         if (ecal_match->at(i) < 0) continue; // Apply only for MC
+      }
       TLorentzVector e;
       e.SetPtEtaPhiM(ele_pt->at(i), ele_eta->at(i), ele_phi->at(i), 0);
       electrons.push_back(e);
     }
 
     // Require exactly 1 ECAL electron
-    // if ( electrons.size() > 1 || electrons.size() == 0 ) continue;
-    if ( electrons.size() == 0 ) continue;
+    if ( electrons.size() > 1 || electrons.size() == 0 ) continue;
           
     // This will hold the corrected masses
     std::vector<double> masses;
@@ -1085,9 +1260,10 @@ void Analysis22::Loop() {
       // Loop over all HF electrons
       for(int i = 0; i != nhf; ++i) {
         if ( hf_pt->at(i) < 15.0 ) continue;
-        //if ( hf_match->at(i) < 0 ) continue;
-        if ( fabs(hf_eta->at(i)) < 2.964 ) continue;
-        // if ( fabs(hf_eta->at(i)) < 2.850 ) continue;
+        if (!isData) {
+           if ( hf_match->at(i) < 0 ) continue;
+        }
+        if ( fabs(hf_eta->at(i)) < 2.964) continue;
         if ( fabs(hf_eta->at(i)) > 5.191 ) continue;
         if ( hf_hcal->at(i)/hf_ecal->at(i) > 1.2 ) continue;
         if ( hf_iso->at(i)/hf_en->at(i) > 0.55 ) continue;
@@ -1096,6 +1272,7 @@ void Analysis22::Loop() {
         // 2S = hcal
         double L = hf_ecal->at(i) + 0.5*hf_hcal->at(i);
         double S = hf_hcal->at(i)/2;
+        
         if ( L == 0 && S == 0 ) continue;
           
         // Raddam correction - only data
@@ -1104,13 +1281,14 @@ void Analysis22::Loop() {
         
         if (isData == 1) { // here we apply corrections to DATA
           if (useFactors == 1) {
-          corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving
+          corrL = corrL * getRaddamRatio(hf_eta->at(i)) * factors[f]; // this will be 1.0 if not rederiving 
+          //corrS = corrS * getRaddamRatio(hf_eta->at(i)) * factors[f]; //test for short fibres
           }
           if (useRaddam == 1) { 
           corrL = (L*getRaddamCorrection( hf_eta->at(i))); 
           }
           // only correct L for now, JME takes care of S
-          // if (useRaddam == 1) { corrS = S/getRaddamCorrection( fabs(hf_eta->at(i))); }
+           //if (useRaddam == 1) { corrS = S/getRaddamCorrection( fabs(hf_eta->at(i))); }
         }
         double corrpT = hf_pt->at(i)*(corrL + corrS)/(L + S);
           
@@ -1129,7 +1307,7 @@ void Analysis22::Loop() {
         hf.push_back(e);
         
         if ( firstIndex == -1 ) firstIndex = i;
-		} // END loop over HF electrons
+	}// END loop over HF electrons
 	
       // Require at least 1 HF electron too
       if ( hf.size() == 0 ) {
@@ -1140,41 +1318,68 @@ void Analysis22::Loop() {
       if (electrons.empty() || hf.empty()) {
         continue; // No ECAL or HF electrons -> skip event
       }
+      
+      h_nhf->Fill(hf.size());
 
       e1 = electrons[0];
+      //e2 = hf[0];
+      
+      //--------------------Used for Data Driven Background estimation-----------------------
+      
+      if (isData == 1) {
+      	for (const auto& h : hf) {
+            if (e1.Eta() * h.Eta() >= 0) continue;
 
+            TLorentzVector hFlip;
+            hFlip.SetPtEtaPhiM(h.Pt(), -h.Eta(), h.Phi(), 0.0); 
+
+            const double mass_bkg = (e1 + hFlip).M();
+            const double absEta   = std::abs(hFlip.Eta());            
+            if (absEta > 3.664 && absEta < 4.716)          h_backgroundShape->Fill(mass_bkg);
+            if (absEta > 2.964 && absEta < 3.139)          eta30_bg->Fill(mass_bkg);
+            if (absEta > 3.139 && absEta < 3.314)          eta31_bg->Fill(mass_bkg);
+            if (absEta > 3.314 && absEta < 3.489)          eta32_bg->Fill(mass_bkg);
+            if (absEta > 3.489 && absEta < 3.664)          eta33_bg->Fill(mass_bkg);
+            if (absEta > 3.664 && absEta < 3.839)          eta34_bg->Fill(mass_bkg);
+            if (absEta > 3.839 && absEta < 4.013)          eta35_bg->Fill(mass_bkg);
+            if (absEta > 4.013 && absEta < 4.191)          eta36_bg->Fill(mass_bkg);
+            if (absEta > 4.191 && absEta < 4.363)          eta37_bg->Fill(mass_bkg);
+            if (absEta > 4.363 && absEta < 4.538)          eta38_bg->Fill(mass_bkg);
+            if (absEta > 4.538 && absEta < 4.716)          eta39_bg->Fill(mass_bkg);
+            if (absEta > 4.716 && absEta < 4.889)          eta40_bg->Fill(mass_bkg);
+            if (absEta > 4.889 && absEta < 5.191)          eta41_bg->Fill(mass_bkg);
+        }
+    }
+    //-------------------------------------------------------------------------------------------
+    
       float maxPt = -1.0;
       bool foundGoodHF = false;
       TLorentzVector bestHF;
-
-      for (const auto& hf_candidate : hf) {
-            float deltaEta = std::abs(e1.Eta() - hf_candidate.Eta());
-            //if ((e1.Eta() * hf_candidate.Eta()) > 0) {
-            if (deltaEta < 2.6) {
-                if (hf_candidate.Pt() > maxPt) {
-                    maxPt = hf_candidate.Pt();
-                    bestHF = hf_candidate;
-                    foundGoodHF = true;
-                }
+        for (const auto& hf_candidate : hf) {
+            if (e1.Eta() * hf_candidate.Eta() <= 0) continue; //ensures that both e are on the same side of the detector
+            float deltaEta = fabs(e1.Eta() - hf_candidate.Eta());
+            if (std::abs(hf_candidate.Eta()) > 4.538 && deltaEta > 2.8) continue; //deta cut applied for |ieta| > 38
+            if (hf_candidate.Pt() > maxPt) { //Sorting acc to pT
+                maxPt        = hf_candidate.Pt();
+                bestHF       = hf_candidate;
+                foundGoodHF  = true;
             }
         }
-
       if (!foundGoodHF) {
-        continue; // No HF electron satisfying dEta < 2.6 -> skip event
+        continue;
       }
-
       e2 = bestHF;
-      
+
       longFiberEn = hf_ecal->at(firstIndex) + 0.5*hf_hcal->at(firstIndex);
       shortFiberEn = hf_hcal->at(firstIndex)/2;
-
+      
       // std::cout << "e2 pT: " << e2.Pt() << std::endl;
       Mass = (e1+e2).M();
     
       // PU corrected mass
       double puCorrection = 1;
-      if (usePU == 1) { puCorrection = 1./(1.0 + 0.125/77.154*(nvtx-45)); } // MC (peak @ 45) 
-      if (usePU == 1 && isData == 1 ) { puCorrection = 1./(1.0 + 0.098/78.074*(nvtx-42)); } // Data (peak @ 42)
+      if (usePU == 1) { puCorrection = 1./(1.0 + 0.128/76.782*(nvtx-46)); } // MC (peak @ 46) 
+      if (usePU == 1 && isData == 1 ) { puCorrection = 1./(1.0 + 0.136/78.052*(nvtx-40)); } // Data (peak @ 40)
       e1pu.SetPtEtaPhiM(e1.Pt()*puCorrection, e1.Eta(), e1.Phi(), 0);
       e2pu.SetPtEtaPhiM(e2.Pt()*puCorrection, e2.Eta(), e2.Phi(), 0);
         
@@ -1183,7 +1388,18 @@ void Analysis22::Loop() {
       Mass = MassPUCorrected;
       float deta = fabs(e1pu.Eta() - e2pu.Eta());
       float dphi = acos(cos(e1pu.Phi() - e2pu.Phi()));
-        
+      float eta1_eta2 = e1pu.Eta()*e2pu.Eta();
+      
+      TLorentzVector MET_vec;
+      MET_vec.SetPtEtaPhiM(puppiMET, 0.0, puppiMETPhi, 0.0);
+
+      double MT1  = mt_by_hand(e1pu, TLorentzVector(0,0,0,0), MET_vec, false);
+      float dphi2 = acos(cos(e2pu.Phi() - MET_vec.Phi()));
+
+      h_mt1->Fill(MT1,  scale_factor);
+      h_puppiMET->Fill(puppiMET);
+      h_dphi2->Fill(dphi2);
+      h_eta1_eta2->Fill(eta1_eta2);
         
       // fill these
       h_ele_pt->Fill( e1pu.Pt(),scale_factor);
@@ -1199,12 +1415,7 @@ void Analysis22::Loop() {
       h_dR->Fill(dR,scale_factor);
       h_etaEE_etaHF->Fill(fabs(e1pu.Eta()),fabs(e2pu.Eta()));
       
-      //if ( fabs(e1pu.Eta()) > 2.1 ) continue;
-      //if ( e1pu.Pt() < 35 || e1pu.Pt() > 40 ) continue;
-      //if ( e2pu.Pt() < 25 || e2pu.Pt() > 30 ) continue;
-        
       eta = e2pu.Eta();
-
 
       // iEta bins
       iEta30Plus = eta > 2.964 && eta < 3.139;
@@ -1233,7 +1444,7 @@ void Analysis22::Loop() {
       iEta39Minus = eta < -4.538 && eta > -4.716;
       iEta40Minus = eta < -4.716 && eta > -4.889;
       iEta41Minus = eta < -4.889 && eta > -5.191;
-
+      
         // Fill the histograms with the altered masses
         // this caused me significant pain to type, please make this better 
       if (numfactors != 0) {
@@ -1267,6 +1478,8 @@ void Analysis22::Loop() {
     // Require at least 1 HF electron
     // if ( hf.size() == 0 ) continue;
     if (!anyHF) continue;
+    if (e1pu.Eta() * e2pu.Eta() < 0) continue;
+    if (fabs(e1pu.Eta() - e2pu.Eta()) < 0.1) continue;
 
     if ( shortFiberEn>0.0 ) h_lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
 
@@ -1402,7 +1615,7 @@ void Analysis22::Loop() {
     if ( iEta41Minus ) etaMinus41->Fill(Mass,scale_factor);
       
     h_nvtx->Fill(nvtx);
-      
+    
     if ( iEta30Plus || iEta30Minus ) {
       if ( shortFiberEn>0.0 ) eta30lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
       eta30nvtx->Fill(nvtx,scale_factor);
@@ -1413,6 +1626,10 @@ void Analysis22::Loop() {
       eta30en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta30enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta30hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta30deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta30pT->Fill(e2.Pt(),scale_factor);
+      eta30pTEE->Fill(e1.Pt(),scale_factor);
+      eta30dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta31Plus || iEta31Minus ) {
       if ( shortFiberEn>0.0 ) eta31lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1424,6 +1641,10 @@ void Analysis22::Loop() {
       eta31en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta31enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta31hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta31deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta31pT->Fill(e2.Pt(), scale_factor);
+      eta31pTEE->Fill(e1.Pt(), scale_factor);
+      eta31dR->Fill(e1.DeltaR(e2), scale_factor);
     }
     if ( iEta32Plus || iEta32Minus ) {
       if ( shortFiberEn>0.0 ) eta32lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1435,6 +1656,11 @@ void Analysis22::Loop() {
       eta32en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta32enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta32hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta32deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta32pT->Fill(e2.Pt(),scale_factor);
+      eta32pTEE->Fill(e1.Pt(), scale_factor);
+      eta32dR->Fill(e1.DeltaR(e2),scale_factor);
+
     }
     if ( iEta33Plus || iEta33Minus ) {
       if ( shortFiberEn>0.0 ) eta33lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1446,6 +1672,10 @@ void Analysis22::Loop() {
       eta33en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta33enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta33hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta33deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta33pT->Fill(e2.Pt(),scale_factor);
+      eta33pTEE->Fill(e1.Pt(), scale_factor);
+      eta33dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta34Plus || iEta34Minus ) {
       if ( shortFiberEn>0.0 ) eta34lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1457,6 +1687,10 @@ void Analysis22::Loop() {
       eta34en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta34enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta34hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta34deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta34pT->Fill(e2.Pt(),scale_factor);
+      eta34pTEE->Fill(e1.Pt(), scale_factor);
+      eta34dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta35Plus || iEta35Minus ) {
       if ( shortFiberEn>0.0 ) eta35lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1468,6 +1702,10 @@ void Analysis22::Loop() {
       eta35en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta35enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta35hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta35deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta35pT->Fill(e2.Pt(),scale_factor);
+      eta35pTEE->Fill(e1.Pt(), scale_factor);
+      eta35dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta36Plus || iEta36Minus ) {
       if ( shortFiberEn>0.0 ) eta36lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1479,6 +1717,10 @@ void Analysis22::Loop() {
       eta36en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta36enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta36hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta36deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta36pT->Fill(e2.Pt(),scale_factor);
+      eta36pTEE->Fill(e1.Pt(), scale_factor);
+      eta36dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta37Plus || iEta37Minus ) {
       if ( shortFiberEn>0.0 ) eta37lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1490,6 +1732,10 @@ void Analysis22::Loop() {
       eta37en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta37enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta37hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta37deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta37pT->Fill(e2.Pt(),scale_factor);
+      eta37pTEE->Fill(e1.Pt(), scale_factor);
+      eta37dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta38Plus || iEta38Minus ) {
       if ( shortFiberEn>0.0 ) eta38lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1501,6 +1747,10 @@ void Analysis22::Loop() {
       eta38en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta38enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta38hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta38deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta38pT->Fill(e2.Pt(),scale_factor);
+      eta38pTEE->Fill(e1.Pt(), scale_factor);
+      eta38dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta39Plus || iEta39Minus ) {
       if ( shortFiberEn>0.0 ) eta39lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1512,6 +1762,10 @@ void Analysis22::Loop() {
       eta39en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta39enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta39hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta39deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta39pT->Fill(e2.Pt(),scale_factor);
+      eta39pTEE->Fill(e1.Pt(), scale_factor);
+      eta39dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta40Plus || iEta40Minus ) {
       if ( shortFiberEn>0.0 ) eta40lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1523,6 +1777,11 @@ void Analysis22::Loop() {
       eta40en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta40enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta40hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta40deta->Fill(fabs(e1pu.Eta() - e2pu.Eta()), scale_factor);
+      eta40deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta40pT->Fill(e2.Pt(),scale_factor);
+      eta40pTEE->Fill(e1.Pt(), scale_factor);
+      eta40dR->Fill(e1.DeltaR(e2),scale_factor);
     }
     if ( iEta41Plus || iEta41Minus ) {
       if ( shortFiberEn>0.0 ) eta41lsRatio->Fill(longFiberEn/shortFiberEn,scale_factor);
@@ -1534,6 +1793,11 @@ void Analysis22::Loop() {
       eta41en->Fill(e2.E()*TMath::Sin(e2.Theta()),scale_factor);
       eta41enEE->Fill(e1.E()*TMath::Sin(e1.Theta()),scale_factor);
       eta41hf_iso->Fill(hf_iso->at(firstIndex)/hf_en->at(firstIndex),scale_factor);
+      eta41deta->Fill(fabs(e1pu.Eta() - e2pu.Eta()), scale_factor);
+      eta41deta->Fill(fabs(e1.Eta() - e2.Eta()), scale_factor);
+      eta41pT->Fill(e2.Pt(),scale_factor);
+      eta41pTEE->Fill(e1.Pt(), scale_factor);
+      eta41dR->Fill(e1.DeltaR(e2),scale_factor);
     }
        
     if ( iPhi1 ) {
@@ -2053,6 +2317,7 @@ void Analysis22::Loop() {
   h_mass->Write();
   h_nvtx->Write();
   h_lsRatio->Write();
+  h_backgroundShape->Write();
 
   h_ele_pt->Write();
   h_ele_eta->Write();
@@ -2060,13 +2325,19 @@ void Analysis22::Loop() {
   h_hf_ele_pt->Write();
   h_hf_ele_eta->Write();
   h_hf_ele_phi->Write();
+  
   h_dR->Write();
   h_dEta_dPhi->Write();
   h_deta->Write();
   h_dphi->Write();
   h_etaEE_etaHF->Write();
+  h_nhf->Write();
   
-
+  h_mt1->Write();
+  h_puppiMET->Write();
+  h_dphi2->Write();
+  h_eta1_eta2->Write();
+ 
   for (auto ele : h_masses)
     for (TH1F* hist : ele.second)
       hist->Write();
@@ -2656,6 +2927,73 @@ void Analysis22::Loop() {
   eta39hf_iso->Write();
   eta40hf_iso->Write();
   eta41hf_iso->Write();
-     
+  
+  eta30deta->Write();
+  eta31deta->Write();
+  eta32deta->Write();
+  eta33deta->Write();
+  eta34deta->Write();
+  eta35deta->Write();
+  eta36deta->Write();
+  eta37deta->Write();
+  eta38deta->Write();
+  eta39deta->Write();
+  eta40deta->Write();
+  eta41deta->Write();
+
+  eta30dR->Write();
+  eta31dR->Write();
+  eta32dR->Write();
+  eta33dR->Write();
+  eta34dR->Write();
+  eta35dR->Write();
+  eta36dR->Write();
+  eta37dR->Write();
+  eta38dR->Write();
+  eta39dR->Write();
+  eta40dR->Write();
+  eta41dR->Write();
+
+  eta30pT->Write();
+  eta31pT->Write();
+  eta32pT->Write();
+  eta33pT->Write();
+  eta34pT->Write();
+  eta35pT->Write();
+  eta36pT->Write();
+  eta37pT->Write();
+  eta38pT->Write();
+  eta39pT->Write();
+  eta40pT->Write();
+  eta41pT->Write();
+  
+  eta30pTEE->Write();
+  eta31pTEE->Write();
+  eta32pTEE->Write();
+  eta33pTEE->Write();
+  eta34pTEE->Write();
+  eta35pTEE->Write();
+  eta36pTEE->Write();
+  eta37pTEE->Write();
+  eta38pTEE->Write();
+  eta39pTEE->Write();
+  eta40pTEE->Write();
+  eta41pTEE->Write();
+  
+  eta30_bg->Write();
+  eta31_bg->Write();
+  eta32_bg->Write();
+  eta33_bg->Write();
+  eta34_bg->Write();
+  eta35_bg->Write();
+  eta36_bg->Write();
+  eta37_bg->Write();
+  eta38_bg->Write();
+  eta39_bg->Write();
+  eta40_bg->Write();
+  eta41_bg->Write();
+  h_backgroundShape->Write();
+  
 } // end Analysis22::Loop()
 
+  
